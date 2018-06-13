@@ -1,4 +1,4 @@
-from os import path
+import os
 
 import click
 
@@ -17,13 +17,13 @@ def cli(ctx):
 @click.pass_context
 def build(ctx):
     content_paths = [
-        path.abspath('content'),
-        path.abspath(path.join('theme', 'content')),
+        os.path.abspath('content'),
+        os.path.abspath(os.path.join('theme', 'content')),
     ]
 
-    output_path = path.abspath('output')
+    output_path = os.path.abspath('output')
 
-    config_path = path.abspath('combine.yml')
+    config_path = os.path.abspath('combine.yml')
 
     combine = Combine(
         config_path=config_path,

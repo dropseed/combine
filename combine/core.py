@@ -1,7 +1,7 @@
 import os
-from shutil import rmtree
+import shutil
 
-from jinja2 import Environment, ChoiceLoader, FileSystemLoader, select_autoescape
+import jinja2
 
 from .config import Config
 from .files import file_class_for_path
@@ -9,18 +9,22 @@ from .files import file_class_for_path
 
 class Combine:
     def __init__(self, config_path, content_paths, output_path):
-        self.config = Config(config_path)
-
+        self.config_path = config_path
         self.content_paths = content_paths
         self.content_directories = [ContentDirectory(x) for x in self.content_paths if os.path.exists(x)]
-
         self.output_path = output_path
+        self.reload()
 
-        choice_loaders = [FileSystemLoader(x.path) for x in self.content_directories]
+    def reload(self):
+        """Reload the config and entire jinja environment"""
+        self.config = Config(self.config_path)
 
-        self.jinja_environment = Environment(
-            loader=ChoiceLoader(choice_loaders),
-            autoescape=select_autoescape(['html', 'xml'])
+        choice_loaders = [jinja2.FileSystemLoader(x.path) for x in self.content_directories]
+
+        self.jinja_environment = jinja2.Environment(
+            loader=jinja2.ChoiceLoader(choice_loaders),
+            autoescape=jinja2.select_autoescape(['html', 'xml']),
+            undefined=jinja2.StrictUndefined,  # make sure variables exist
         )
         self.jinja_environment.globals = self.config.get_variables()
 
@@ -30,7 +34,7 @@ class Combine:
 
     def clean(self):
         if os.path.exists(self.output_path):
-            rmtree(self.output_path)
+            shutil.rmtree(self.output_path)
 
     def build(self):
         if not os.path.exists(self.output_path):
