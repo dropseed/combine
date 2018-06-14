@@ -44,15 +44,15 @@ class EventHandler(FileSystemEventHandler):
             print(event)
             if isinstance(event, (FileCreatedEvent, DirModifiedEvent)):
                 self.reload_combine()
-            self.rebuild_site()
+            self.rebuild_site(only_paths=[os.path.abspath(event.src_path)])
 
     def reload_combine(self):
         click.secho('Reloading combine', fg='cyan')
         self.combine.reload()
 
-    def rebuild_site(self):
-        click.secho('Rebuilding site', fg='cyan')
-        self.combine.clean_and_build()
+    def rebuild_site(self, only_paths=None):
+        click.secho(f'Rebuilding {only_paths or "site"}', fg='cyan')
+        self.combine.build(only_paths)
         click.secho('Site built', fg='green')
 
 

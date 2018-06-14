@@ -41,10 +41,6 @@ class Combine:
         if os.path.exists(self.output_path):
             shutil.rmtree(self.output_path)
 
-    def clean_and_build(self):
-        self.clean()
-        self.build()
-
     def pre_build_checks(self):
         for content_directory in self.content_directories:
             for file_class in content_directory.file_classes():
@@ -61,8 +57,12 @@ class Combine:
             for file in content_directory.files:
                 file.post_build_check()
 
-    def build(self):
+    def build(self, only_paths=None):
         self.pre_build_checks()
+
+        if not only_paths:
+            # completely wipe it
+            self.clean()
 
         if not os.path.exists(self.output_path):
             os.mkdir(self.output_path)
@@ -72,6 +72,9 @@ class Combine:
         for content_directory in self.content_directories:
             for file in content_directory.files:
                 if file.output_relative_path and file.output_relative_path not in paths_rendered:
+                    if only_paths and file.path not in only_paths:
+                        continue
+
                     file.render_to_output(
                         self.output_path,
                         jinja_environment=self.jinja_environment,

@@ -35,7 +35,7 @@ def build(ctx):
     combine.install()
 
     click.secho('Building site', fg='cyan')
-    combine.clean_and_build()
+    combine.build()
 
     return combine
 

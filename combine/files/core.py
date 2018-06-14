@@ -37,6 +37,9 @@ class File:
         target_path = os.path.join(output_path, self.output_relative_path)
         create_parent_directory(target_path)
 
+        if os.path.exists(target_path):
+            os.remove(target_path)
+
         copyfile(
             self.path,
             target_path
