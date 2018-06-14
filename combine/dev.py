@@ -44,6 +44,9 @@ class EventHandler(FileSystemEventHandler):
             print(event)
             if isinstance(event, (FileCreatedEvent, DirModifiedEvent)):
                 self.reload_combine()
+
+            # TODO if looks like a template file, rebuild entire site?
+
             self.rebuild_site(only_paths=[os.path.abspath(event.src_path)])
 
     def reload_combine(self):
