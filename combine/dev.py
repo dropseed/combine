@@ -42,12 +42,14 @@ class EventHandler(FileSystemEventHandler):
             print(event)
             self.reload_combine()
 
+        # FileCreatedEvent reload content directories in combine
+
         if self.combine.is_in_content_paths(os.path.abspath(event.src_path)):
             print(event)
             self.rebuild_site()
 
     def reload_combine(self):
-        click.secho('Rebuilding combine because of config change', fg='cyan')
+        click.secho('Reloading combine because of config change', fg='cyan')
         self.combine.reload()
         self.rebuild_site()
 

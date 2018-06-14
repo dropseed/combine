@@ -31,6 +31,9 @@ def build(ctx):
         output_path=output_path,
     )
 
+    click.secho('Installing dependencies', fg='cyan')
+    combine.install()
+
     click.secho('Building site', fg='cyan')
     combine.clean_and_build()
 

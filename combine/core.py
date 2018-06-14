@@ -1,5 +1,6 @@
 import os
 import shutil
+import subprocess
 
 import jinja2
 
@@ -11,12 +12,14 @@ class Combine:
     def __init__(self, config_path, content_paths, output_path):
         self.config_path = config_path
         self.content_paths = content_paths
-        self.content_directories = [ContentDirectory(x) for x in self.content_paths if os.path.exists(x)]
         self.output_path = output_path
         self.reload()
 
     def reload(self):
         """Reload the config and entire jinja environment"""
+
+        self.content_directories = [ContentDirectory(x) for x in self.content_paths if os.path.exists(x)]
+
         self.config = Config(self.config_path)
 
         choice_loaders = [jinja2.FileSystemLoader(x.path) for x in self.content_directories]
@@ -28,15 +31,37 @@ class Combine:
         )
         self.jinja_environment.globals = self.config.get_variables()
 
-    def clean_and_build(self):
-        self.clean()
-        self.build()
+    def install(self):
+        for cmd in self.config.get_commands('install'):
+            subprocess.run(cmd, shell=True, check=True)
 
     def clean(self):
         if os.path.exists(self.output_path):
             shutil.rmtree(self.output_path)
 
+    def clean_and_build(self):
+        self.clean()
+        self.build()
+
+    def pre_build_checks(self):
+        for content_directory in self.content_directories:
+            for file_class in content_directory.file_classes():
+                file_class.class_pre_build_check()
+
+            for file in content_directory.files:
+                file.pre_build_check()
+
+    def post_build_checks(self):
+        for content_directory in self.content_directories:
+            for file_class in content_directory.file_classes():
+                file_class.class_post_build_check()
+
+            for file in content_directory.files:
+                file.post_build_check()
+
     def build(self):
+        self.pre_build_checks()
+
         if not os.path.exists(self.output_path):
             os.mkdir(self.output_path)
 
@@ -50,6 +75,8 @@ class Combine:
                         jinja_environment=self.jinja_environment,
                     )
                     paths_rendered.append(file.output_relative_path)
+
+        self.post_build_checks()
 
     def is_in_content_paths(self, path):
         for cp in self.content_paths:
@@ -75,3 +102,6 @@ class ContentDirectory:
                 self.files.append(
                     file_class_for_path(file_path)(file_path, self)
                 )
+
+    def file_classes(self):
+        return set([x.__class__ for x in self.files])

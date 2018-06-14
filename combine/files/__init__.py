@@ -9,7 +9,7 @@ from .scss import SCSSFile
 def file_class_for_path(path):
     _, ext = os.path.splitext(path)
 
-    if os.path.basename(path).startswith('_'):
+    if os.path.basename(path).startswith('_') or os.path.basename(path).startswith('.'):
         return IgnoredFile
 
     classes = {
