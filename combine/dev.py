@@ -4,7 +4,7 @@ from http.server import HTTPServer as BaseHTTPServer, SimpleHTTPRequestHandler
 
 import click
 from watchdog.observers import Observer
-from watchdog.events import FileSystemEventHandler
+from watchdog.events import FileSystemEventHandler, FileCreatedEvent, DirModifiedEvent
 
 
 class Watcher:
@@ -38,20 +38,21 @@ class EventHandler(FileSystemEventHandler):
         if self.combine.is_in_output_path(os.path.abspath(event.src_path)):
             return
 
+        print(event)
+
         if os.path.abspath(event.src_path) == os.path.abspath(self.combine.config_path):
-            print(event)
             self.reload_combine()
 
-        # FileCreatedEvent reload content directories in combine
+        if isinstance(event, (FileCreatedEvent, DirModifiedEvent)):
+            # reload the files combine knows about
+            self.reload_combine()
 
         if self.combine.is_in_content_paths(os.path.abspath(event.src_path)):
-            print(event)
             self.rebuild_site()
 
     def reload_combine(self):
         click.secho('Reloading combine because of config change', fg='cyan')
         self.combine.reload()
-        self.rebuild_site()
 
     def rebuild_site(self):
         click.secho('Rebuilding site', fg='cyan')
