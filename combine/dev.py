@@ -35,28 +35,25 @@ class EventHandler(FileSystemEventHandler):
         super().__init__(*args, **kwargs)
 
     def on_any_event(self, event):
-        if self.combine.is_in_output_path(os.path.abspath(event.src_path)):
-            return
-
-        print(event)
-
         if os.path.abspath(event.src_path) == os.path.abspath(self.combine.config_path):
+            print(event)
             self.reload_combine()
-
-        if isinstance(event, (FileCreatedEvent, DirModifiedEvent)):
-            # reload the files combine knows about
-            self.reload_combine()
+            self.rebuild_site()
 
         if self.combine.is_in_content_paths(os.path.abspath(event.src_path)):
+            print(event)
+            if isinstance(event, (FileCreatedEvent, DirModifiedEvent)):
+                self.reload_combine()
             self.rebuild_site()
 
     def reload_combine(self):
-        click.secho('Reloading combine because of config change', fg='cyan')
+        click.secho('Reloading combine', fg='cyan')
         self.combine.reload()
 
     def rebuild_site(self):
         click.secho('Rebuilding site', fg='cyan')
         self.combine.clean_and_build()
+        click.secho('Site built', fg='green')
 
 
 class Server:

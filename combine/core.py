@@ -13,11 +13,9 @@ class Combine:
         self.config_path = config_path
         self.content_paths = content_paths
         self.output_path = output_path
-        self.reload()
+        self.load()
 
-    def reload(self):
-        """Reload the config and entire jinja environment"""
-
+    def load(self):
         self.content_directories = [ContentDirectory(x) for x in self.content_paths if os.path.exists(x)]
 
         self.config = Config(self.config_path)
@@ -30,6 +28,10 @@ class Combine:
             undefined=jinja2.StrictUndefined,  # make sure variables exist
         )
         self.jinja_environment.globals = self.config.get_variables()
+
+    def reload(self):
+        """Reload the config and entire jinja environment"""
+        self.load()
 
     def install(self):
         for cmd in self.config.get_commands('install'):
