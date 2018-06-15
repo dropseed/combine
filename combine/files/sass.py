@@ -5,7 +5,7 @@ from .core import File
 from .utils import create_parent_directory
 
 
-class SCSSFile(File):
+class SassFile(File):
     # @classmethod
     # def class_pre_build_check(cls):
     #     run(['which', 'scss'], check=True)
@@ -17,4 +17,4 @@ class SCSSFile(File):
         target_root, scss_ext = os.path.splitext(target_path)
         css_target_path = target_root + '.css'
 
-        run(['scss', self.path, css_target_path], check=True)
+        run(['sass', self.path, css_target_path], check=True)

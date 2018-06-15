@@ -3,7 +3,7 @@ import os
 from .core import File
 from .ignored import IgnoredFile
 from .html import HTMLFile
-from .scss import SCSSFile
+from .sass import SassFile
 
 
 def file_class_for_path(path):
@@ -14,7 +14,8 @@ def file_class_for_path(path):
 
     classes = {
         '.html': HTMLFile,
-        '.scss': SCSSFile,
+        '.sass': SassFile,
+        '.scss': SassFile,
     }
 
     if ext in classes:
