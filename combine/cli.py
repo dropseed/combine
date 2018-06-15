@@ -3,7 +3,7 @@ import os
 import click
 
 from .core import Combine
-from .checks import checks
+from .checks import CheckRunner
 from .dev import Watcher, Server
 
 
@@ -14,8 +14,9 @@ def cli(ctx):
 
 
 @cli.command()
+@click.option('--no-checks', is_flag=True, default=False)
 @click.pass_context
-def build(ctx):
+def build(ctx, no_checks):
     content_paths = [
         os.path.abspath('content'),
         os.path.abspath(os.path.join('theme', 'content')),
@@ -37,13 +38,24 @@ def build(ctx):
     click.secho('Building site', fg='cyan')
     combine.build()
 
+    if not no_checks:
+        runner = CheckRunner(combine)
+        runner.run()
+        if runner.succeeded:
+            click.secho('All checks passed!', fg='green')
+        else:
+            click.secho('Checks failed.', fg='red')
+            for check in runner.failed_checks:
+                click.echo(check)
+            exit(1)
+
     return combine
 
 
 @cli.command()
 @click.pass_context
 def work(ctx):
-    combine = ctx.invoke(build)
+    combine = ctx.invoke(build, no_checks=True)
 
     click.secho('Watching for file changes...', fg='green')
 
@@ -52,13 +64,19 @@ def work(ctx):
     watcher.watch(server.serve)
 
 
-@cli.command()
-@click.pass_context
-def check(ctx):
-    combine = ctx.invoke(build)
-
-    for check in checks:
-        check(combine).run()
+# @cli.command()
+# @click.pass_context
+# def check(ctx):
+#     combine = ctx.invoke(build, no_checks=True)  # should it build?
+#     runner = CheckRunner(combine)
+#     runner.run()
+#     if runner.succeeded:
+#         click.secho('All checks passed!', fg='green')
+#     else:
+#         click.secho('Checks failed.', fg='red')
+#         for check in runner.failed_checks:
+#             click.echo(check)
+#         exit(1)
 
 
 if __name__ == '__main__':

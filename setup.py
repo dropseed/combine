@@ -14,7 +14,7 @@ requirements = (
 setup(
     name='combine',
     version='0.0.1',
-    description='A friendly static site generator.',
+    description='A helpful, simple static site generator.',
     long_description=long_description,
     long_description_content_type='text/markdown',
     author='Dropseed',

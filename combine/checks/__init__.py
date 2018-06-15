@@ -1,6 +1,1 @@
-from .empty_build import EmptyBuildCheck
-
-
-checks = (
-    EmptyBuildCheck,
-)
+from .runner import CheckRunner
