@@ -15,8 +15,9 @@ def cli(ctx):
 
 @cli.command()
 @click.option('--no-checks', is_flag=True, default=False)
+@click.option('--env', default='production')
 @click.pass_context
-def build(ctx, no_checks):
+def build(ctx, no_checks, env):
     content_paths = [
         os.path.abspath('content'),
         os.path.abspath(os.path.join('theme', 'content')),
@@ -30,6 +31,7 @@ def build(ctx, no_checks):
         config_path=config_path,
         content_paths=content_paths,
         output_path=output_path,
+        env=env,
     )
 
     click.secho('Installing dependencies', fg='cyan')
@@ -55,7 +57,7 @@ def build(ctx, no_checks):
 @cli.command()
 @click.pass_context
 def work(ctx):
-    combine = ctx.invoke(build, no_checks=True)
+    combine = ctx.invoke(build, no_checks=True, env='development')
 
     click.secho('Watching for file changes...', fg='green')
 

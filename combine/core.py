@@ -9,10 +9,11 @@ from .files import file_class_for_path
 
 
 class Combine:
-    def __init__(self, config_path, content_paths, output_path):
+    def __init__(self, config_path, content_paths, output_path, env=None):
         self.config_path = config_path
         self.content_paths = content_paths
         self.output_path = output_path
+        self.env = env
         self.load()
 
     def load(self):
@@ -27,7 +28,12 @@ class Combine:
             autoescape=jinja2.select_autoescape(['html', 'xml']),
             undefined=jinja2.StrictUndefined,  # make sure variables exist
         )
-        self.jinja_environment.globals = self.config.get_variables()
+        self.jinja_environment.globals = self.get_jinja_variables()
+
+    def get_jinja_variables(self):
+        variables = self.config.get_variables()
+        variables['env'] = self.env
+        return variables
 
     def reload(self):
         """Reload the config and entire jinja environment"""
