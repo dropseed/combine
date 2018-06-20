@@ -60,9 +60,9 @@ class EventHandler(FileSystemEventHandler):
 
 
 class Server:
-    def __init__(self, path):
+    def __init__(self, path, port=8000):
         self.path = path
-        self.port = 8000
+        self.port = port
         self.httpd = HTTPServer(self.path, ("", self.port))
 
     def serve(self):
