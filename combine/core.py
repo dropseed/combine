@@ -89,6 +89,14 @@ class Combine:
 
         self.post_build_checks()
 
+    def get_file_obj_for_path(self, path):
+        for content_directory in self.content_directories:
+            for file in content_directory.files:
+                if os.path.abspath(file.path) == os.path.abspath(path):
+                    return file
+
+        return None
+
     def is_in_content_paths(self, path):
         for cp in self.content_paths:
             if os.path.commonpath([cp, path]) != os.getcwd():

@@ -6,6 +6,8 @@ import click
 from watchdog.observers import Observer
 from watchdog.events import FileSystemEventHandler, FileCreatedEvent, DirModifiedEvent
 
+from .files.template import TemplateFile
+
 
 class Watcher:
     def __init__(self, path, combine):
@@ -45,9 +47,13 @@ class EventHandler(FileSystemEventHandler):
             if isinstance(event, (FileCreatedEvent, DirModifiedEvent)):
                 self.reload_combine()
 
-            # TODO if looks like a template file, rebuild entire site?
-
-            self.rebuild_site(only_paths=[os.path.abspath(event.src_path)])
+            file_obj = self.combine.get_file_obj_for_path(event.src_path)
+            if isinstance(file_obj, TemplateFile):
+                # if it was a template, we want to rebuild everything that uses it,
+                # but right now we just rebuild the entire site
+                self.rebuild_site()
+            else:
+                self.rebuild_site(only_paths=[os.path.abspath(event.src_path)])
 
     def reload_combine(self):
         click.secho('Reloading combine', fg='cyan')
