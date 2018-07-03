@@ -1,32 +1,18 @@
-from . import states
-from .empty_build import EmptyBuildCheck
+from .registry import registry
 
 
 class CheckRunner:
     def __init__(self, combine):
         self.combine = combine
-        self.check_classes = (
-            EmptyBuildCheck,
-        )
-        self.checks = [x(self.combine) for x in self.check_classes]
-        self.state = states.UNKNOWN
-
-    @property
-    def succeeded(self):
-        return self.state == states.SUCCEEDED
-
-    @property
-    def failed_checks(self):
-        return [x for x in self.checks if x.state == states.FAILED]
+        self.registry = registry
+        self.checks = [x(self.combine) for x in self.registry.registered_checks]
 
     def run(self):
-        self.state = states.RUNNING
+        all_messages = []
 
         for check in self.checks:
-            check.run()
+            messages = check.run()
+            if messages:
+                all_messages = all_messages + messages
 
-        checks_succeeded = all([x.state == states.SUCCEEDED for x in self.checks])
-        if checks_succeeded:
-            self.state = states.SUCCEEDED
-        else:
-            self.state = states.FAILED
+        return all_messages

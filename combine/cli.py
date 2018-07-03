@@ -42,14 +42,15 @@ def build(ctx, no_checks, env):
 
     if not no_checks:
         runner = CheckRunner(combine)
-        runner.run()
-        if runner.succeeded:
-            click.secho('All checks passed!', fg='green')
-        else:
+        messages = runner.run()
+        if messages:
             click.secho('Checks failed.', fg='red')
-            for check in runner.failed_checks:
-                click.echo(check)
+            for msg in messages:
+                click.secho(str(msg), fg=msg.color)
+                click.echo()
             exit(1)
+        else:
+            click.secho('All checks passed!', fg='green')
 
     return combine
 

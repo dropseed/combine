@@ -9,6 +9,7 @@ requirements = (
     'click',
     'watchdog',
     'pyyaml',
+    'beautifulsoup4',
 )
 
 setup(
