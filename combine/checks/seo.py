@@ -9,7 +9,6 @@ from .registry import register
 
 @register
 class PageTitlesCheck(Check):
-    """Ensures that the output directory actually has files in it"""
     def run(self):
         messages = []
         page_titles = {}
@@ -34,5 +33,20 @@ class PageTitlesCheck(Check):
                 messages.append(Message('Long page title', 'seo.W002', hint='Make the title shorter. https://moz.com/learn/seo/title-tag', object=paths))
 
         # TODO put brand at the end? Check if lots of titles start with the same thing and warn to move it to the end...
+
+        return messages
+
+
+@register
+class AltTextCheck(Check):
+    def run(self):
+        messages = []
+
+        for path in glob.iglob(os.path.join(self.combine.output_path, '**', '*.html'), recursive=True):
+            with open(path, 'r') as f:
+                soup = BeautifulSoup(f, 'html.parser')
+                for img in soup.findAll('img'):
+                    if not img.attrs.get('alt', ''):
+                        messages.append(Message('Alt text missing on img', 'seo.E002', hint=f'Add alt attribute to img tag', object=(img, path)))
 
         return messages
