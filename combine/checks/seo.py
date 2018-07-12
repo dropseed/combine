@@ -13,11 +13,18 @@ class PageTitlesCheck(Check):
         messages = []
         page_titles = {}
 
+        ignored_titles = [
+            'Redirecting...',
+        ]
+
         for path in glob.iglob(os.path.join(self.combine.output_path, '**', '*.html'), recursive=True):
             with open(path, 'r') as f:
                 soup = BeautifulSoup(f, 'html.parser')
                 title = soup.title
                 if title:
+                    if title.string in ignored_titles:
+                        continue
+
                     if title.string in page_titles:
                         page_titles[title.string].append(path)
                     else:
