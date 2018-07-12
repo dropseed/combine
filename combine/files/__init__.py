@@ -5,6 +5,7 @@ from .ignored import IgnoredFile
 from .template import TemplateFile
 from .html import HTMLFile
 from .sass import SassFile
+from .redirect import RedirectFile
 
 
 def file_class_for_path(path):
@@ -26,6 +27,7 @@ def file_class_for_path(path):
         '.html': HTMLFile,
         '.sass': SassFile,
         '.scss': SassFile,
+        '.redirect': RedirectFile,
     }
 
     if ext in classes:

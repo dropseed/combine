@@ -19,8 +19,10 @@ def cli(ctx):
 @click.pass_context
 def build(ctx, no_checks, env):
     content_paths = [
+        # in order of priority
         os.path.abspath('content'),
         os.path.abspath(os.path.join('theme', 'content')),
+        os.path.abspath(os.path.join(os.path.dirname(__file__), 'base_content')),
     ]
 
     output_path = os.path.abspath('output')
@@ -92,21 +94,6 @@ if __name__ == '__main__':
 # validate html
 # check "output" in .gitignore (if git) -- use warning codes FW101
 # asset pipeline (asset fingerprinting - hash)
-
-# redirects
-# → curl https://help.github.com/articles/creating-an-issue-template-for-your-repository/
-# <!DOCTYPE html>
-# <html>
-# <head>
-# <meta charset=utf-8>
-# <title>Redirecting...</title>
-# <link rel=canonical href="/articles/manually-creating-a-single-issue-template-for-your-repository/">
-# <meta http-equiv=refresh content="0; url=/articles/manually-creating-a-single-issue-template-for-your-repository/">
-# <h1>Redirecting...</h1>
-# <a href="/articles/manually-creating-a-single-issue-template-for-your-repository/">Click here if you are not redirected.</a>
-# <script>location='/articles/manually-creating-a-single-issue-template-for-your-repository/'</script>
-# </body>
-# </html>
 
 # rel canonical?
 
