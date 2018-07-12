@@ -15,12 +15,14 @@ class Config:
                 # allow an empty file to start with
                 self.data = {}
 
-    def get_variables(self):
-        variables = self.default_variables()
+    @property
+    def variables(self):
+        variables = self.default_variables
         user_variables = self.data.get('variables', {})
         variables.update(user_variables)
         return variables
 
+    @property
     def default_variables(self):
         return {
             'now': datetime.datetime.now  # as a function

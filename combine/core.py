@@ -31,7 +31,7 @@ class Combine:
         self.jinja_environment.globals = self.get_jinja_variables()
 
     def get_jinja_variables(self):
-        variables = self.config.get_variables()
+        variables = self.config.variables
         variables['env'] = self.env
         return variables
 
