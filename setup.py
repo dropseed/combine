@@ -10,6 +10,7 @@ requirements = (
     'watchdog',
     'pyyaml',
     'beautifulsoup4',
+    'Pygments',
 )
 
 setup(

@@ -6,6 +6,7 @@ import jinja2
 
 from .config import Config
 from .files import file_class_for_path
+from .jinja_extensions import default_extensions
 
 
 class Combine:
@@ -27,6 +28,7 @@ class Combine:
             loader=jinja2.ChoiceLoader(choice_loaders),
             autoescape=jinja2.select_autoescape(['html', 'xml']),
             undefined=jinja2.StrictUndefined,  # make sure variables exist
+            extensions=default_extensions,
         )
         self.jinja_environment.globals = self.get_jinja_variables()
 
