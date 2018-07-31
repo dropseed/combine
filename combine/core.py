@@ -100,8 +100,8 @@ class Combine:
         return None
 
     def is_in_content_paths(self, path):
-        for cp in self.content_paths:
-            if os.path.commonpath([cp, path]) != os.getcwd():
+        for content_path in self.content_paths:
+            if os.path.commonpath([content_path, path]) != os.getcwd() and os.getcwd() in content_path:
                 return True
         return False
 
