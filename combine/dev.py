@@ -37,23 +37,26 @@ class EventHandler(FileSystemEventHandler):
         super().__init__(*args, **kwargs)
 
     def on_any_event(self, event):
-        if os.path.abspath(event.src_path) == os.path.abspath(self.combine.config_path):
+        # if a file was moved or something, we only care about the destination
+        event_path = event.dest_path if hasattr(event, 'dest_path') else event.src_path
+
+        if os.path.abspath(event_path) == os.path.abspath(self.combine.config_path):
             print(event)
             self.reload_combine()
             self.rebuild_site()
 
-        if self.combine.is_in_content_paths(os.path.abspath(event.src_path)):
+        if self.combine.is_in_content_paths(os.path.abspath(event_path)):
             print(event)
             if isinstance(event, (FileCreatedEvent, DirModifiedEvent)):
                 self.reload_combine()
 
-            file_obj = self.combine.get_file_obj_for_path(event.src_path)
+            file_obj = self.combine.get_file_obj_for_path(event_path)
             if isinstance(file_obj, TemplateFile):
                 # if it was a template, we want to rebuild everything that uses it,
                 # but right now we just rebuild the entire site
                 self.rebuild_site()
             else:
-                self.rebuild_site(only_paths=[os.path.abspath(event.src_path)])
+                self.rebuild_site(only_paths=[os.path.abspath(event_path)])
 
     def reload_combine(self):
         click.secho('Reloading combine', fg='cyan')
