@@ -9,6 +9,7 @@ combine = {editable = true, path = "."}
 
 [dev-packages]
 "zest.releaser" = "*"
+ipdb = "*"
 
 [requires]
 python_version = "3.6"
