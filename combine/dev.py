@@ -1,3 +1,4 @@
+import logging
 import os
 import time
 from http.server import HTTPServer as BaseHTTPServer, SimpleHTTPRequestHandler
@@ -7,6 +8,9 @@ from watchdog.observers import Observer
 from watchdog.events import FileSystemEventHandler, FileCreatedEvent, DirModifiedEvent
 
 from .files.template import TemplateFile
+
+
+logger = logging.getLogger(__file__)
 
 
 class Watcher:
@@ -60,12 +64,20 @@ class EventHandler(FileSystemEventHandler):
 
     def reload_combine(self):
         click.secho('Reloading combine', fg='cyan')
-        self.combine.reload()
+        try:
+            self.combine.reload()
+        except Exception as e:
+            logger.error('Error reloading', exc_info=e)
+            click.secho('There was an error! See output above.', fg='red')
 
     def rebuild_site(self, only_paths=None):
         click.secho(f'Rebuilding {only_paths or "site"}', fg='cyan')
-        self.combine.build(only_paths)
-        click.secho('Site built', fg='green')
+        try:
+            self.combine.build(only_paths)
+            click.secho('Site built', fg='green')
+        except Exception as e:
+            logger.error('Error building', exc_info=e)
+            click.secho('There was an error! See output above.', fg='red')
 
 
 class Server:
