@@ -1,3 +1,5 @@
+import re
+
 from jinja2 import nodes
 from jinja2.ext import Extension
 
@@ -22,6 +24,17 @@ class CodeHighlightExtension(Extension):
     def _code_support(self, language, caller):
         """Helper callback."""
         code = caller()
+
+        # remove the leading whitespace so the whole block can be indented more easily with flow of page
+        lines = code.splitlines()
+
+        first_nonempty_line_index = 0
+        while not lines[first_nonempty_line_index]:
+            first_nonempty_line_index += 1
+
+        len_to_trim = len(lines[first_nonempty_line_index]) - len(lines[first_nonempty_line_index].lstrip())
+        lines = [x[len_to_trim:] for x in lines]
+        code = '\n'.join(lines)
 
         if language:
             lexer = get_lexer_by_name(language, stripall=True)
