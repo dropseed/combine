@@ -11,6 +11,7 @@ requirements = (
     'pyyaml',
     'beautifulsoup4',
     'Pygments',
+    'markdown',
 )
 
 setup(
