@@ -10,17 +10,17 @@ from .jinja_extensions import default_extensions
 
 
 class Combine:
-    def __init__(self, config_path, content_paths, output_path, env=None):
+    def __init__(self, config_path, env=None):
         self.config_path = config_path
-        self.content_paths = content_paths
-        self.output_path = output_path
         self.env = env
         self.load()
 
     def load(self):
-        self.content_directories = [ContentDirectory(x) for x in self.content_paths if os.path.exists(x)]
-
         self.config = Config(self.config_path)
+        self.output_path = self.config.output_path
+        self.content_paths = self.config.content_paths
+
+        self.content_directories = [ContentDirectory(x) for x in self.content_paths]
 
         choice_loaders = [jinja2.FileSystemLoader(x.path) for x in self.content_directories]
 
@@ -111,6 +111,7 @@ class Combine:
 
 class ContentDirectory:
     def __init__(self, path):
+        assert os.path.exists(path), f'Path does not exist: {path}'
         self.path = path
         self.load_files()
 

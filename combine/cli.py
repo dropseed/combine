@@ -19,21 +19,9 @@ def cli(ctx):
 @click.option('--env', default='production')
 @click.pass_context
 def build(ctx, no_checks, env):
-    content_paths = [
-        # in order of priority
-        os.path.abspath('content'),
-        os.path.abspath(os.path.join('theme', 'content')),
-        os.path.abspath(os.path.join(os.path.dirname(__file__), 'base_content')),
-    ]
-
-    output_path = os.path.abspath('output')
-
     config_path = os.path.abspath('combine.yml')
-
     combine = Combine(
         config_path=config_path,
-        content_paths=content_paths,
-        output_path=output_path,
         env=env,
     )
 

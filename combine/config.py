@@ -16,6 +16,24 @@ class Config:
                 self.data = {}
 
     @property
+    def output_path(self):
+        return os.path.abspath(self.data.get("output_path", "output"))
+
+    @property
+    def content_paths(self):
+        if "content_paths" in self.data:
+            paths = self.data["content_paths"]
+        else:
+            paths = ["content"]
+            if os.path.exists(os.path.join('theme', 'content')):
+                paths.append(os.path.join('theme', 'content'))
+
+        # add the built-in content from combine itself
+        paths.append(os.path.join(os.path.dirname(__file__), 'base_content'))
+
+        return [os.path.abspath(x) for x in paths]
+
+    @property
     def variables(self):
         variables = self.default_variables
         user_variables = self.data.get('variables', {})
