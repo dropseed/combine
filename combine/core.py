@@ -118,7 +118,7 @@ class ContentDirectory:
     def load_files(self):
         self.files = []
 
-        for root, dirs, files in os.walk(self.path):
+        for root, dirs, files in os.walk(self.path, followlinks=True):
             for file in files:
                 file_path = os.path.join(root, file)
                 self.files.append(
