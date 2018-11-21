@@ -22,11 +22,13 @@ class Combine:
 
         self.content_directories = [ContentDirectory(x) for x in self.content_paths]
 
-        choice_loaders = [jinja2.FileSystemLoader(x.path) for x in self.content_directories]
+        choice_loaders = [
+            jinja2.FileSystemLoader(x.path) for x in self.content_directories
+        ]
 
         self.jinja_environment = jinja2.Environment(
             loader=jinja2.ChoiceLoader(choice_loaders),
-            autoescape=jinja2.select_autoescape(['html', 'xml']),
+            autoescape=jinja2.select_autoescape(["html", "xml"]),
             undefined=jinja2.StrictUndefined,  # make sure variables exist
             extensions=default_extensions,
         )
@@ -34,7 +36,7 @@ class Combine:
 
     def get_jinja_variables(self):
         variables = self.config.variables
-        variables['env'] = self.env
+        variables["env"] = self.env
         return variables
 
     def reload(self):
@@ -42,7 +44,7 @@ class Combine:
         self.load()
 
     def install(self):
-        for cmd in self.config.get_commands('install'):
+        for cmd in self.config.get_commands("install"):
             subprocess.run(cmd, shell=True, check=True)
 
     def clean(self):
@@ -79,13 +81,15 @@ class Combine:
 
         for content_directory in self.content_directories:
             for file in content_directory.files:
-                if file.output_relative_path and file.output_relative_path not in paths_rendered:
+                if (
+                    file.output_relative_path
+                    and file.output_relative_path not in paths_rendered
+                ):
                     if only_paths and file.path not in only_paths:
                         continue
 
                     file.render_to_output(
-                        self.output_path,
-                        jinja_environment=self.jinja_environment,
+                        self.output_path, jinja_environment=self.jinja_environment
                     )
                     paths_rendered.append(file.output_relative_path)
 
@@ -101,7 +105,10 @@ class Combine:
 
     def is_in_content_paths(self, path):
         for content_path in self.content_paths:
-            if os.path.commonpath([content_path, path]) != os.getcwd() and os.getcwd() in content_path:
+            if (
+                os.path.commonpath([content_path, path]) != os.getcwd()
+                and os.getcwd() in content_path
+            ):
                 return True
         return False
 
@@ -111,7 +118,7 @@ class Combine:
 
 class ContentDirectory:
     def __init__(self, path):
-        assert os.path.exists(path), f'Path does not exist: {path}'
+        assert os.path.exists(path), f"Path does not exist: {path}"
         self.path = path
         self.load_files()
 
@@ -121,9 +128,7 @@ class ContentDirectory:
         for root, dirs, files in os.walk(self.path, followlinks=True):
             for file in files:
                 file_path = os.path.join(root, file)
-                self.files.append(
-                    file_class_for_path(file_path)(file_path, self)
-                )
+                self.files.append(file_class_for_path(file_path)(file_path, self))
 
     def file_classes(self):
         return set([x.__class__ for x in self.files])

@@ -42,7 +42,7 @@ class EventHandler(FileSystemEventHandler):
 
     def on_any_event(self, event):
         # if a file was moved or something, we only care about the destination
-        event_path = event.dest_path if hasattr(event, 'dest_path') else event.src_path
+        event_path = event.dest_path if hasattr(event, "dest_path") else event.src_path
 
         if os.path.abspath(event_path) == os.path.abspath(self.combine.config_path):
             print(event)
@@ -63,21 +63,21 @@ class EventHandler(FileSystemEventHandler):
                 self.rebuild_site(only_paths=[os.path.abspath(event_path)])
 
     def reload_combine(self):
-        click.secho('Reloading combine', fg='cyan')
+        click.secho("Reloading combine", fg="cyan")
         try:
             self.combine.reload()
         except Exception as e:
-            logger.error('Error reloading', exc_info=e)
-            click.secho('There was an error! See output above.', fg='red')
+            logger.error("Error reloading", exc_info=e)
+            click.secho("There was an error! See output above.", fg="red")
 
     def rebuild_site(self, only_paths=None):
-        click.secho(f'Rebuilding {only_paths or "site"}', fg='cyan')
+        click.secho(f'Rebuilding {only_paths or "site"}', fg="cyan")
         try:
             self.combine.build(only_paths)
-            click.secho('Site built', fg='green')
+            click.secho("Site built", fg="green")
         except Exception as e:
-            logger.error('Error building', exc_info=e)
-            click.secho('There was an error! See output above.', fg='red')
+            logger.error("Error building", exc_info=e)
+            click.secho("There was an error! See output above.", fg="red")
 
 
 class Server:
@@ -87,12 +87,13 @@ class Server:
         self.httpd = HTTPServer(self.path, ("", self.port))
 
     def serve(self):
-        click.secho(f"Serving at http://127.0.0.1:{self.port}", fg='green')
+        click.secho(f"Serving at http://127.0.0.1:{self.port}", fg="green")
         self.httpd.serve_forever()
 
 
 class HTTPHandler(SimpleHTTPRequestHandler):
     """This handler uses server.base_path instead of always using os.getcwd()"""
+
     def translate_path(self, path):
         path = SimpleHTTPRequestHandler.translate_path(self, path)
         relpath = os.path.relpath(path, os.getcwd())
@@ -102,6 +103,7 @@ class HTTPHandler(SimpleHTTPRequestHandler):
 
 class HTTPServer(BaseHTTPServer):
     """The main server, you pass in base_path which is the path you want to serve requests from"""
+
     def __init__(self, base_path, server_address, RequestHandlerClass=HTTPHandler):
         self.base_path = base_path
         BaseHTTPServer.__init__(self, server_address, RequestHandlerClass)

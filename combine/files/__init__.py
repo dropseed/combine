@@ -11,12 +11,10 @@ from .redirect import RedirectFile
 def file_class_for_path(path):
     base, ext = os.path.splitext(path)
 
-    if os.path.basename(path).startswith('_') or os.path.basename(path).startswith('.'):
+    if os.path.basename(path).startswith("_") or os.path.basename(path).startswith("."):
         return IgnoredFile
 
-    secondary_extension_classes = {
-        '.template': TemplateFile,
-    }
+    secondary_extension_classes = {".template": TemplateFile}
 
     base2, ext2 = os.path.splitext(base)
 
@@ -24,10 +22,10 @@ def file_class_for_path(path):
         return secondary_extension_classes[ext2]
 
     classes = {
-        '.html': HTMLFile,
-        '.sass': SassFile,
-        '.scss': SassFile,
-        '.redirect': RedirectFile,
+        ".html": HTMLFile,
+        ".sass": SassFile,
+        ".scss": SassFile,
+        ".redirect": RedirectFile,
     }
 
     if ext in classes:

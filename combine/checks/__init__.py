@@ -5,4 +5,4 @@ import combine.checks.empty_build  # NOQA
 import combine.checks.seo  # NOQA
 
 
-__all__ = ['CheckRunner']
+__all__ = ["CheckRunner"]

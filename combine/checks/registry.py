@@ -6,7 +6,7 @@ class CheckRegistry:
         self.registered_checks = set()
 
     def register(self, check):
-        assert issubclass(check, Check), 'Check must be an instance of Check'
+        assert issubclass(check, Check), "Check must be an instance of Check"
         self.registered_checks.add(check)
         return check
 

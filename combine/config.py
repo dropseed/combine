@@ -10,7 +10,7 @@ class Config:
         self.data = {}
 
         if os.path.exists(self.path):
-            self.data = yaml.safe_load(open(self.path, 'r'))
+            self.data = yaml.safe_load(open(self.path, "r"))
             if self.data is None:
                 # allow an empty file to start with
                 self.data = {}
@@ -25,26 +25,24 @@ class Config:
             paths = self.data["content_paths"]
         else:
             paths = ["content"]
-            if os.path.exists(os.path.join('theme', 'content')):
-                paths.append(os.path.join('theme', 'content'))
+            if os.path.exists(os.path.join("theme", "content")):
+                paths.append(os.path.join("theme", "content"))
 
         # add the built-in content from combine itself
-        paths.append(os.path.join(os.path.dirname(__file__), 'base_content'))
+        paths.append(os.path.join(os.path.dirname(__file__), "base_content"))
 
         return [os.path.abspath(x) for x in paths]
 
     @property
     def variables(self):
         variables = self.default_variables
-        user_variables = self.data.get('variables', {})
+        user_variables = self.data.get("variables", {})
         variables.update(user_variables)
         return variables
 
     @property
     def default_variables(self):
-        return {
-            'now': datetime.datetime.now  # as a function
-        }
+        return {"now": datetime.datetime.now}  # as a function
 
     def get_commands(self, command_type):
         cmds = self.data.get(command_type, [])

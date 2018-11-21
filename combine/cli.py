@@ -15,47 +15,44 @@ def cli(ctx):
 
 
 @cli.command()
-@click.option('--no-checks', is_flag=True, default=False)
-@click.option('--env', default='production')
+@click.option("--no-checks", is_flag=True, default=False)
+@click.option("--env", default="production")
 @click.pass_context
 def build(ctx, no_checks, env):
-    config_path = os.path.abspath('combine.yml')
-    combine = Combine(
-        config_path=config_path,
-        env=env,
-    )
+    config_path = os.path.abspath("combine.yml")
+    combine = Combine(config_path=config_path, env=env)
 
-    click.secho('Installing dependencies', fg='cyan')
+    click.secho("Installing dependencies", fg="cyan")
     combine.install()
 
-    click.secho('Building site', fg='cyan')
+    click.secho("Building site", fg="cyan")
     combine.build()
 
     if not no_checks:
         runner = CheckRunner(combine)
         messages = runner.run()
         if messages:
-            click.secho('Checks failed.', fg='red')
+            click.secho("Checks failed.", fg="red")
             for msg in messages:
                 click.secho(str(msg), fg=msg.color)
                 click.echo()
             exit(1)
         else:
-            click.secho('All checks passed!', fg='green')
+            click.secho("All checks passed!", fg="green")
 
     return combine
 
 
 @cli.command()
-@click.option('--port', type=int, default=8000)
+@click.option("--port", type=int, default=8000)
 @click.pass_context
 def work(ctx, port):
-    combine = ctx.invoke(build, no_checks=True, env='development')
+    combine = ctx.invoke(build, no_checks=True, env="development")
 
-    click.secho('Watching for file changes...', fg='green')
+    click.secho("Watching for file changes...", fg="green")
 
     server = Server(combine.output_path, port)
-    watcher = Watcher('.', combine=combine)
+    watcher = Watcher(".", combine=combine)
     watcher.watch(server.serve)
 
 
@@ -66,14 +63,16 @@ def utils(ctx):
 
 
 @utils.command()
-@click.option('--style', type=str, default='default')
+@click.option("--style", type=str, default="default")
 @click.pass_context
 def highlight_info(ctx, style):
     """Outputs the CSS which can be customized for highlighted code"""
-    click.secho('The following styles are available to choose from:', fg='green')
+    click.secho("The following styles are available to choose from:", fg="green")
     click.echo(list(pygments.styles.get_all_styles()))
     click.echo()
-    click.secho(f'The following CSS for the "{style}" style can be customized:', fg='green')
+    click.secho(
+        f'The following CSS for the "{style}" style can be customized:', fg="green"
+    )
     click.echo(pygments.formatters.HtmlFormatter(style=style).get_style_defs())
 
 
@@ -92,7 +91,7 @@ def highlight_info(ctx, style):
 #         exit(1)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     cli()
 
 

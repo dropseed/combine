@@ -15,6 +15,6 @@ class SassFile(File):
         create_parent_directory(target_path)
 
         target_root, scss_ext = os.path.splitext(target_path)
-        css_target_path = target_root + '.css'
+        css_target_path = target_root + ".css"
 
-        run(['sass', self.path, css_target_path], check=True)
+        run(["sass", self.path, css_target_path], check=True)
