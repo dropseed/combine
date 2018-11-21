@@ -19,5 +19,9 @@ class MarkdownExtension(Extension):
     def _support(self, caller):
         """Helper callback."""
         markdown_content = caller()
-        html_content = markdown.markdown(markdown_content)
+        html_content = markdown.markdown(markdown_content, extensions=[
+            "markdown.extensions.fenced_code",
+            "markdown.extensions.codehilite",
+            "markdown.extensions.tables",
+        ])
         return html_content
