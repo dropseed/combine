@@ -2,6 +2,7 @@ from jinja2 import nodes
 from jinja2.ext import Extension
 
 import markdown
+from markdown.extensions.codehilite import CodeHiliteExtension
 
 
 class MarkdownExtension(Extension):
@@ -24,7 +25,7 @@ class MarkdownExtension(Extension):
             markdown_content,
             extensions=[
                 "markdown.extensions.fenced_code",
-                "markdown.extensions.codehilite",
+                CodeHiliteExtension(css_class="highlight"),
                 "markdown.extensions.tables",
             ],
         )
