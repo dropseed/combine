@@ -4,8 +4,7 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
-"e1839a8" = {path = ".", editable = true}
-combine = {editable = true, path = "."}
+combine = {path = ".", editable = true}
 
 [dev-packages]
 "zest.releaser" = "*"
