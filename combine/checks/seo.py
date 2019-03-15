@@ -76,7 +76,7 @@ class AltTextCheck(Check):
             with open(path, "r") as f:
                 soup = BeautifulSoup(f, "html.parser")
                 for img in soup.findAll("img"):
-                    if not img.attrs.get("alt", ""):
+                    if img.attrs.get("alt", None) is None:
                         messages.append(
                             Message(
                                 "Alt text missing on img",
