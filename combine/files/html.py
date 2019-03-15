@@ -6,8 +6,12 @@ from .utils import create_parent_directory
 
 class HTMLFile(File):
     def get_path_for_output(self):
+        if self.name_without_extension.endswith(".keep"):
+            # remove .keep.html from the end and replace with .html
+            return super().get_path_for_output()[:-10] + ".html"
+
         if self.name_without_extension == "index":
-            return os.path.join(*self.root_parts[:-1], "index.html")
+            return super().get_path_for_output()
 
         return os.path.join(*self.root_parts, "index.html")
 
