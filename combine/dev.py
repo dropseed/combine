@@ -57,10 +57,14 @@ class EventHandler(FileSystemEventHandler):
             for pattern in step["watch"]:
                 # TODO remove ./ automatically?
                 if fnmatch(event_path, pattern):
-                    click.secho("Running command for matching config pattern", fg="cyan")
+                    click.secho(
+                        "Running command for matching config pattern", fg="cyan"
+                    )
                     result = subprocess.run(shlex.split(command))
                     if result.returncode != 0:
-                        click.secho("There was an error running a user command.", fg="red")
+                        click.secho(
+                            "There was an error running a user command.", fg="red"
+                        )
                     return
 
         if os.path.abspath(event_path) == os.path.abspath(self.combine.config_path):

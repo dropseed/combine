@@ -77,7 +77,6 @@ class Combine:
             for step in self.config.steps:
                 subprocess.run(shlex.split(step["run"]), check=True)
 
-
     def get_file_obj_for_path(self, path):
         for content_directory in self.content_directories:
             for file in content_directory.files:
@@ -96,7 +95,9 @@ class Combine:
         return False
 
     def is_in_output_path(self, path):
-        return os.path.commonpath([self.output_path, os.path.abspath(path)]) != os.getcwd()
+        return (
+            os.path.commonpath([self.output_path, os.path.abspath(path)]) != os.getcwd()
+        )
 
 
 class ContentDirectory:

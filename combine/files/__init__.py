@@ -20,10 +20,7 @@ def file_class_for_path(path):
     if ext2 in secondary_extension_classes:
         return secondary_extension_classes[ext2]
 
-    classes = {
-        ".html": HTMLFile,
-        ".redirect": RedirectFile,
-    }
+    classes = {".html": HTMLFile, ".redirect": RedirectFile}
 
     if ext in classes:
         return classes[ext]
