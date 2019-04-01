@@ -22,9 +22,6 @@ def build(ctx, no_checks, env):
     config_path = os.path.abspath("combine.yml")
     combine = Combine(config_path=config_path, env=env)
 
-    click.secho("Installing dependencies", fg="cyan")
-    combine.install()
-
     click.secho("Building site", fg="cyan")
     combine.build()
 

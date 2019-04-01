@@ -2,6 +2,9 @@ import logging
 import os
 import time
 from http.server import HTTPServer as BaseHTTPServer, SimpleHTTPRequestHandler
+from fnmatch import fnmatch
+import subprocess
+import shlex
 
 import click
 from watchdog.observers import Observer
@@ -43,6 +46,22 @@ class EventHandler(FileSystemEventHandler):
     def on_any_event(self, event):
         # if a file was moved or something, we only care about the destination
         event_path = event.dest_path if hasattr(event, "dest_path") else event.src_path
+
+        if self.combine.is_in_output_path(event_path):
+            # never need to process if in output path
+            return
+
+        # if matches a specific pattern, only use that
+        for step in self.combine.config.steps:
+            command = step["run"]
+            for pattern in step["watch"]:
+                # TODO remove ./ automatically?
+                if fnmatch(event_path, pattern):
+                    click.secho("Running command for matching config pattern", fg="cyan")
+                    result = subprocess.run(shlex.split(command))
+                    if result.returncode != 0:
+                        click.secho("There was an error running a user command.", fg="red")
+                    return
 
         if os.path.abspath(event_path) == os.path.abspath(self.combine.config_path):
             print(event)

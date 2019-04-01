@@ -1,6 +1,7 @@
 import os
 import shutil
 import subprocess
+import shlex
 
 import jinja2
 
@@ -43,33 +44,11 @@ class Combine:
         """Reload the config and entire jinja environment"""
         self.load()
 
-    def install(self):
-        for cmd in self.config.get_commands("install"):
-            subprocess.run(cmd, shell=True, check=True)
-
     def clean(self):
         if os.path.exists(self.output_path):
             shutil.rmtree(self.output_path)
 
-    def pre_build_checks(self):
-        for content_directory in self.content_directories:
-            for file_class in content_directory.file_classes():
-                file_class.class_pre_build_check()
-
-            for file in content_directory.files:
-                file.pre_build_check()
-
-    def post_build_checks(self):
-        for content_directory in self.content_directories:
-            for file_class in content_directory.file_classes():
-                file_class.class_post_build_check()
-
-            for file in content_directory.files:
-                file.post_build_check()
-
     def build(self, only_paths=None):
-        self.pre_build_checks()
-
         if not only_paths:
             # completely wipe it
             self.clean()
@@ -93,7 +72,11 @@ class Combine:
                     )
                     paths_rendered.append(file.output_relative_path)
 
-        self.post_build_checks()
+        # If building the entire site, run the custom steps now
+        if not only_paths:
+            for step in self.config.steps:
+                subprocess.run(shlex.split(step["run"]), check=True)
+
 
     def get_file_obj_for_path(self, path):
         for content_directory in self.content_directories:
@@ -113,7 +96,7 @@ class Combine:
         return False
 
     def is_in_output_path(self, path):
-        return os.path.commonpath([self.output_path, path]) != os.getcwd()
+        return os.path.commonpath([self.output_path, os.path.abspath(path)]) != os.getcwd()
 
 
 class ContentDirectory:

@@ -18,20 +18,6 @@ class File:
 
         self.output_relative_path = self.get_path_for_output()
 
-    @classmethod
-    def class_pre_build_check(cls):
-        pass
-
-    @classmethod
-    def class_post_build_check(cls):
-        pass
-
-    def pre_build_check(self):
-        pass
-
-    def post_build_check(self):
-        pass
-
     def get_path_for_output(self):
         return self.content_relative_path
 

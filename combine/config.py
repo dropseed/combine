@@ -44,8 +44,6 @@ class Config:
     def default_variables(self):
         return {"now": datetime.datetime.now}  # as a function
 
-    def get_commands(self, command_type):
-        cmds = self.data.get(command_type, [])
-        if not isinstance(cmds, list):
-            cmds = [cmds]
-        return cmds
+    @property
+    def steps(self):
+        return self.data.get("steps", [])
