@@ -33,7 +33,7 @@ class Combine:
             undefined=jinja2.StrictUndefined,  # make sure variables exist
             extensions=default_extensions,
         )
-        self.jinja_environment.globals = self.get_jinja_variables()
+        self.jinja_environment.globals.update(self.get_jinja_variables())
 
     def get_jinja_variables(self):
         variables = self.config.variables
