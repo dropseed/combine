@@ -20,5 +20,12 @@ class HTMLFile(File):
         create_parent_directory(target_path)
 
         template = kwargs["jinja_environment"].get_template(self.content_relative_path)
+
         with open(target_path, "w+") as f:
-            f.write(template.render())
+            f.write(template.render(url=self._get_url()))
+
+    def _get_url(self):
+        url = "/" + self.output_relative_path
+        if url.endswith("/index.html"):
+            url = url[:-10]
+        return url
