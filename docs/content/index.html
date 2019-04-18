@@ -1,0 +1,152 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Combine &mdash; Dropseed</title>
+    <link href="https://unpkg.com/tailwindcss@1.0.0-beta.4/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/style.css">
+    <style>
+        p {
+            margin-bottom: .75rem;
+        }
+    </style>
+</head>
+
+<body class="flex flex-col min-h-screen">
+    <div class="py-3 text-sm bg-gray-200">
+        <div class="container mx-auto px-4 flex justify-between">
+            <a href="https://github.com/dropseed/combine">View on GitHub</a>
+            <div>combine is a product of <a href="https://www.dropseed.io" class="hover:underline">Dropseed</a></div>
+        </div>
+    </div>
+
+    <div class="flex-grow">
+        <div class="container mx-auto px-4 flex justify-between">
+            <div class="mr-48">
+
+                <div class="mb-10">
+                    <h1 class="font-thin text-5xl">Combine</h1>
+                    <p>A straightfoward static site generator for building simple HTML websites, with the power of Jinja
+                        templates.</p>
+                </div>
+
+
+                <!-- <h2 class="mt-5 mb-3 pb-1 text-2xl font-medium border-b border-gray-300">Why?</h2>
+                <p>I have never been able to stick with other static site generators.</p>
+                <p>Some are built for blogs, and I wasn't blogging. Others are built to write everything in markdown, and I
+                    desperately needed to use some HTML.</p> -->
+
+                <h2 class="mt-5 mb-3 pb-1 text-2xl font-medium border-b border-gray-300">How it works</h2>
+                <p>You've got a directory named <code>content</code>, and that's where your website goes.</p>
+
+                {% code "bash" %}
+                content
+                ├── assets
+                │   └── css
+                │    └── style.css
+                |   └── img
+                │   └── logo.png
+                ├── base.template.html
+                ├── favicon.ico
+                └── index.html
+                └── about.html
+                {% endcode %}
+
+                <p>It doesn't really matter where you put things, so do what works for you. You can read about the
+                    specifics later.</p>
+
+                <p>When you run <code>combine build</code> or are developing with <code>combine work</code>, you'll get
+                    an <code>output</code> directory with something like this.</p>
+
+                {% code "bash" %}
+                output
+                ├── assets
+                │   └── css
+                │    └── style.css
+                | └── img
+                │   └── logo.png
+                ├── favicon.ico
+                └── index.html
+                └── about
+                   └── index.html
+                {% endcode %}
+
+                <p>That's about it! You can leverage Jinja to build a templating system that works exactly how you want
+                    it to, and off you go.</p>
+
+                <h2 class="mt-5 mb-3 pb-1 text-2xl font-medium border-b border-gray-300">Getting started</h2>
+                <p></p>
+
+                <h2 class="mt-5 mb-3 pb-1 text-2xl font-medium border-b border-gray-300">Markdown</h2>
+                {% code "html" %}{% raw %}
+                {% markdown %}
+                # A heading!
+                {% endmarkdown %}
+                {% endraw %}{% endcode %}
+
+                <h2 class="mt-5 mb-3 pb-1 text-2xl font-medium border-b border-gray-300">Code highlighting</h2>
+                <p>Combine comes with <a href="http://pygments.org/">pygments</a> and a <code>{% raw %}{% code %}{% endraw %}</code> tag to easy
+                add highlighted code sections to your html.</p>
+
+                <p>You can use it like this:</p>
+                {% code "html" %}{% raw %}
+                {% code "python" %}
+                def test():
+                    print("hi!")
+                {% endcode %}
+                {% endraw %}{% endcode %}
+
+                <p>And you'll get this:</p>
+                {% code "python" %}
+                def test():
+                    print("hi!")
+                {% endcode %}
+
+                <p>To style it, you just need to add some CSS. Run <code>combine utils highlight-into</code> to get a list of available themes and the customizable CSS. Put that CSS in your stylesheet somewhere and tweak it if you want.</p>
+
+                <p>Prefix the CSS with <code>.highlight</code> for more specificity:</p>
+                {% code "css" %}
+                .highlight .hll { background-color: #ffffcc }
+                .highlight .c { color: #008800; font-style: italic } /* Comment */
+                .highlight .err { border: 1px solid #FF0000 } /* Error */
+                .highlight .k { color: #AA22FF; font-weight: bold } /* Keyword */
+                .highlight .o { color: #666666 } /* Operator */
+                {% endcode %}
+
+                <p>raw tag too</p>
+            </div>
+            <div class="pl-10">
+                <ul>
+                    <li><a href="#" class="mb-2 block rounded hover:bg-gray-200 px-3 py-1">Getting started</a></li>
+                    <li><a href="#" class="mb-2 block rounded hover:bg-gray-200 px-3 py-1">Build steps</a></li>
+                    <li><a href="#" class="mb-2 block rounded hover:bg-gray-200 px-3 py-1">Variables</a></li>
+                    <li><a href="#" class="mb-2 block rounded hover:bg-gray-200 px-3 py-1">Checks</a></li>
+                    <li><a href="#" class="mb-2 block rounded hover:bg-gray-200 px-3 py-1">Links (relative or absolute)</a></li>
+                    <li><a href="#" class="mb-2 block rounded hover:bg-gray-200 px-3 py-1">Templates</a></li>
+                    <li><a href="#" class="mb-2 block rounded hover:bg-gray-200 px-3 py-1">Ignored files</a></li>
+                    <li><a href="#" class="mb-2 block rounded hover:bg-gray-200 px-3 py-1">Redirects</a></li>
+                    <li><a href="#" class="mb-2 block rounded hover:bg-gray-200 px-3 py-1">Markdown</a></li>
+                    <li><a href="#" class="mb-2 block rounded hover:bg-gray-200 px-3 py-1">Code highlighting</a></li>
+                    <li><a href="#" class="mb-2 block rounded hover:bg-gray-200 px-3 py-1">Themes</a></li>
+                    <li><a href="#" class="mb-2 block rounded hover:bg-gray-200 px-3 py-1">Deployment</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <div class="border-t border-gray-300 bg-gray-200 mt-24 py-4">
+        <div class="container mx-auto px-4">
+            <span class="mx-auto inline-block">
+                <svg height="20" class="align-bottom inline" aria-label="code" viewBox="0 0 14 16" version="1.1"
+                    width="17" role="img">
+                    <path d="M9.5 3L8 4.5 11.5 8 8 11.5 9.5 13 14 8 9.5 3zm-5 0L0 8l4.5 5L6 11.5 2.5 8 6 4.5 4.5 3z">
+                    </path>
+                </svg> by <a href="https://www.dropseed.io">Dropseed</a>
+            </span>
+        </div>
+    </div>
+</body>
+
+</html>
