@@ -38,9 +38,7 @@ class Config:
         variables = self.default_variables
 
         for name, data in self.data.get("variables", {}).items():
-            if isinstance(data, (str, int, float, bool)):
-                variables[name] = data
-            elif isinstance(data, dict):
+            if isinstance(data, dict):
                 if "from_env" in data and data["from_env"] in os.environ:
                     variables[name] = os.environ[data["from_env"]]
                 elif "default" in data:
@@ -48,7 +46,7 @@ class Config:
                 else:
                     raise Exception("Value for config variable could not be determined")
             else:
-                raise Exception("Unknown config variable type")
+                variables[name] = data
 
         return variables
 
