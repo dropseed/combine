@@ -1,0 +1,39 @@
+{% extends "base.template.html" %}
+
+{% block content %}
+
+<h2 class="mt-5 mb-3 pb-1 text-2xl font-medium border-b border-gray-300">Code highlighting</h2>
+
+<p>Combine comes with <a href="http://pygments.org/">pygments</a> and a <code>{% raw %}{% code %}{% endraw %}</code> tag
+    to easy
+    add highlighted code sections to your html.</p>
+
+<p>You can use it like this:</p>
+{% code "html" %}{% raw %}
+{% code "python" %}
+def test():
+print("hi!")
+{% endcode %}
+{% endraw %}{% endcode %}
+
+<p>And you'll get this:</p>
+{% code "python" %}
+def test():
+print("hi!")
+{% endcode %}
+
+<p>To style it, you just need to add some CSS. Run <code>combine utils highlight-info</code> to get a list of available
+    themes and the customizable CSS. Put that CSS in your stylesheet somewhere and tweak it if you want.</p>
+
+<p>Prefix the CSS with <code>.highlight</code> for more specificity:</p>
+{% code "css" %}
+.highlight .hll { background-color: #ffffcc }
+.highlight .c { color: #008800; font-style: italic } /* Comment */
+.highlight .err { border: 1px solid #FF0000 } /* Error */
+.highlight .k { color: #AA22FF; font-weight: bold } /* Keyword */
+.highlight .o { color: #666666 } /* Operator */
+{% endcode %}
+
+<p>raw tag too</p>
+
+{% endblock %}

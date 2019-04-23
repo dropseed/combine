@@ -1,0 +1,27 @@
+{% extends "base.template.html" %}
+
+{% block content %}
+
+<h2 class="mt-5 mb-3 pb-1 text-2xl font-medium border-b border-gray-300">Markdown</h2>
+
+<p>Use the <code>{% raw %}{% markdown %}{% endraw %}</code> tag for a simpler writing experience, right in the middle of any HTML file.</p>
+
+{% code "html" %}{% raw %}
+{% extends "base.template.html" %}
+
+{% block content %}
+    <h1>Some HTML!</h1>
+
+    {% markdown %}
+    ## And content
+    {% endmarkdown %}
+
+    <h2>You can also include a markdown file</h2>
+
+    {% markdown %}
+    {% include "README.md" %}
+    {% endmarkdown %}
+{% endblock %}
+{% endraw %}{% endcode %}
+
+{% endblock %}
