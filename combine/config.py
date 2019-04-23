@@ -36,8 +36,20 @@ class Config:
     @property
     def variables(self):
         variables = self.default_variables
-        user_variables = self.data.get("variables", {})
-        variables.update(user_variables)
+
+        for name, data in self.data.get("variables", {}).items():
+            if isinstance(data, (str, int, float, bool)):
+                variables[name] = data
+            elif isinstance(data, dict):
+                if "from_env" in data and data["from_env"] in os.environ:
+                    variables[name] = os.environ[data["from_env"]]
+                elif "default" in data:
+                    variables[name] = data["default"]
+                else:
+                    raise Exception("Value for config variable could not be determined")
+            else:
+                raise Exception("Unknown config variable type")
+
         return variables
 
     @property
