@@ -1,11 +1,11 @@
 import logging
 import os
 import time
-from http.server import HTTPServer as BaseHTTPServer, SimpleHTTPRequestHandler
 from fnmatch import fnmatch
 import subprocess
 import shlex
 
+import livereload
 import click
 from watchdog.observers import Observer
 from watchdog.events import FileSystemEventHandler, FileCreatedEvent, DirModifiedEvent
@@ -23,16 +23,12 @@ class Watcher:
         self.observer = Observer()
         self.event_handler = EventHandler(combine)
 
-    def watch(self, while_running_func=None):
+    def watch(self, while_running_func):
         self.observer.schedule(self.event_handler, self.path, recursive=True)
         self.observer.start()
         try:
-            if while_running_func is not None:
-                while_running_func()
-            else:
-                while True:
-                    time.sleep(1)
-        except (Exception, KeyboardInterrupt) as e:
+            while_running_func()
+        except (ServerQuit, Exception) as e:
             print(e)
             self.observer.stop()
         self.observer.join()
@@ -94,10 +90,14 @@ class EventHandler(FileSystemEventHandler):
             click.secho("There was an error! See output above.", fg="red")
 
     def rebuild_site(self, only_paths=None):
-        click.secho(f'Rebuilding {only_paths or "site"}', fg="cyan")
         try:
             self.combine.build(only_paths)
-            click.secho("Site built", fg="green")
+            if only_paths:
+                cwd = os.getcwd()
+                nice_paths = [os.path.relpath(x, cwd) for x in only_paths]
+                click.secho(f'Rebuilt {",".join(nice_paths)}', fg="green")
+            else:
+                click.secho(f"Rebuilt site", fg="green")
         except Exception as e:
             logger.error("Error building", exc_info=e)
             click.secho("There was an error! See output above.", fg="red")
@@ -107,26 +107,14 @@ class Server:
     def __init__(self, path, port=8000):
         self.path = path
         self.port = port
-        self.httpd = HTTPServer(self.path, ("", self.port))
+        self.server = livereload.Server()
 
     def serve(self):
-        click.secho(f"Serving at http://127.0.0.1:{self.port}", fg="green")
-        self.httpd.serve_forever()
+        # livereload_logger = logging.getLogger('livereload')
+        # livereload_logger.setLevel(logging.ERROR)
+        self.server.serve(root=self.path, port=self.port, debug=False)
+        raise ServerQuit()
 
 
-class HTTPHandler(SimpleHTTPRequestHandler):
-    """This handler uses server.base_path instead of always using os.getcwd()"""
-
-    def translate_path(self, path):
-        path = SimpleHTTPRequestHandler.translate_path(self, path)
-        relpath = os.path.relpath(path, os.getcwd())
-        fullpath = os.path.join(self.server.base_path, relpath)
-        return fullpath
-
-
-class HTTPServer(BaseHTTPServer):
-    """The main server, you pass in base_path which is the path you want to serve requests from"""
-
-    def __init__(self, base_path, server_address, RequestHandlerClass=HTTPHandler):
-        self.base_path = base_path
-        BaseHTTPServer.__init__(self, server_address, RequestHandlerClass)
+class ServerQuit(Exception):
+    pass

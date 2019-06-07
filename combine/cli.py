@@ -31,9 +31,6 @@ def build(ctx, env):
 @click.pass_context
 def work(ctx, port):
     combine = ctx.invoke(build, env="development")
-
-    click.secho("Watching for file changes...", fg="green")
-
     server = Server(combine.output_path, port)
     watcher = Watcher(".", combine=combine)
     watcher.watch(server.serve)

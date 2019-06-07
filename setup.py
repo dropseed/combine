@@ -12,6 +12,7 @@ requirements = (
     'beautifulsoup4',
     'Pygments',
     'markdown',
+    'livereload',
 )
 
 setup(
