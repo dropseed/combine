@@ -1,0 +1,13 @@
+language: python
+
+jobs:
+  include:
+  - name: test
+    install:
+    - pip install --upgrade pipenv
+    - pipenv sync --dev
+    script: echo "Tests passing here..."
+  - name: deps
+    if: (branch = master AND type = cron) OR (branch =~ ^deps\/.+$ AND type = push)
+    install: curl https://www.dependencies.io/install.sh | bash -s -- -b $HOME/bin
+    script: deps ci -v
