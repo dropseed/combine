@@ -8,7 +8,7 @@ jobs:
     - pipenv sync --dev
     script: echo "Tests passing here..."
   - name: deps
-    if: (branch = master AND type = cron) OR (branch =~ ^deps\/.+$ AND type = push)
+    if: (branch = master AND type = cron) OR (branch =~ ^deps AND type = push)
     git:
       depth: false
     install: curl https://www.dependencies.io/install.sh | bash -s -- -b $HOME/bin
