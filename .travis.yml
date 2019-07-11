@@ -12,4 +12,4 @@ jobs:
     git:
       depth: false
     install: curl https://www.dependencies.io/install.sh | bash -s -- -b $HOME/bin
-    script: deps ci -v
+    script: deps ci -av
