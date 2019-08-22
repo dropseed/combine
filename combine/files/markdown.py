@@ -7,6 +7,16 @@ from .utils import create_parent_directory
 
 
 class MarkdownFile(HTMLFile):
+    def get_path_for_output(self):
+        if self.name_without_extension.endswith(".keep"):
+            # remove .keep.md from the end and replace with .html
+            return super().get_path_for_output()[:-8] + ".html"
+
+        if self.name_without_extension == "index":
+            return super().get_path_for_output()[:-3] + ".html"
+
+        return os.path.join(*self.root_parts, "index.html")
+
     def render_to_output(self, output_path, *args, **kwargs):
         post = frontmatter.load(self.path)
 
