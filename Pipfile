@@ -10,6 +10,8 @@ python-frontmatter = "*"
 [dev-packages]
 "zest.releaser" = "*"
 ipdb = "*"
+black = "==19.3b0"
+prospector = "*"
 
 [requires]
 python_version = "3.7"
