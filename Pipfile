@@ -5,6 +5,7 @@ name = "pypi"
 
 [packages]
 combine = {path = ".", editable = true}
+python-frontmatter = "*"
 
 [dev-packages]
 "zest.releaser" = "*"
