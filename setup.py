@@ -17,7 +17,7 @@ requirements = (
 
 setup(
     name='combine',
-    version='0.0.25',
+    version='0.0.26.dev0',
     description='A helpful, simple static site generator.',
     long_description=long_description,
     long_description_content_type='text/markdown',
