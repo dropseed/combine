@@ -1,5 +1,6 @@
 from jinja2 import nodes
 from jinja2.ext import Extension
+from jinja2 import Markup
 
 import markdown
 from markdown.extensions.codehilite import CodeHiliteExtension
@@ -21,6 +22,9 @@ class MarkdownExtension(Extension):
     def _support(self, caller):
         """Helper callback."""
         markdown_content = caller()
+        # jinja will have escaped by default, so we want to unescape
+        # for now and leave that to markdown rendering
+        markdown_content = Markup(markdown_content).unescape()
         html_content = markdown.markdown(
             markdown_content,
             extensions=[
