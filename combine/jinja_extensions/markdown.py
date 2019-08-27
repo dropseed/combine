@@ -31,6 +31,7 @@ class MarkdownExtension(Extension):
                 "markdown.extensions.fenced_code",
                 CodeHiliteExtension(css_class="highlight"),
                 "markdown.extensions.tables",
+                "markdown.extensions.toc",
             ],
         )
         return html_content
