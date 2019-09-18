@@ -156,14 +156,6 @@
             ],
             "version": "==1.4.3"
         },
-        "appnope": {
-            "hashes": [
-                "sha256:5b26757dc6f79a3b7dc9fab95359328d5747fcb2409d331ea66d0272b90ab2a0",
-                "sha256:8b995ffe925347a2138d7ac0fe77155e4311a0ea6d6da4f5128fe4b3cbe5ed71"
-            ],
-            "markers": "sys_platform == 'darwin'",
-            "version": "==0.1.0"
-        },
         "astroid": {
             "hashes": [
                 "sha256:6560e1e1749f68c64a4b5dee4e091fce798d2f0d84ebe638cf0e0585a343acf4",
@@ -202,10 +194,10 @@
         },
         "certifi": {
             "hashes": [
-                "sha256:046832c04d4e752f37383b628bc601a7ea7211496b4638f6514d0e5b9acc4939",
-                "sha256:945e3ba63a0b9f577b1395204e13c3a231f9bc0223888be653286534e5873695"
+                "sha256:e4f3620cfea4f83eedc95b24abd9cd56f3c4b146dd0177e83a21b4eb49e21e50",
+                "sha256:fd7c7c74727ddcf00e9acd26bba8da604ffec95bf1c2144e67aff7a8b50e6cef"
             ],
-            "version": "==2019.6.16"
+            "version": "==2019.9.11"
         },
         "chardet": {
             "hashes": [
@@ -499,9 +491,9 @@
         },
         "snowballstemmer": {
             "hashes": [
-                "sha256:9f3b9ffe0809d174f7047e121431acf99c89a7040f0ca84f94ba53a498e6d0c9"
+                "sha256:713e53b79cbcf97bc5245a06080a33d54a77e7cce2f789c835a143bcdb5c033e"
             ],
-            "version": "==1.9.0"
+            "version": "==1.9.1"
         },
         "toml": {
             "hashes": [
@@ -512,10 +504,10 @@
         },
         "tqdm": {
             "hashes": [
-                "sha256:1be3e4e3198f2d0e47b928e9d9a8ec1b63525db29095cec1467f4c5a4ea8ebf9",
-                "sha256:7e39a30e3d34a7a6539378e39d7490326253b7ee354878a92255656dc4284457"
+                "sha256:4c34f077399736e5dbf403183b5f0f1bda46e06433a3f93812386a9d56b28004",
+                "sha256:74d40d49cab95a93735323e450161f1e580dac42b25bf39770f6e3501d36ebfb"
             ],
-            "version": "==4.35.0"
+            "version": "==4.36.0"
         },
         "traitlets": {
             "hashes": [
@@ -526,10 +518,10 @@
         },
         "twine": {
             "hashes": [
-                "sha256:0fb0bfa3df4f62076cab5def36b1a71a2e4acb4d1fa5c97475b048117b1a6446",
-                "sha256:d6c29c933ecfc74e9b1d9fa13aa1f87c5d5770e119f5a4ce032092f0ff5b14dc"
+                "sha256:630fadd6e342e725930be6c696537e3f9ccc54331742b16245dab292a17d0460",
+                "sha256:a3d22aab467b4682a22de4a422632e79d07eebd07ff2a7079effb13f8a693787"
             ],
-            "version": "==1.13.0"
+            "version": "==1.15.0"
         },
         "typed-ast": {
             "hashes": [
