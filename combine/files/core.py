@@ -1,6 +1,8 @@
 import os
 from shutil import copyfile
 
+import babel
+
 from .utils import create_parent_directory
 
 
@@ -18,10 +20,25 @@ class File:
 
         self.output_relative_path = self.get_path_for_output()
 
+        self.locale = self.get_locale()
+
     def get_path_for_output(self):
         return self.content_relative_path
 
-    def render_to_output(self, output_path, *args, **kwargs):
+    def get_locale(self):
+        head, tail = os.path.split(self.content_relative_path)
+        while head or tail:
+            try:
+                # return the first directory with a valid locale for the name
+                return babel.Locale.parse(tail)
+            except (babel.UnknownLocaleError, ValueError):
+                pass
+
+            head, tail = os.path.split(head)
+
+        return None
+
+    def render_to_output(self, output_path, combine):
         target_path = os.path.join(output_path, self.output_relative_path)
         create_parent_directory(target_path)
 

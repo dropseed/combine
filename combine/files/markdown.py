@@ -17,17 +17,16 @@ class MarkdownFile(HTMLFile):
 
         return os.path.join(*self.root_parts, "index.html")
 
-    def render_to_output(self, output_path, *args, **kwargs):
-        post = frontmatter.load(self.path)
+    def get_render_variables(self):
+        variables = super().get_render_variables()
 
-        variables = post.metadata
-        variables["url"] = self._get_url()
+        # Use frontmatter
+        post = frontmatter.load(self.path)
+        variables.update(post.metadata)
         variables["content"] = post.content
 
-        template = kwargs["jinja_environment"].get_template("markdown.template.html")
+        return variables
 
-        target_path = os.path.join(output_path, self.output_relative_path)
-        create_parent_directory(target_path)
-
-        with open(target_path, "w+") as f:
-            f.write(template.render(**variables))
+    def get_template_path(self):
+        # TODO get from frontmatter too?
+        return "markdown.template.html"

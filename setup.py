@@ -13,6 +13,7 @@ requirements = (
     'Pygments',
     'markdown',
     'python-frontmatter',
+    'babel',
 )
 
 setup(

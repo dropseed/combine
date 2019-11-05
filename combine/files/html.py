@@ -15,14 +15,26 @@ class HTMLFile(File):
 
         return os.path.join(*self.root_parts, "index.html")
 
-    def render_to_output(self, output_path, *args, **kwargs):
+    def get_render_variables(self):
+        return {"url": self._get_url(), "locale": self.locale}
+
+    def get_template_path(self):
+        return self.content_relative_path
+
+    def render_to_output(self, output_path, combine):
         target_path = os.path.join(output_path, self.output_relative_path)
         create_parent_directory(target_path)
 
-        template = kwargs["jinja_environment"].get_template(self.content_relative_path)
+        template_path = self.get_template_path()
+        template = combine.jinja_environment.get_template(template_path)
+
+        if self.locale:
+            combine.install_translations(self.locale)
+
+        variables = self.get_render_variables()
 
         with open(target_path, "w+") as f:
-            f.write(template.render(url=self._get_url()))
+            f.write(template.render(**variables))
 
     def _get_url(self):
         url = "/" + self.output_relative_path
