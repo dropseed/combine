@@ -12,11 +12,12 @@ requirements = (
     'beautifulsoup4',
     'Pygments',
     'markdown',
+    'python-frontmatter',
 )
 
 setup(
     name='combine',
-    version='0.0.19.dev0',
+    version='0.0.28.dev0',
     description='A helpful, simple static site generator.',
     long_description=long_description,
     long_description_content_type='text/markdown',

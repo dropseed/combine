@@ -4,6 +4,7 @@ from .core import File
 from .ignored import IgnoredFile
 from .template import TemplateFile
 from .html import HTMLFile
+from .markdown import MarkdownFile
 from .redirect import RedirectFile
 
 
@@ -20,7 +21,7 @@ def file_class_for_path(path):
     if ext2 in secondary_extension_classes:
         return secondary_extension_classes[ext2]
 
-    classes = {".html": HTMLFile, ".redirect": RedirectFile}
+    classes = {".html": HTMLFile, ".redirect": RedirectFile, ".md": MarkdownFile}
 
     if ext in classes:
         return classes[ext]
