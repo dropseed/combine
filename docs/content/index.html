@@ -9,11 +9,13 @@
             d="M88.8,54.3c-0.8,0-1.5,0.7-1.5,1.5V57h-9.6V41.8c0-3.6-2.9-6.5-6.5-6.5h-8.7l0.2-2.6h17.5v3.1c0,0.8,0.7,1.5,1.5,1.5  s1.5-0.7,1.5-1.5v-6.1H63.1l0.6-6.1h1.8c0.8,0,1.5-0.7,1.5-1.5s-0.7-1.5-1.5-1.5H64H37.2h-2.7c-0.8,0-1.5,0.7-1.5,1.5  s0.7,1.5,1.5,1.5h2.9l1.1,11.7h-8.8c-3.6,0-6.5,2.9-6.5,6.5V57H12.7v-1.2c0-0.8-0.7-1.5-1.5-1.5S9.7,55,9.7,55.8v20.7  c0,0.8,0.7,1.5,1.5,1.5s1.5-0.7,1.5-1.5v-1.2h20.1v0.9c0,1.8,1.5,3.2,3.2,3.2h4.3c1.8,0,3.2-1.5,3.2-3.2v-0.9h14.6v0.9  c0,1.8,1.5,3.2,3.2,3.2h4.3c1.8,0,3.2-1.5,3.2-3.2v-0.9h18.4v1.2c0,0.8,0.7,1.5,1.5,1.5s1.5-0.7,1.5-1.5V55.8  C90.3,55,89.7,54.3,88.8,54.3z M71.3,38.3c1.9,0,3.4,1.5,3.5,3.4h-3.5c-0.8,0-1.5,0.7-1.5,1.5s0.7,1.5,1.5,1.5h3.5v1.8h-3.5  c-0.8,0-1.5,0.7-1.5,1.5s0.7,1.5,1.5,1.5h3.5V51h-3.5c-0.8,0-1.5,0.7-1.5,1.5s0.7,1.5,1.5,1.5h3.5v3h-6.1v-2.3  c0-3.6-2.9-6.5-6.5-6.5h-0.7l0.9-9.9H71.3z M42.5,45.9h16.1l-0.2,2.3H42.7L42.5,45.9z M61.1,51.2h1c1.9,0,3.5,1.6,3.5,3.5V57H35.3  v-2.3c0-1.9,1.6-3.5,3.5-3.5H40H61.1z M60.7,23.6l-1.8,19.3H42.2l-1.8-19.3H60.7z M26.2,54h3.5c0.8,0,1.5-0.7,1.5-1.5  S30.5,51,29.6,51h-3.5v-1.5h3.5c0.8,0,1.5-0.7,1.5-1.5s-0.7-1.5-1.5-1.5h-3.5v-1.8h3.5c0.8,0,1.5-0.7,1.5-1.5s-0.7-1.5-1.5-1.5h-3.5  c0.1-1.9,1.6-3.4,3.5-3.4h9.1l0.5,5.8c0,0.1,0,0.2,0,0.3c0,0.2,0,0.4,0.1,0.5l0.3,3.2h-0.9c-3.6,0-6.5,2.9-6.5,6.5V57h-6.1V54z   M32.3,60h36.4h18.7v4.7H12.7V60H32.3z M12.7,72.3v-4.7h74.7v4.7H12.7z">
         </path>
     </svg>
-    <p>Build a static HTML website with the power of <a class="text-green-700 hover:underline" href="http://jinja.pocoo.org/">Jinja</a>.</p>
+    <p>Build a straightforward static HTML website with the power of <a class="text-green-700 hover:underline" href="http://jinja.pocoo.org/">Jinja</a>.</p>
 </div>
 {% endblock %}
 
 {% block content %}
+
+<p>Put all of your templates and content into the <code>content</code> directory</p>
 
 <!-- <h2 class="mt-5 mb-3 pb-1 text-2xl font-medium border-b border-gray-300">Why?</h2>
             <p>I have never been able to stick with other static site generators.</p>
@@ -23,13 +25,15 @@
 <h2 class="mt-5 mb-3 pb-1 text-2xl font-medium border-b border-gray-300">How it works</h2>
 <p>You've got a directory named <code>content</code>, and that's where your website goes.</p>
 
+<p>side by side of content and output (and urls?) -- see how simple it is?</p>
+
 {% code "bash" %}
 content
 ├── assets
 │   └── css
 │    └── style.css
 |   └── img
-│   └── logo.png
+│    └── logo.png
 ├── base.template.html
 ├── favicon.ico
 └── index.html
