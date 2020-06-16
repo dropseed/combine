@@ -1,7 +1,0 @@
-version: 3
-dependencies:
-- type: python
-  path: Pipfile
-  lockfile_updates:
-    settings:
-      github_labels: [automerge]
