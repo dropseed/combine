@@ -1,4 +1,5 @@
 import os
+import json
 
 import click
 import pygments
@@ -15,10 +16,12 @@ def cli(ctx):
 
 @cli.command()
 @click.option("--env", default="production")
+@click.option("--var", multiple=True, default=[])
 @click.pass_context
-def build(ctx, env):
+def build(ctx, env, var):
+    variables = dict(x.split("=") for x in var)
     config_path = os.path.abspath("combine.yml")
-    combine = Combine(config_path=config_path, env=env)
+    combine = Combine(config_path=config_path, env=env, variables=variables)
 
     click.secho("Building site", fg="cyan")
     combine.build()
@@ -30,7 +33,9 @@ def build(ctx, env):
 @click.option("--port", type=int, default=8000)
 @click.pass_context
 def work(ctx, port):
-    combine = ctx.invoke(build, env="development")
+    combine = ctx.invoke(
+        build, env="development", var=[f"base_url=http://127.0.0.1:{port}"]
+    )
 
     click.secho("Watching for file changes...", fg="green")
 

@@ -7,13 +7,15 @@ import jinja2
 
 from .config import Config
 from .files import file_class_for_path
-from .jinja_extensions import default_extensions
+from .jinja import default_extensions, default_filters
+from .jinja.exceptions import ReservedVariableError
 
 
 class Combine:
-    def __init__(self, config_path, env=None):
+    def __init__(self, config_path, env=None, variables={}):
         self.config_path = config_path
         self.env = env
+        self.variables = variables
         self.load()
 
     def load(self):
@@ -34,10 +36,25 @@ class Combine:
             extensions=default_extensions,
         )
         self.jinja_environment.globals.update(self.get_jinja_variables())
+        self.jinja_environment.filters.update(default_filters)
 
     def get_jinja_variables(self):
+        """
+        1. combine.yml variables
+        2. Combine object variables (CLI, Python, etc.) that should override
+        3. Built-in variables
+        """
         variables = self.config.variables
+        variables.update(self.variables)
+
+        if "env" in variables:
+            raise ReservedVariableError("env")
+
         variables["env"] = self.env
+
+        if not variables.get("base_url", "") and self.env == "development":
+            variables["base_url"] = "test"
+
         return variables
 
     def reload(self):
