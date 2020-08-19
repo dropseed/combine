@@ -1,0 +1,2 @@
+#!/bin/sh -e
+pipenv run fullrelease --no-input
