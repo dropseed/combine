@@ -1,0 +1,4 @@
+#!/bin/sh -ex
+pushd docs
+poetry run combine work
+popd

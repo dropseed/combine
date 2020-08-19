@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Combine &mdash; Dropseed</title>
+    <link href="https://unpkg.com/tailwindcss@1.0.0-beta.4/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/style.css">
+</head>
+
+<body class="flex flex-col min-h-screen">
+    <div class="py-3 text-sm bg-gray-200 ">
+        <div class="container mx-auto px-4 flex justify-between">
+            <div>
+                <a href="/" class="font-medium">Combine</a>
+            </div>
+            <div>combine is a product of <a href="https://www.dropseed.io" class="hover:underline">Dropseed</a></div>
+        </div>
+    </div>
+
+    {% block header %}{% endblock %}
+
+    <div class="container mx-auto px-4 flex flex-grow">
+        <div class="hidden lg:block lg:w-1/4 mt-5">
+            <ul>
+                <li><a href="/" class="mb-2 hover:underline inline-block py-1">Home</a></li>
+                <li><a href="/getting-started/" class="mb-2 hover:underline inline-block py-1">Getting started</a></li>
+                <li><a href="/templates/" class="mb-2 hover:underline inline-block py-1">Templates</a></li>
+                <li><a href="#" class="mb-2 hover:underline inline-block py-1">Ignored files</a></li>
+                <li><a href="/build-steps/" class="mb-2 hover:underline inline-block py-1">Build steps</a></li>
+                <li><a href="/variables/" class="mb-2 hover:underline inline-block py-1">Variables</a></li>
+                <li><a href="#" class="mb-2 hover:underline inline-block py-1">Links (relative or absolute)</a></li>
+                <li><a href="#" class="mb-2 hover:underline inline-block py-1">Redirects</a></li>
+                <li><a href="/markdown/" class="mb-2 hover:underline inline-block py-1">Markdown</a></li>
+                <li><a href="/code/" class="mb-2 hover:underline inline-block py-1">Code highlighting</a></li>
+                <li><a href="#" class="mb-2 hover:underline inline-block py-1">Themes</a></li>
+                <li><a href="#" class="mb-2 hover:underline inline-block py-1">Deployment</a></li>
+            </ul>
+        </div>
+        <div class="lg:pr-6 lg:w-3/4 lg:pb-16 content">
+        {% block content %}{% endblock %}
+        </div>
+    </div>
+
+    <div class="border-t border-gray-300 bg-gray-200 py-4">
+        <div class="container mx-auto px-4">
+            <span class="mx-auto inline-block">
+                <svg height="20" class="align-bottom inline" aria-label="code" viewBox="0 0 14 16" version="1.1" width="17"
+                    role="img">
+                    <path d="M9.5 3L8 4.5 11.5 8 8 11.5 9.5 13 14 8 9.5 3zm-5 0L0 8l4.5 5L6 11.5 2.5 8 6 4.5 4.5 3
+    z">
+                    </path>
+                </svg> by <a href="https://www.dropseed.io">Dropseed</a>
+            </span>
+        </div>
+    </div>
+
+</body>
+
+</html>

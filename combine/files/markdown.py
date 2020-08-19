@@ -24,6 +24,8 @@ class MarkdownFile(HTMLFile):
         variables["url"] = self._get_url()
         variables["content"] = post.content
 
+        # TODO can post.content be jinja rendered to use variables?
+
         template = kwargs["jinja_environment"].get_template("markdown.template.html")
 
         target_path = os.path.join(output_path, self.output_relative_path)
