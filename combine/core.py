@@ -52,9 +52,6 @@ class Combine:
 
         variables["env"] = self.env
 
-        if not variables.get("base_url", "") and self.env == "development":
-            variables["base_url"] = "test"
-
         return variables
 
     def reload(self):
