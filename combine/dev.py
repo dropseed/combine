@@ -10,6 +10,7 @@ import click
 from watchdog.observers import Observer
 from watchdog.events import FileSystemEventHandler, FileCreatedEvent, DirModifiedEvent
 
+from .exceptions import BuildError
 from .files.template import TemplateFile
 
 
@@ -98,6 +99,8 @@ class EventHandler(FileSystemEventHandler):
         try:
             self.combine.build(only_paths)
             click.secho("Site built", fg="green")
+        except BuildError:
+            click.secho("Build error (see above)", fg="red")
         except Exception as e:
             logger.error("Error building", exc_info=e)
             click.secho("There was an error! See output above.", fg="red")

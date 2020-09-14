@@ -2,13 +2,18 @@ import os
 import shutil
 import subprocess
 import shlex
+import logging
 
 import jinja2
 
 from .config import Config
-from .files import file_class_for_path
+from .files import file_class_for_path, ErrorFile
 from .jinja import default_extensions, default_filters
 from .jinja.exceptions import ReservedVariableError
+from .exceptions import BuildError
+
+
+logger = logging.getLogger(__file__)
 
 
 class Combine:
@@ -63,6 +68,8 @@ class Combine:
             shutil.rmtree(self.output_path)
 
     def build(self, only_paths=None):
+        build_errors = {}
+
         if not only_paths:
             # completely wipe it
             self.clean()
@@ -81,15 +88,29 @@ class Combine:
                     if only_paths and file.path not in only_paths:
                         continue
 
-                    file.render_to_output(
-                        self.output_path, jinja_environment=self.jinja_environment
-                    )
+                    try:
+                        file.render_to_output(
+                            self.output_path, jinja_environment=self.jinja_environment
+                        )
+                    except Exception as e:
+                        build_errors[file.path] = e
+                        ErrorFile(
+                            file.path, file.content_directory, error=e
+                        ).render_to_output(
+                            self.output_path, jinja_environment=self.jinja_environment
+                        )
+
                     paths_rendered.append(file.output_relative_path)
 
         # If building the entire site, run the custom steps now
         if not only_paths:
             for step in self.config.steps:
                 subprocess.run(shlex.split(step["run"]), check=True)
+
+        if build_errors:
+            for file_path, error in build_errors.items():
+                logger.error(f"Error building {file_path}", exc_info=error)
+            raise BuildError()
 
     def get_file_obj_for_path(self, path):
         for content_directory in self.content_directories:

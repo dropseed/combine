@@ -6,6 +6,7 @@ from .template import TemplateFile
 from .html import HTMLFile
 from .markdown import MarkdownFile
 from .redirect import RedirectFile
+from .error import ErrorFile
 
 
 def file_class_for_path(path):

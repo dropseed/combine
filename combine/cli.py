@@ -6,6 +6,7 @@ import pygments
 
 from .core import Combine
 from .dev import Watcher, Server
+from .exceptions import BuildError
 
 
 @click.group()
@@ -24,7 +25,11 @@ def build(ctx, env, var):
     combine = Combine(config_path=config_path, env=env, variables=variables)
 
     click.secho("Building site", fg="cyan")
-    combine.build()
+    try:
+        combine.build()
+    except BuildError:
+        click.secho("Build error (see above)", fg="red")
+        exit(1)
 
     return combine
 
