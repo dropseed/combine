@@ -35,7 +35,7 @@
 <body>
   <div class="container">
     <h1>Error! <code class="short">{{ error }}</code></h1>
-    <p>{{ relative_path }}:{{ error.lineno }}</p>
+    {% if error.lineno is defined %}<p>{{ relative_path }}:{{ error.lineno }}</p>{% endif %}
     <code class="template"><pre>{{ context_lines }}</pre></code>
     <code class="error"><pre>{{ excinfo }}</pre></code>
     <p style="margin-top: 40px;">This screen is only shown in development. This won't be shown in production since the entire build would fail.</p>

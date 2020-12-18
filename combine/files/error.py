@@ -17,11 +17,15 @@ class ErrorFile(HTMLFile):
         template = kwargs["jinja_environment"].get_template("error.template.html")
 
         with open(target_path, "w+") as f:
-            context_lines = "\n".join(
-                self.error.source.splitlines()[
-                    max(self.error.lineno - 3, 0) : self.error.lineno + 3
-                ]
-            )
+            if hasattr(self.error, "source"):
+                context_lines = "\n".join(
+                    self.error.source.splitlines()[
+                        max(self.error.lineno - 3, 0) : self.error.lineno + 3
+                    ]
+                )
+            else:
+                context_lines = ""
+
             f.write(
                 template.render(
                     error=self.error,
