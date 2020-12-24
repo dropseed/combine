@@ -4,7 +4,7 @@ publish = "output"
 command = """
 cd .. &&
 /opt/buildhome/python3.7/bin/pip install -q poetry &&
-poetry install &&
+/opt/buildhome/python3.7/bin/poetry install &&
 cd docs &&
-poetry run combine build
+/opt/buildhome/python3.7/bin/poetry run combine build
 """
