@@ -2,7 +2,9 @@
 publish = "output"
 # https://github.com/netlify/build-image/issues/221
 command = """
-/opt/buildhome/python3.7/pip install -q poetry &&
+cd .. &&
+/opt/buildhome/python3.7/bin/pip install -q poetry &&
 poetry install &&
+cd docs &&
 poetry run combine build
 """
