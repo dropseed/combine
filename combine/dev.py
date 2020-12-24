@@ -27,16 +27,16 @@ class Watcher:
     def watch(self, while_running_func=None):
         self.observer.schedule(self.event_handler, self.path, recursive=True)
         self.observer.start()
+        time.sleep(0.5)
         try:
             if while_running_func is not None:
                 while_running_func()
             else:
                 while True:
                     time.sleep(1)
-        except (Exception, KeyboardInterrupt) as e:
-            print(e)
+        finally:
             self.observer.stop()
-        self.observer.join()
+            self.observer.join()
 
 
 class EventHandler(FileSystemEventHandler):
