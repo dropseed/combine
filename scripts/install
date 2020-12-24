@@ -1,2 +1,5 @@
 #!/bin/sh -e
 poetry install
+pushd docs/theme
+./scripts/install
+popd

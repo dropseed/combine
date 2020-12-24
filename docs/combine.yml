@@ -1,0 +1,21 @@
+steps:
+  - run: "./theme/node_modules/.bin/tailwind build ./content/assets/_main.css -o ./output/assets/main.css"
+    watch:
+      - "./tailwind.config.js"
+      - "./content/assets/_main.css"
+  - run: "./theme/node_modules/.bin/pitchfork index output -c .content"
+    watch: []
+    # watch: ["./content/**/*.html"]
+  - run: "./theme/node_modules/.bin/parcel build theme/content/assets/_main.js --out-dir output/assets --out-file main.js"
+    watch: ["./theme/content/assets/_main.js"]
+
+variables:
+  name: Combine
+  base_url:
+    default: "https://combine.dropseed.io"
+    from_env: URL  # netlify
+  version:
+    default: "\"latest\""
+    from_env: COMMIT_REF
+  google_tag_manager_id:
+    from_env: GOOGLE_TAG_MANAGER_ID

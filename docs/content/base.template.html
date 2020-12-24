@@ -1,61 +1,27 @@
-<!doctype html>
-<html lang="en">
+{% extends "theme.template.html" %}
 
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <title>Combine &mdash; Dropseed</title>
-    <link href="https://unpkg.com/tailwindcss@1.0.0-beta.4/dist/tailwind.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="/style.css">
-</head>
+{% block body_class %}text-d-brown-900 bg-d-brown-100{% endblock %}
 
-<body class="flex flex-col min-h-screen">
-    <div class="py-3 text-sm bg-gray-200 ">
-        <div class="container mx-auto px-4 flex justify-between">
-            <div>
-                <a href="/" class="font-medium">Combine</a>
-            </div>
-            <div>combine is a product of <a href="https://www.dropseed.io" class="hover:underline">Dropseed</a></div>
-        </div>
-    </div>
+{% block sidebar_home_link %}
+<a href="/" class="flex items-center no-underline md:text-lg">
+    <svg class="inline-block h-8 pl-4 pr-2 md:h-6 md:pl-0" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" x="0px"
+        y="0px" viewBox="0 0 100 100" style="enable-background:new 0 0 100 100;" xml:space="preserve">
+        <path
+            d="M88.8,54.3c-0.8,0-1.5,0.7-1.5,1.5V57h-9.6V41.8c0-3.6-2.9-6.5-6.5-6.5h-8.7l0.2-2.6h17.5v3.1c0,0.8,0.7,1.5,1.5,1.5  s1.5-0.7,1.5-1.5v-6.1H63.1l0.6-6.1h1.8c0.8,0,1.5-0.7,1.5-1.5s-0.7-1.5-1.5-1.5H64H37.2h-2.7c-0.8,0-1.5,0.7-1.5,1.5  s0.7,1.5,1.5,1.5h2.9l1.1,11.7h-8.8c-3.6,0-6.5,2.9-6.5,6.5V57H12.7v-1.2c0-0.8-0.7-1.5-1.5-1.5S9.7,55,9.7,55.8v20.7  c0,0.8,0.7,1.5,1.5,1.5s1.5-0.7,1.5-1.5v-1.2h20.1v0.9c0,1.8,1.5,3.2,3.2,3.2h4.3c1.8,0,3.2-1.5,3.2-3.2v-0.9h14.6v0.9  c0,1.8,1.5,3.2,3.2,3.2h4.3c1.8,0,3.2-1.5,3.2-3.2v-0.9h18.4v1.2c0,0.8,0.7,1.5,1.5,1.5s1.5-0.7,1.5-1.5V55.8  C90.3,55,89.7,54.3,88.8,54.3z M71.3,38.3c1.9,0,3.4,1.5,3.5,3.4h-3.5c-0.8,0-1.5,0.7-1.5,1.5s0.7,1.5,1.5,1.5h3.5v1.8h-3.5  c-0.8,0-1.5,0.7-1.5,1.5s0.7,1.5,1.5,1.5h3.5V51h-3.5c-0.8,0-1.5,0.7-1.5,1.5s0.7,1.5,1.5,1.5h3.5v3h-6.1v-2.3  c0-3.6-2.9-6.5-6.5-6.5h-0.7l0.9-9.9H71.3z M42.5,45.9h16.1l-0.2,2.3H42.7L42.5,45.9z M61.1,51.2h1c1.9,0,3.5,1.6,3.5,3.5V57H35.3  v-2.3c0-1.9,1.6-3.5,3.5-3.5H40H61.1z M60.7,23.6l-1.8,19.3H42.2l-1.8-19.3H60.7z M26.2,54h3.5c0.8,0,1.5-0.7,1.5-1.5  S30.5,51,29.6,51h-3.5v-1.5h3.5c0.8,0,1.5-0.7,1.5-1.5s-0.7-1.5-1.5-1.5h-3.5v-1.8h3.5c0.8,0,1.5-0.7,1.5-1.5s-0.7-1.5-1.5-1.5h-3.5  c0.1-1.9,1.6-3.4,3.5-3.4h9.1l0.5,5.8c0,0.1,0,0.2,0,0.3c0,0.2,0,0.4,0.1,0.5l0.3,3.2h-0.9c-3.6,0-6.5,2.9-6.5,6.5V57h-6.1V54z   M32.3,60h36.4h18.7v4.7H12.7V60H32.3z M12.7,72.3v-4.7h74.7v4.7H12.7z">
+        </path>
+    </svg>
+    <span class="font-semibold">Combine</span>
+</a>
+{% endblock %}
 
-    {% block header %}{% endblock %}
-
-    <div class="container mx-auto px-4 flex flex-grow">
-        <div class="hidden lg:block lg:w-1/4 mt-5">
-            <ul>
-                <li><a href="/" class="mb-2 hover:underline inline-block py-1">Home</a></li>
-                <li><a href="/getting-started/" class="mb-2 hover:underline inline-block py-1">Getting started</a></li>
-                <li><a href="/templates/" class="mb-2 hover:underline inline-block py-1">Templates</a></li>
-                <li><a href="#" class="mb-2 hover:underline inline-block py-1">Ignored files</a></li>
-                <li><a href="/build-steps/" class="mb-2 hover:underline inline-block py-1">Build steps</a></li>
-                <li><a href="/variables/" class="mb-2 hover:underline inline-block py-1">Variables</a></li>
-                <li><a href="#" class="mb-2 hover:underline inline-block py-1">Links (relative or absolute)</a></li>
-                <li><a href="#" class="mb-2 hover:underline inline-block py-1">Redirects</a></li>
-                <li><a href="/markdown/" class="mb-2 hover:underline inline-block py-1">Markdown</a></li>
-                <li><a href="/code/" class="mb-2 hover:underline inline-block py-1">Code highlighting</a></li>
-                <li><a href="#" class="mb-2 hover:underline inline-block py-1">Themes</a></li>
-                <li><a href="#" class="mb-2 hover:underline inline-block py-1">Deployment</a></li>
-            </ul>
-        </div>
-        <div class="lg:pr-6 lg:w-3/4 lg:pb-16 content">
-        {% block content %}{% endblock %}
-        </div>
-    </div>
-
-    <div class="border-t border-gray-300 bg-gray-200 py-4">
-        <div class="container mx-auto px-4">
-            <span class="mx-auto inline-block">
-                <svg height="20" class="align-bottom inline" aria-label="code" viewBox="0 0 14 16" version="1.1" width="17"
-                    role="img">
-                    <path d="M9.5 3L8 4.5 11.5 8 8 11.5 9.5 13 14 8 9.5 3zm-5 0L0 8l4.5 5L6 11.5 2.5 8 6 4.5 4.5 3
-    z">
-                    </path>
-                </svg> by <a href="https://www.dropseed.io">Dropseed</a>
-            </span>
-        </div>
-    </div>
-
-</body>
-
-</html>
+{% block navar_content_right %}
+<div class="items-center justify-end hidden md:flex">
+    <a href="https://github.com/dropseed/combine" class="flex items-center px-3 py-2 ml-3 text-black border rounded border-d-brown-900 hover:bg-d-brown-900 hover:text-white">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" width="16" height="16" class="inline-block h-6 mr-2 fill-current">
+            <path fill-rule="evenodd"
+                d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z">
+            </path>
+        </svg>
+        View on GitHub</a>
+</div>
+{% endblock %}

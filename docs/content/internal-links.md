@@ -1,0 +1,11 @@
+# Internal links
+
+The easiest way to link to pages and assets is to use relative paths.
+These will work in both development and production,
+and should be very predictable based on the names of your directories and files.
+
+For example, `<repo>/content/pricing/enterprise.html` can be linked to as `<a href="/pricing/enterprise/">Pricing</a>`.
+
+The same is true for images, CSS, etc.
+
+In some cases, like open graph tags, you are *required* to use an [absolute URL](/absolute-urls/) which gets more complicated.

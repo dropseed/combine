@@ -1,0 +1,18 @@
+{% extends "base.template.html" %}
+
+{% block content %}
+<div class="markdown">
+{% markdown %}
+{{ content }}
+{% endmarkdown %}
+</div>
+{% endblock %}
+
+{% block content_footer %}
+{% if next is defined or prev is defined %}
+<div class="flex justify-between mt-16">
+    {% if prev is defined %}<a href="{{ prev.url }}" class="px-6 py-4 border border-gray-200 text-gray-700 hover:bg-gray-100 rounded">← {{ prev.title }}</a>{% endif %}
+    {% if next is defined %}<a href="{{ next.url }}" class="px-6 py-4 border border-gray-200 text-gray-700 hover:bg-gray-100 rounded">{{ next.title }} →</a>{% endif %}
+</div>
+{% endif %}
+{% endblock %}

@@ -1,4 +1,4 @@
-# Combine
+# Overview
 
 **Build a straightforward marketing or documentation website with the power of [Jinja](http://jinja.pocoo.org/).
 No fancy JavaScript here &mdash; this is just like the good old days.**

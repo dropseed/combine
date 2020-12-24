@@ -1,0 +1,149 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    {% if google_tag_manager_id is defined %}
+    <script>(function (w, d, s, l, i) {
+        w[l] = w[l] || []; w[l].push({
+            'gtm.start':
+                new Date().getTime(), event: 'gtm.js'
+        }); var f = d.getElementsByTagName(s)[0],
+            j = d.createElement(s), dl = l != 'dataLayer' ? '&l=' + l : ''; j.async = true; j.src =
+                'https://www.googletagmanager.com/gtm.js?id=' + i + dl; f.parentNode.insertBefore(j, f);
+        })(window, document, 'script', 'dataLayer', '{{ google_tag_manager_id}}');</script>
+    {% endif %}
+
+    {% block head_top %}{% endblock %}
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <link rel="stylesheet" href="/assets/main.css">
+
+    <title>{% if title is defined %}{{ title }} - {% endif %}{{ name }}</title>
+    {% if description is defined %}<meta name="description" content="{{ description }}">{% endif %}
+
+    {% if title is defined %}<meta property="og:title" content="{{ title }}" />{% endif %}
+    {% if description is defined %}<meta property="og:description" content="{{ description }}" />{% endif %}
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="{{ name }}" />
+    <meta property="og:locale" content="en_US" />
+    {% if base_url -%}
+    <meta property="og:url" content="{{ base_url }}{{ url }}" />
+    {% if image_url is defined -%}
+    <meta property="og:image" content="{{ base_url }}{{ image_url }}" />
+    {%- else -%}
+    <meta property="og:image"
+        content="{{ base_url }}/assets/img/open-graph.png" />
+    {%- endif %}
+    <meta name="twitter:card" content="summary_large_image" />
+    {%- endif %}
+    {% if self_hosted is not defined or not self_hosted %}<link rel="me" href="https://twitter.com/dropseed">{% endif %}
+
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Rubik:ital,wght@0,300;0,400;0,600;1,400&display=swap" rel="stylesheet">
+</head>
+
+<body class="flex h-screen {% block body_class %}{% endblock %}">
+    {% if google_tag_manager_id is defined %}
+    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id={{ google_tag_manager_id }}" height="0" width="0"
+            style="display:none;visibility:hidden"></iframe></noscript>
+    {% endif %}
+
+    {% block body %}
+    {# duplicate hidden and flex is intentional for mobile show/hide #}
+    <div data-sidebar class="fixed top-0 bottom-0 z-50 flex flex-col hidden h-full border-r border-gray-300 shadow-xl md:flex md:relative md:shadow-none md:w-60 lg:w-64 xl:w-72">
+        <div class="flex flex-shrink-0 h-16 pr-4 -mb-px md:pl-6">
+            {% block sidebar_home_link %}{% endblock %}
+        </div>
+
+        <div class="flex-grow pl-6 pr-4 overflow-y-scroll" data-active-url="text-blue-700" data-scroll-class="border-t border-gray-200">
+            {% include "_sidebar.html" %}
+        </div>
+
+        <div class="justify-between hidden w-full px-4 py-3 text-xs border-t border-gray-200 md:flex">
+            <span class="text-gray-500">Version {{ version|truncate(7, end="") }}</span>
+            <a href="https://www.dropseed.io/" class="inline-flex items-center text-gray-400 hover:underline">
+                <svg width="535" height="346" viewBox="0 0 535 346" fill="none" xmlns="http://www.w3.org/2000/svg" style="height: 13px; width: 20px; display: inline; fill: currentColor; margin-right: 2px;">
+                    <path d="M137.76 108.24L38.976 167.856L137.76 227.184L121.92 250.512L11.328 181.68V153.744L122.784 84.912L137.76 108.24Z" />
+                    <path d="M520.76 153.744V181.68L410.168 250.512L394.328 227.472L492.824 167.856L394.328 108.816L409.304 84.912L520.76 153.744Z" />
+                    <path d="M255 97.5L284 112L202.5 279C199.059 286.24 195.798 294.563 188.441 290.745L169.21 280.457C161.973 277.018 165.393 272.352 169.21 265L255 97.5Z" />
+                    <path d="M366 95L352.5 120.5C349.709 125.893 346.312 130.702 340.55 128.02L334.552 124.599C330.255 122.681 328.453 115.199 329.5 112C332.132 108.71 327.432 104.731 319.207 100.777C307.333 94.299 292.93 94.5261 290 100.777C288.615 102.858 284 112 284 112L254.5 98.5004L258.5 89.0004L260.5 84.5004C266.352 73.2203 250.3 66.9076 250.3 66.9076C218.561 50.7487 184.803 61.8608 184.803 61.8608L181.713 53.4122C244.294 14.3168 277.733 40.647 290 47.0005C301.263 52.8499 313.556 56.9698 316.5 58.5005C322.869 61.8038 323.562 74.4018 333.111 79.9887C337.524 82.2733 342.463 82.3496 345.817 81.2862C348.487 76.7566 354.785 75.9879 358.825 78.3909L364.346 81.5602C369.729 84.3623 368.675 89.2409 366 95Z" />
+                </svg>
+                 by Dropseed
+            </a>
+        </div>
+    </div>
+
+    <div class="flex flex-col flex-1 h-full">
+
+        <div class="relative flex items-center flex-shrink-0 h-16 px-4 py-3 border-b border-gray-300">
+            {% block navbar_content %}
+            <div class="flex-1 w-full md:relative">
+                <div class="relative flex">
+                    <input tabindex="1" data-pitchfork-input type="text"
+                        class="w-full py-1 pl-12 pr-3 mx-auto placeholder-gray-600 bg-transparent appearance-none focus:outline-none"
+                        placeholder="Search">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" width="16" height="16"
+                        class="absolute inset-y-0 left-0 h-full ml-4 text-gray-700 fill-current">
+                        <path fill-rule="evenodd"
+                            d="M11.5 7a4.499 4.499 0 11-8.998 0A4.499 4.499 0 0111.5 7zm-.82 4.74a6 6 0 111.06-1.06l3.04 3.04a.75.75 0 11-1.06 1.06l-3.04-3.04z">
+                        </path>
+                    </svg>
+                </div>
+                {% raw %}
+                <div data-pitchfork-results data-pitchfork-index-url="/search-index.json" data-pitchfork-truncate="140"
+                    data-pitchfork-highlight-class="bg-yellow-200" data-pitchfork-active-class="bg-gray-100" style="display: none;"
+                    class="absolute left-0 flex flex-col w-full h-64 mt-2 overflow-y-scroll bg-white border border-gray-200 rounded shadow-lg md:max-w-xl md:left-12">
+                    {{#results}}
+                    <a href="{{ url }}" class="block px-4 py-2 border-b border-gray-200 hover:bg-gray-100">
+                        <div class="font-medium">
+                            {{{ highlights.title }}}
+                        </div>
+                        {{#headings}}<div class="text-sm text-gray-600">{{ text }}</div>{{/headings}}
+                        <div class="text-sm text-gray-700">
+                            {{{ highlights.text }}}
+                        </div>
+                    </a>
+                    {{/results}}
+                    {{^results}}
+                    <div class="flex items-center justify-center w-full h-full">
+                        <p>No matches, keep typing...</p>
+                    </div>
+                    {{/results}}
+                </div>
+                {% endraw %}
+            </div>
+            {% block navar_content_right %}{% endblock %}
+            <div class="flex items-center md:hidden">
+                <button data-toggle-sidebar="hidden" type="button">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="w-8 h-8">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                    </svg>
+                </button>
+            </div>
+            {% endblock navbar_content %}
+        </div>
+
+        <div class="flex flex-col p-4 md:pb-0 lg:flex-row-reverse lg:flex-1 lg:h-full md:overflow-y-scroll md:pt-6 lg:pt-10 lg:pl-10 xl:pl-20 lg:justify-end">
+            <div class="p-4 mb-10 bg-gray-100 rounded md:py-0 md:mb-0 md:mt-8 md:w-56 lg:w-72 md:sticky md:top-0 md:ml-6 xl:ml-16 md:pr-4 md:rounded-none md:bg-transparent md:overflow-y-scroll md:hidden lg:block" style="display:none;"
+                data-on-this-page="text-gray-500 block mt-3 text-sm hover:text-gray-900">
+                <h4 class="text-sm text-gray-600 uppercase">On this page</h4>
+            </div>
+            <div class="w-full lg:max-w-2xl">
+                {% block content_header %}{% endblock %}
+                <div class="content">
+                {% block content %}{% endblock %}
+                </div>
+                {% block content_footer %}{% endblock %}
+                {# Hack to get some bottom spacing and still use sticky - having overflow issues #}
+                <p class="hidden md:block">&nbsp;</p>
+                <p class="hidden md:block">&nbsp;</p>
+            </div>
+        </div>
+    </div>
+    {% endblock body %}
+
+    <script src="/assets/main.js"></script>
+</body>
+
+</html>
