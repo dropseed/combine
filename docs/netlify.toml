@@ -3,8 +3,7 @@ publish = "output"
 # https://github.com/netlify/build-image/issues/221
 command = """
 cd .. &&
-/opt/buildhome/python3.7/bin/pip install -q poetry &&
-/opt/buildhome/python3.7/bin/poetry install &&
+curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py | /opt/buildhome/python3.7/bin/python -
 cd docs &&
-/opt/buildhome/python3.7/bin/poetry run combine build
+poetry run combine build
 """
