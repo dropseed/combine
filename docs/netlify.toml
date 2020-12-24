@@ -2,8 +2,7 @@
 publish = "output"
 # https://github.com/netlify/build-image/issues/221
 command = """
-pip install -q poetry &&
-poetry config settings.virtualenvs.in-project true &&
+/opt/buildhome/python3.7/pip install -q poetry &&
 poetry install &&
 poetry run combine build
 """
