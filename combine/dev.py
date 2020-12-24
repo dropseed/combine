@@ -55,7 +55,7 @@ class EventHandler(FileSystemEventHandler):
         # if matches a specific pattern, only use that
         for step in self.combine.config.steps:
             command = step["run"]
-            for pattern in step["watch"]:
+            for pattern in step.get("watch", []):
                 # TODO remove ./ automatically?
                 if fnmatch(event_path, pattern):
                     click.secho(
