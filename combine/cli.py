@@ -56,11 +56,18 @@ def utils(ctx):
 
 
 @utils.command()
-@click.option("--style", default="default", show_default=True, type=click.Choice(list(pygments.styles.get_all_styles())))
+@click.option(
+    "--style",
+    default="default",
+    show_default=True,
+    type=click.Choice(list(pygments.styles.get_all_styles())),
+)
 @click.pass_context
 def highlight_css(ctx, style):
     """Outputs the CSS which can be customized for highlighted code"""
-    for line in pygments.formatters.HtmlFormatter(style=style).get_style_defs().splitlines():
+    for line in (
+        pygments.formatters.HtmlFormatter(style=style).get_style_defs().splitlines()
+    ):
         click.echo(f".highlight {line}")
 
 
