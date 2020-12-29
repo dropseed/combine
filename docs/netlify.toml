@@ -1,9 +1,3 @@
 [build]
 publish = "output"
-# https://github.com/netlify/build-image/issues/221
-command = """
-pip3 install -q poetry &&
-poetry config settings.virtualenvs.in-project true &&
-poetry install &&
-poetry run combine build
-"""
+command = "pip3 install -q poetry && poetry install && poetry run combine build"
