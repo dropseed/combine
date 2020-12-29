@@ -14,7 +14,6 @@ steps:
       - "./tailwind.config.js"
       - "./content/assets/_main.css"
   - run: "./node_modules/.bin/pitchfork index output -c .content"
-    watch: []
   - run: "./node_modules/.bin/parcel build theme/content/assets/_main.js --out-dir output/assets --out-file main.js"
     watch: ["./content/assets/_main.js"]
 ```
