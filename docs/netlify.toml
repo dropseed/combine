@@ -1,3 +1,3 @@
 [build]
 publish = "docs/output"
-command = "pip3 install -q poetry && cd .. && ./scripts/install && cd docs && poetry run combine build"
+command = "pip3 install -q poetry && npm install -g yarn && cd .. && ./scripts/install && cd docs && poetry run combine build"
