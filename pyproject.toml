@@ -23,6 +23,8 @@ beautifulsoup4 = "^4.9.1"
 Pygments = "^2.6.1"
 markdown = "^3.2.2"
 python-frontmatter = "^0.5.0"
+importlib-metadata = {version = "^3.3.0", python = "<3.8"}
+typing-extensions = {version = "^3.7.4", python = "<3.8"}
 
 [tool.poetry.dev-dependencies]
 ipdb = "^0.13.3"
