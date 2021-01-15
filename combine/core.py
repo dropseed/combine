@@ -131,7 +131,8 @@ class Combine:
 
             # broken links?
 
-        issues.print(f"Issues across your site")
+        if issues:
+            issues.print(f"Issues across your site")
 
     def get_file_obj_for_path(self, path):
         for content_directory in self.content_directories:
