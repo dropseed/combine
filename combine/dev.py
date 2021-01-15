@@ -1,3 +1,4 @@
+import datetime
 import logging
 import os
 import time
@@ -68,13 +69,17 @@ class EventHandler(FileSystemEventHandler):
                         )
                     return
 
+        timestamp = datetime.datetime.now().strftime("%-I:%M%p").lower()
+
         if os.path.abspath(event_path) == os.path.abspath(self.combine.config_path):
-            print(event)
+            print(
+                f"File {event.event_type} [{timestamp}]: reloading combine and rebuilding site"
+            )
             self.reload_combine()
             self.rebuild_site()
 
         if self.combine.is_in_content_paths(os.path.abspath(event_path)):
-            print(event)
+            print(f"File {event.event_type} [{timestamp}]", end=": ")
             if isinstance(event, (FileCreatedEvent, DirModifiedEvent)):
                 self.reload_combine()
 
@@ -82,12 +87,15 @@ class EventHandler(FileSystemEventHandler):
             if isinstance(file_obj, TemplateFile):
                 # if it was a template, we want to rebuild everything that uses it,
                 # but right now we just rebuild the entire site
+                print("Rebuilding site")
                 self.rebuild_site()
             else:
+                print(f"Rebuilding {event_path}")
                 self.rebuild_site(only_paths=[os.path.abspath(event_path)])
 
+            # click.secho("✓", fg="green")
+
     def reload_combine(self):
-        click.secho("Reloading combine", fg="cyan")
         try:
             self.combine.reload()
         except Exception as e:
@@ -95,10 +103,8 @@ class EventHandler(FileSystemEventHandler):
             click.secho("There was an error! See output above.", fg="red")
 
     def rebuild_site(self, only_paths=None):
-        click.secho(f'Rebuilding {only_paths or "site"}', fg="cyan")
         try:
             self.combine.build(only_paths)
-            click.secho("Site built", fg="green")
         except BuildError:
             click.secho("Build error (see above)", fg="red")
         except Exception as e:
@@ -125,6 +131,10 @@ class HTTPHandler(SimpleHTTPRequestHandler):
         relpath = os.path.relpath(path, os.getcwd())
         fullpath = os.path.join(self.server.base_path, relpath)
         return fullpath
+
+    def log_message(self, format, *args):
+        """Disable logging"""
+        return
 
 
 class HTTPServer(BaseHTTPServer):
