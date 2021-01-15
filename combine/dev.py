@@ -78,20 +78,32 @@ class EventHandler(FileSystemEventHandler):
             self.reload_combine()
             self.rebuild_site()
 
-        if self.combine.is_in_content_paths(os.path.abspath(event_path)):
+        content_relative_path = self.combine.content_relative_path(
+            os.path.abspath(event_path)
+        )
+
+        if content_relative_path:
             print(f"File {event.event_type} [{timestamp}]", end=": ")
             if isinstance(event, (FileCreatedEvent, DirModifiedEvent)):
-                self.reload_combine()
+                self.reload_combine()  # why these events
 
-            file_obj = self.combine.get_file_obj_for_path(event_path)
-            if isinstance(file_obj, TemplateFile):
-                # if it was a template, we want to rebuild everything that uses it,
-                # but right now we just rebuild the entire site
-                print("Rebuilding site")
-                self.rebuild_site()
-            else:
-                print(f"Rebuilding {event_path}")
-                self.rebuild_site(only_paths=[os.path.abspath(event_path)])
+            # TODO given path, get all related files and biuld those
+            # template -> build children
+            # page -> build includes (children)
+            # so, each file needs children - but you have to load that at the end, don't know when evaluating template, for example
+
+            # file_obj = self.combine.get_file_obj_for_path(event_path)
+            # if isinstance(file_obj, TemplateFile):
+            #     # if it was a template, we want to rebuild everything that uses it,
+            #     # but right now we just rebuild the entire site
+            #     print("Rebuilding site")
+            #     self.rebuild_site()
+            # else:
+
+            files = self.combine.get_files_with_reference(content_relative_path)
+
+            print(f"Rebuilding {[x.path for x in files]}")
+            self.rebuild_site(only_paths=[x.path for x in files])
 
             # click.secho("✓", fg="green")
 

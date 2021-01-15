@@ -102,32 +102,46 @@ class Combine:
 
                     paths_rendered.append(file.output_relative_path)
 
-        # If building the entire site, run the custom steps now
         if not only_paths:
-            for step in self.config.steps:
-                subprocess.run(shlex.split(step["run"]), check=True)
+            self.run_build_steps()
 
         if build_errors:
             for file_path, error in build_errors.items():
                 logger.error(f"Error building {file_path}", exc_info=error)
             raise BuildError()
 
-    def get_file_obj_for_path(self, path):
+    def run_build_steps(self):
+        for step in self.config.steps:
+            subprocess.run(shlex.split(step["run"]), check=True)
+
+    # def get_file_obj_for_path(self, path):
+    #     for content_directory in self.content_directories:
+    #         for file in content_directory.files:
+    #             if os.path.abspath(file.path) == os.path.abspath(path):
+    #                 return file
+
+    #     return None
+
+    def get_files_with_reference(self, reference_path):
+        print(reference_path)
+        files = []
         for content_directory in self.content_directories:
             for file in content_directory.files:
-                if os.path.abspath(file.path) == os.path.abspath(path):
-                    return file
+                if (
+                    reference_path in file.references
+                    or file.content_relative_path == reference_path
+                ):
+                    files.append(file)
+                    # TODO also get references of references? base > markdown > etc.
+        return files
 
-        return None
-
-    def is_in_content_paths(self, path):
+    def content_relative_path(self, path):
         for content_path in self.content_paths:
             if (
                 os.path.commonpath([content_path, path]) != os.getcwd()
                 and os.getcwd() in content_path
             ):
-                return True
-        return False
+                return os.path.relpath(path, content_path)
 
     def is_in_output_path(self, path):
         return (
