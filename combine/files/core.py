@@ -1,7 +1,7 @@
 import os
 from shutil import copyfile
 
-from ..checks import Issues
+from ..checks.issues import Issues
 from .utils import create_parent_directory
 
 
