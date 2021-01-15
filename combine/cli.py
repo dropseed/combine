@@ -16,17 +16,18 @@ def cli(ctx):
 
 
 @cli.command()
+@click.option("--check", is_flag=True, default=False)
 @click.option("--env", default="production")
 @click.option("--var", multiple=True, default=[])
 @click.pass_context
-def build(ctx, env, var):
+def build(ctx, check, env, var):
     variables = dict(x.split("=") for x in var)
     config_path = os.path.abspath("combine.yml")
     combine = Combine(config_path=config_path, env=env, variables=variables)
 
     click.secho("Building site", fg="cyan")
     try:
-        combine.build()
+        combine.build(check=check)
     except BuildError:
         click.secho("Build error (see above)", fg="red")
         exit(1)

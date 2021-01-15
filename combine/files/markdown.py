@@ -35,3 +35,5 @@ class MarkdownFile(HTMLFile):
 
         with open(target_path, "w+") as f:
             f.write(template.render(**variables))
+
+        self.output_path = target_path

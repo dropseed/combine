@@ -1,7 +1,11 @@
 import os
 
+from bs4 import BeautifulSoup
+
 from .core import File
 from .utils import create_parent_directory
+from ..checks.duplicate_id import DuplicateIDCheck
+from ..checks.mixed_content import MixedContentCheck
 
 
 class HTMLFile(File):
@@ -24,8 +28,19 @@ class HTMLFile(File):
         with open(target_path, "w+") as f:
             f.write(template.render(url=self._get_url()))
 
+        self.output_path = target_path
+
     def _get_url(self):
         url = "/" + self.output_relative_path
         if url.endswith("/index.html"):
             url = url[:-10]
         return url
+
+    def get_checks(self):
+        with open(self.output_path, "r") as f:
+            html_soup = BeautifulSoup(f.read(), "html.parser")
+
+            return super().get_checks() + [
+                DuplicateIDCheck(html_soup=html_soup),
+                MixedContentCheck(html_soup=html_soup),
+            ]

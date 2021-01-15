@@ -1,6 +1,7 @@
 import os
 from shutil import copyfile
 
+from ..checks import Issues
 from .utils import create_parent_directory
 
 
@@ -29,3 +30,16 @@ class File:
             os.remove(target_path)
 
         copyfile(self.path, target_path)
+
+    def check_output(self):
+        self.issues = Issues()
+
+        for check in self.get_checks():
+            for issue in check.run():
+                self.issues.append(issue)
+
+        if self.issues:
+            self.issues.print(f"Issues in {self.content_relative_path}")
+
+    def get_checks(self):
+        return []

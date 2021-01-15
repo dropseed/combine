@@ -29,6 +29,8 @@ typing-extensions = {version = "^3.7.4", python = "<3.8"}
 [tool.poetry.dev-dependencies]
 ipdb = "^0.13.3"
 black = "^19.10b0"
+snapshottest = "^0.6.0"
+pytest = "^6.2.1"
 
 [build-system]
 requires = ["poetry>=0.12"]

@@ -67,7 +67,7 @@ class Combine:
         if os.path.exists(self.output_path):
             shutil.rmtree(self.output_path)
 
-    def build(self, only_paths=None):
+    def build(self, only_paths=None, check=True):
         build_errors = {}
 
         if not only_paths:
@@ -92,6 +92,8 @@ class Combine:
                         file.render_to_output(
                             self.output_path, jinja_environment=self.jinja_environment
                         )
+                        if check:
+                            file.check_output()
                     except Exception as e:
                         build_errors[file.path] = e
                         ErrorFile(
