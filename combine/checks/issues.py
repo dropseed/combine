@@ -4,11 +4,7 @@ import click
 class Issue:
     def __init__(self, type, context={}):
         self.type = type
-
-        # Instance specific metadata
         self.context = context
-        assert isinstance(self.context, dict), "Issue.context must be a dictionary"
-        assert self.context, "Issue.context must not be empty"
 
     def as_data(self):
         return {

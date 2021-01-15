@@ -40,7 +40,7 @@ def build(ctx, check, env, var):
 @click.pass_context
 def work(ctx, port):
     combine = ctx.invoke(
-        build, env="development", var=[f"base_url=http://127.0.0.1:{port}"]
+        build, env="development", var=[f"base_url=http://127.0.0.1:{port}"], check=True
     )
 
     click.secho("Watching for file changes...", fg="green")

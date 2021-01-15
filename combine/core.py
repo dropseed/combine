@@ -11,6 +11,8 @@ from .files import file_class_for_path, ErrorFile
 from .jinja import default_extensions, default_filters
 from .jinja.exceptions import ReservedVariableError
 from .exceptions import BuildError
+from .checks.favicon import FaviconCheck
+from .checks.issues import Issues
 
 
 logger = logging.getLogger(__file__)
@@ -78,6 +80,7 @@ class Combine:
             os.mkdir(self.output_path)
 
         paths_rendered = []
+        files_rendered = []
 
         for content_directory in self.content_directories:
             for file in content_directory.files:
@@ -92,8 +95,7 @@ class Combine:
                         file.render_to_output(
                             self.output_path, jinja_environment=self.jinja_environment
                         )
-                        if check:
-                            file.check_output()
+                        files_rendered.append(file)
                     except Exception as e:
                         build_errors[file.path] = e
                         ErrorFile(
@@ -113,6 +115,23 @@ class Combine:
             for file_path, error in build_errors.items():
                 logger.error(f"Error building {file_path}", exc_info=error)
             raise BuildError()
+
+        if check:
+            self.check_build(files=files_rendered, site_checks=(not only_paths))
+
+    def check_build(self, files=[], site_checks=False):
+        for file in files:
+            file.check_output()
+
+        issues = Issues()
+
+        if site_checks:
+            for issue in FaviconCheck(site_dir=self.output_path).run():
+                issues.append(issue)
+
+            # broken links?
+
+        issues.print(f"Issues across your site")
 
     def get_file_obj_for_path(self, path):
         for content_directory in self.content_directories:
