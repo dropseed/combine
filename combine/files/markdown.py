@@ -2,6 +2,7 @@ import os
 
 import frontmatter
 
+from ..jinja.references import get_references_in_path
 from .html import HTMLFile
 from .utils import create_parent_directory
 
@@ -27,11 +28,15 @@ class MarkdownFile(HTMLFile):
         # TODO can post.content be jinja rendered to use variables?
 
         # an optional way to override
-        template_path = variables.get("template", "markdown.template.html")
-        template = kwargs["jinja_environment"].get_template(template_path)
+        template_name = variables.get("template", "markdown.template.html")
+        template = kwargs["jinja_environment"].get_template(template_name)
 
         target_path = os.path.join(output_path, self.output_relative_path)
         create_parent_directory(target_path)
 
         with open(target_path, "w+") as f:
             f.write(template.render(**variables))
+
+        self.references = [template_name] + get_references_in_path(
+            template.filename, kwargs["jinja_environment"]
+        )

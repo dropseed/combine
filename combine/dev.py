@@ -9,7 +9,12 @@ import shlex
 
 import click
 from watchdog.observers import Observer
-from watchdog.events import FileSystemEventHandler, FileCreatedEvent, DirModifiedEvent
+from watchdog.events import (
+    FileSystemEventHandler,
+    FileCreatedEvent,
+    DirModifiedEvent,
+    FileDeletedEvent,
+)
 
 from .exceptions import BuildError
 from .files.template import TemplateFile
@@ -49,25 +54,24 @@ class EventHandler(FileSystemEventHandler):
         # if a file was moved or something, we only care about the destination
         event_path = event.dest_path if hasattr(event, "dest_path") else event.src_path
 
-        if self.combine.is_in_output_path(event_path):
-            # never need to process if in output path
+        if isinstance(event, FileDeletedEvent):
             return
 
-        # if matches a specific pattern, only use that
+        if self.combine.is_in_output_path(event_path):
+            return
+
         for step in self.combine.config.steps:
             command = step["run"]
             for pattern in step.get("watch", []):
                 # TODO remove ./ automatically?
                 if fnmatch(event_path, pattern):
-                    click.secho(
-                        "Running command for matching config pattern", fg="cyan"
-                    )
+                    click.secho(f"Running step for matching {pattern}", bold=True)
                     result = subprocess.run(shlex.split(command))
                     if result.returncode != 0:
                         click.secho(
                             "There was an error running a user command.", fg="red"
                         )
-                    return
+                    break
 
         timestamp = datetime.datetime.now().strftime("%-I:%M%p").lower()
 
@@ -85,27 +89,17 @@ class EventHandler(FileSystemEventHandler):
         if content_relative_path:
             print(f"File {event.event_type} [{timestamp}]", end=": ")
             if isinstance(event, (FileCreatedEvent, DirModifiedEvent)):
-                self.reload_combine()  # why these events
+                self.reload_combine()
 
-            # TODO given path, get all related files and biuld those
-            # template -> build children
-            # page -> build includes (children)
-            # so, each file needs children - but you have to load that at the end, don't know when evaluating template, for example
+            files = self.combine.get_related_files(content_relative_path)
 
-            # file_obj = self.combine.get_file_obj_for_path(event_path)
-            # if isinstance(file_obj, TemplateFile):
-            #     # if it was a template, we want to rebuild everything that uses it,
-            #     # but right now we just rebuild the entire site
-            #     print("Rebuilding site")
-            #     self.rebuild_site()
-            # else:
-
-            files = self.combine.get_files_with_reference(content_relative_path)
-
-            print(f"Rebuilding {[x.path for x in files]}")
+            if len(files) == 1:
+                print(f"Rebuilding {files[0].content_relative_path}")
+            elif not files:
+                print("Rebuliding entire site")
+            else:
+                print(f"Rebuilding {len(files)} files")
             self.rebuild_site(only_paths=[x.path for x in files])
-
-            # click.secho("✓", fg="green")
 
     def reload_combine(self):
         try:

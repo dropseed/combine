@@ -79,28 +79,27 @@ class Combine:
 
         paths_rendered = []
 
-        for content_directory in self.content_directories:
-            for file in content_directory.files:
-                if (
-                    file.output_relative_path
-                    and file.output_relative_path not in paths_rendered
-                ):
-                    if only_paths and file.path not in only_paths:
-                        continue
+        for file in self.iter_files():
+            if (
+                file.output_relative_path
+                and file.output_relative_path not in paths_rendered
+            ):
+                if only_paths and file.path not in only_paths:
+                    continue
 
-                    try:
-                        file.render_to_output(
-                            self.output_path, jinja_environment=self.jinja_environment
-                        )
-                    except Exception as e:
-                        build_errors[file.path] = e
-                        ErrorFile(
-                            file.path, file.content_directory, error=e
-                        ).render_to_output(
-                            self.output_path, jinja_environment=self.jinja_environment
-                        )
+                try:
+                    file.render_to_output(
+                        self.output_path, jinja_environment=self.jinja_environment
+                    )
+                except Exception as e:
+                    build_errors[file.path] = e
+                    ErrorFile(
+                        file.path, file.content_directory, error=e
+                    ).render_to_output(
+                        self.output_path, jinja_environment=self.jinja_environment
+                    )
 
-                    paths_rendered.append(file.output_relative_path)
+                paths_rendered.append(file.output_relative_path)
 
         if not only_paths:
             self.run_build_steps()
@@ -114,25 +113,15 @@ class Combine:
         for step in self.config.steps:
             subprocess.run(shlex.split(step["run"]), check=True)
 
-    # def get_file_obj_for_path(self, path):
-    #     for content_directory in self.content_directories:
-    #         for file in content_directory.files:
-    #             if os.path.abspath(file.path) == os.path.abspath(path):
-    #                 return file
-
-    #     return None
-
-    def get_files_with_reference(self, reference_path):
-        print(reference_path)
+    def get_related_files(self, content_relative_path):
         files = []
-        for content_directory in self.content_directories:
-            for file in content_directory.files:
-                if (
-                    reference_path in file.references
-                    or file.content_relative_path == reference_path
-                ):
-                    files.append(file)
-                    # TODO also get references of references? base > markdown > etc.
+        for file in self.iter_files():
+            if (
+                content_relative_path in file.references
+                or file.content_relative_path == content_relative_path
+            ):
+                # TODO could this include duplicates? in the content-relative sense?
+                files.append(file)
         return files
 
     def content_relative_path(self, path):
@@ -147,6 +136,11 @@ class Combine:
         return (
             os.path.commonpath([self.output_path, os.path.abspath(path)]) != os.getcwd()
         )
+
+    def iter_files(self):
+        for content_directory in self.content_directories:
+            for file in content_directory.files:
+                yield file
 
 
 class ContentDirectory:

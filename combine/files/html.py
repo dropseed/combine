@@ -1,7 +1,6 @@
 import os
 
-from jinja2 import meta
-
+from ..jinja.references import get_references_in_path
 from .core import File
 from .utils import create_parent_directory
 
@@ -26,12 +25,14 @@ class HTMLFile(File):
         with open(target_path, "w+") as f:
             f.write(template.render(url=self._get_url()))
 
-        self.load_references(jinja_env=kwargs["jinja_environment"])
+        self.references = get_references_in_path(self.path, kwargs["jinja_environment"])
 
-    def load_references(self, jinja_env):
-        with open(self.path, "r") as f:
-            ast = jinja_env.parse(f.read())
-            self.references = list(meta.find_referenced_templates(ast))
+    #     self.load_references(jinja_env=kwargs["jinja_environment"])
+
+    # def load_references(self, jinja_env):
+    #     with open(self.path, "r") as f:
+    #         ast = jinja_env.parse(f.read())
+    #         self.references = list(meta.find_referenced_templates(ast))
 
     def _get_url(self):
         url = "/" + self.output_relative_path
