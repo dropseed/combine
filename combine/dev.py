@@ -45,12 +45,28 @@ class EventHandler(FileSystemEventHandler):
         self.combine = combine
         super().__init__(*args, **kwargs)
 
+    def should_ignore_path(self, event_path):
+        if self.combine.is_in_output_path(event_path):
+            return True
+
+        ignore_dirs = (
+            "node_modules",
+            ".cache",
+            ".venv",
+            "env",
+        )
+
+        for p in os.path.abspath(event_path).split(os.sep):
+            if p in ignore_dirs:
+                return True
+
+        return False
+
     def on_any_event(self, event):
         # if a file was moved or something, we only care about the destination
         event_path = event.dest_path if hasattr(event, "dest_path") else event.src_path
 
-        if self.combine.is_in_output_path(event_path):
-            # never need to process if in output path
+        if self.should_ignore_path(event_path):
             return
 
         # if matches a specific pattern, only use that
