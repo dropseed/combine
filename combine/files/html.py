@@ -27,13 +27,6 @@ class HTMLFile(File):
 
         self.references = get_references_in_path(self.path, kwargs["jinja_environment"])
 
-    #     self.load_references(jinja_env=kwargs["jinja_environment"])
-
-    # def load_references(self, jinja_env):
-    #     with open(self.path, "r") as f:
-    #         ast = jinja_env.parse(f.read())
-    #         self.references = list(meta.find_referenced_templates(ast))
-
     def _get_url(self):
         url = "/" + self.output_relative_path
         if url.endswith("/index.html"):

@@ -17,7 +17,7 @@ from watchdog.events import (
 )
 
 from .exceptions import BuildError
-from .files.template import TemplateFile
+from .files.ignored import IgnoredFile
 
 
 logger = logging.getLogger(__file__)
@@ -65,7 +65,7 @@ class EventHandler(FileSystemEventHandler):
             for pattern in step.get("watch", []):
                 # TODO remove ./ automatically?
                 if fnmatch(event_path, pattern):
-                    click.secho(f"Running step for matching {pattern}", bold=True)
+                    click.secho(f"❯ Running step for matching {pattern}", bold=True)
                     result = subprocess.run(shlex.split(command))
                     if result.returncode != 0:
                         click.secho(
@@ -76,22 +76,33 @@ class EventHandler(FileSystemEventHandler):
         timestamp = datetime.datetime.now().strftime("%-I:%M%p").lower()
 
         if os.path.abspath(event_path) == os.path.abspath(self.combine.config_path):
-            print(
-                f"File {event.event_type} [{timestamp}]: reloading combine and rebuilding site"
+            click.secho(
+                f"❯ {self.combine.config_path} {event.event_type} ({timestamp}): reloading combine and rebuilding site",
+                bold=True,
             )
             self.reload_combine()
             self.rebuild_site()
+            return
 
         content_relative_path = self.combine.content_relative_path(
             os.path.abspath(event_path)
         )
 
         if content_relative_path:
-            print(f"File {event.event_type} [{timestamp}]", end=": ")
             if isinstance(event, (FileCreatedEvent, DirModifiedEvent)):
+                # Reload first, so we know about any new files
                 self.reload_combine()
 
             files = self.combine.get_related_files(content_relative_path)
+
+            if files and all([type(f) == IgnoredFile for f in files]):
+                return
+
+            click.secho(
+                f"❯ {content_relative_path} {event.event_type} ({timestamp}): ",
+                nl=False,
+                bold=True,
+            )
 
             if len(files) == 1:
                 print(f"Rebuilding {files[0].content_relative_path}")
