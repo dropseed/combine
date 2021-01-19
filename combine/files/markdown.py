@@ -37,6 +37,7 @@ class MarkdownFile(HTMLFile):
         with open(target_path, "w+") as f:
             f.write(template.render(**variables))
 
+        self.output_path = target_path
         self.references = [template_name] + get_references_in_path(
             template.filename, kwargs["jinja_environment"]
         )

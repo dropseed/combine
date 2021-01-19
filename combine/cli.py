@@ -16,17 +16,18 @@ def cli(ctx):
 
 
 @cli.command()
+@click.option("--check", is_flag=True, default=False)
 @click.option("--env", default="production")
 @click.option("--var", multiple=True, default=[])
 @click.pass_context
-def build(ctx, env, var):
+def build(ctx, check, env, var):
     variables = dict(x.split("=") for x in var)
     config_path = os.path.abspath("combine.yml")
     combine = Combine(config_path=config_path, env=env, variables=variables)
 
     click.secho("❯ Building site", bold=True)
     try:
-        combine.build()
+        combine.build(check=check)
     except BuildError:
         click.secho("Build error (see above)", fg="red")
         exit(1)
@@ -39,7 +40,7 @@ def build(ctx, env, var):
 @click.pass_context
 def work(ctx, port):
     combine = ctx.invoke(
-        build, env="development", var=[f"base_url=http://127.0.0.1:{port}"]
+        build, env="development", var=[f"base_url=http://127.0.0.1:{port}"], check=True
     )
 
     server = Server(combine.output_path, port)
