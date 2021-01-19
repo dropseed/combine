@@ -1,3 +1,5 @@
+from pprint import pformat
+
 import click
 
 
@@ -30,11 +32,12 @@ class Issues:
         self._issues.append(issue)
 
     def print(self, header):
-        click.secho(header, fg="yellow")
+        click.secho("\n" + header, fg="yellow")
         for index, issue in enumerate(self._issues):
-            click.secho(f"  {index+1}. {issue.type}\n", fg="yellow", bold=True)
+            # TODO could just be yaml format?
+            click.secho(f"\n  {index+1}. {issue.type}\n", fg="yellow", bold=True)
             for k, v in issue.context.items():
-                click.secho(f"     {k}: {json.dumps(v)}", fg="yellow")
+                click.secho(f"     {k}: {pformat(v)}", fg="yellow")
         click.echo()
 
     def as_data(self):

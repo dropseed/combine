@@ -8,6 +8,7 @@ from .utils import create_parent_directory
 class File:
     def __init__(self, path, content_directory):
         self.path = path
+        self.references = []
         self.content_directory = content_directory
         self.content_relative_path = os.path.relpath(
             self.path, self.content_directory.path

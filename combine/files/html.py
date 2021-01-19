@@ -2,10 +2,12 @@ import os
 
 from bs4 import BeautifulSoup
 
+from ..jinja.references import get_references_in_path
 from .core import File
 from .utils import create_parent_directory
 from ..checks.duplicate_id import DuplicateIDCheck
 from ..checks.mixed_content import MixedContentCheck
+from ..checks.img_alt import ImgAltCheck
 
 
 class HTMLFile(File):
@@ -29,6 +31,7 @@ class HTMLFile(File):
             f.write(template.render(url=self._get_url()))
 
         self.output_path = target_path
+        self.references = get_references_in_path(self.path, kwargs["jinja_environment"])
 
     def _get_url(self):
         url = "/" + self.output_relative_path
@@ -43,4 +46,5 @@ class HTMLFile(File):
             return super().get_checks() + [
                 DuplicateIDCheck(html_soup=html_soup),
                 MixedContentCheck(html_soup=html_soup),
+                ImgAltCheck(html_soup=html_soup),
             ]

@@ -25,7 +25,7 @@ def build(ctx, check, env, var):
     config_path = os.path.abspath("combine.yml")
     combine = Combine(config_path=config_path, env=env, variables=variables)
 
-    click.secho("Building site", fg="cyan")
+    click.secho("❯ Building site", bold=True)
     try:
         combine.build(check=check)
     except BuildError:
@@ -43,10 +43,26 @@ def work(ctx, port):
         build, env="development", var=[f"base_url=http://127.0.0.1:{port}"], check=True
     )
 
-    click.secho("Watching for file changes...", fg="green")
-
     server = Server(combine.output_path, port)
     watcher = Watcher(".", combine=combine)
+
+    header = (
+        """
+┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+┃      ┏━━━━━┓                                               ┃
+┃      ┗┓   ┏┻━━━┓    Site is live: http://127.0.0.1:%s    ┃
+┃    ┏━━┫   ┣━━┓ ┃                                           ┃
+┃    ┃ ┏┻━━━┻┓ ┃      Docs: https://combine.dropseed.io      ┃
+┃ ┏━━┻━┻━━━━━┻━┻━━┓                                          ┃
+┃ ┣━━━━━━━━━━━━━━━┫   Watching for file changes...           ┃
+┃ ┗━━━━◡◡━━━◡◡━━━━┛                                          ┃
+┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
+"""
+        % port
+    )
+
+    click.secho(header, fg="green", bold=True)
+
     watcher.watch(server.serve)
 
 

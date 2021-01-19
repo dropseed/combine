@@ -9,10 +9,18 @@ import shlex
 
 import click
 from watchdog.observers import Observer
-from watchdog.events import FileSystemEventHandler, FileCreatedEvent, DirModifiedEvent
+from watchdog.events import (
+    FileSystemEventHandler,
+    FileCreatedEvent,
+    DirModifiedEvent,
+    FileDeletedEvent,
+    FileMovedEvent,
+    DirDeletedEvent,
+    DirMovedEvent,
+)
 
 from .exceptions import BuildError
-from .files.template import TemplateFile
+from .files.ignored import IgnoredFile
 
 
 logger = logging.getLogger(__file__)
@@ -45,55 +53,95 @@ class EventHandler(FileSystemEventHandler):
         self.combine = combine
         super().__init__(*args, **kwargs)
 
+    def should_ignore_path(self, event_path):
+        if self.combine.is_in_output_path(event_path):
+            return True
+
+        ignore_dirs = (
+            "node_modules",
+            ".cache",
+            ".venv",
+            "env",
+        )
+
+        for p in os.path.abspath(event_path).split(os.sep):
+            if p in ignore_dirs:
+                return True
+
+        return False
+
     def on_any_event(self, event):
         # if a file was moved or something, we only care about the destination
         event_path = event.dest_path if hasattr(event, "dest_path") else event.src_path
 
-        if self.combine.is_in_output_path(event_path):
-            # never need to process if in output path
+        if self.should_ignore_path(event_path):
             return
 
-        # if matches a specific pattern, only use that
         for step in self.combine.config.steps:
             command = step["run"]
             for pattern in step.get("watch", []):
                 # TODO remove ./ automatically?
                 if fnmatch(event_path, pattern):
-                    click.secho(
-                        "Running command for matching config pattern", fg="cyan"
-                    )
+                    click.secho(f"❯ Running step for matching {pattern}", bold=True)
                     result = subprocess.run(shlex.split(command))
                     if result.returncode != 0:
                         click.secho(
                             "There was an error running a user command.", fg="red"
                         )
-                    return
+                    break
 
         timestamp = datetime.datetime.now().strftime("%-I:%M%p").lower()
 
         if os.path.abspath(event_path) == os.path.abspath(self.combine.config_path):
-            print(
-                f"File {event.event_type} [{timestamp}]: reloading combine and rebuilding site"
+            click.secho(
+                f"❯ {self.combine.config_path} {event.event_type} ({timestamp}): reloading combine and rebuilding site",
+                bold=True,
             )
             self.reload_combine()
             self.rebuild_site()
+            return
 
-        if self.combine.is_in_content_paths(os.path.abspath(event_path)):
-            print(f"File {event.event_type} [{timestamp}]", end=": ")
+        content_relative_path = self.combine.content_relative_path(
+            os.path.abspath(event_path)
+        )
+
+        if content_relative_path:
             if isinstance(event, (FileCreatedEvent, DirModifiedEvent)):
+                # Reload first, so we know about any new files
                 self.reload_combine()
 
-            file_obj = self.combine.get_file_obj_for_path(event_path)
-            if isinstance(file_obj, TemplateFile):
-                # if it was a template, we want to rebuild everything that uses it,
-                # but right now we just rebuild the entire site
-                print("Rebuilding site")
+            if isinstance(
+                event,
+                (FileDeletedEvent, DirDeletedEvent, DirMovedEvent, FileMovedEvent),
+            ):
+                click.secho(
+                    f"❯ {content_relative_path} {event.event_type} ({timestamp}): ",
+                    nl=False,
+                    bold=True,
+                )
+                click.echo("Rebuilding entire site")
+                self.reload_combine()
                 self.rebuild_site()
-            else:
-                print(f"Rebuilding {event_path}")
-                self.rebuild_site(only_paths=[os.path.abspath(event_path)])
+                return
 
-            # click.secho("✓", fg="green")
+            files = self.combine.get_related_files(content_relative_path)
+
+            if files and all([type(f) == IgnoredFile for f in files]):
+                return
+
+            click.secho(
+                f"❯ {content_relative_path} {event.event_type} ({timestamp}): ",
+                nl=False,
+                bold=True,
+            )
+
+            if len(files) == 1:
+                click.echo(f"Rebuilding {files[0].content_relative_path}")
+            elif not files:
+                click.echo("Rebuliding entire site")
+            else:
+                click.echo(f"Rebuilding {len(files)} files")
+            self.rebuild_site(only_paths=[x.path for x in files])
 
     def reload_combine(self):
         try:
@@ -119,7 +167,6 @@ class Server:
         self.httpd = HTTPServer(self.path, ("", self.port))
 
     def serve(self):
-        click.secho(f"Serving at http://127.0.0.1:{self.port}", fg="green")
         self.httpd.serve_forever()
 
 
