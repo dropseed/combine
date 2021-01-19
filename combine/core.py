@@ -79,60 +79,68 @@ class Combine:
 
         paths_rendered = []
 
-        for content_directory in self.content_directories:
-            for file in content_directory.files:
-                if (
-                    file.output_relative_path
-                    and file.output_relative_path not in paths_rendered
-                ):
-                    if only_paths and file.path not in only_paths:
-                        continue
+        for file in self.iter_files():
+            if (
+                file.output_relative_path
+                and file.output_relative_path not in paths_rendered
+            ):
+                if only_paths and file.path not in only_paths:
+                    continue
 
-                    try:
-                        file.render_to_output(
-                            self.output_path, jinja_environment=self.jinja_environment
-                        )
-                    except Exception as e:
-                        build_errors[file.path] = e
-                        ErrorFile(
-                            file.path, file.content_directory, error=e
-                        ).render_to_output(
-                            self.output_path, jinja_environment=self.jinja_environment
-                        )
+                try:
+                    file.render_to_output(
+                        self.output_path, jinja_environment=self.jinja_environment
+                    )
+                except Exception as e:
+                    build_errors[file.path] = e
+                    ErrorFile(
+                        file.path, file.content_directory, error=e
+                    ).render_to_output(
+                        self.output_path, jinja_environment=self.jinja_environment
+                    )
 
-                    paths_rendered.append(file.output_relative_path)
+                paths_rendered.append(file.output_relative_path)
 
-        # If building the entire site, run the custom steps now
         if not only_paths:
-            for step in self.config.steps:
-                subprocess.run(shlex.split(step["run"]), check=True)
+            self.run_build_steps()
 
         if build_errors:
             for file_path, error in build_errors.items():
                 logger.error(f"Error building {file_path}", exc_info=error)
             raise BuildError()
 
-    def get_file_obj_for_path(self, path):
-        for content_directory in self.content_directories:
-            for file in content_directory.files:
-                if os.path.abspath(file.path) == os.path.abspath(path):
-                    return file
+    def run_build_steps(self):
+        for step in self.config.steps:
+            subprocess.run(shlex.split(step["run"]), check=True)
 
-        return None
+    def get_related_files(self, content_relative_path):
+        files = []
+        for file in self.iter_files():
+            if (
+                content_relative_path in file.references
+                or file.content_relative_path == content_relative_path
+            ):
+                # TODO could this include duplicates? in the content-relative sense?
+                files.append(file)
+        return files
 
-    def is_in_content_paths(self, path):
+    def content_relative_path(self, path):
         for content_path in self.content_paths:
             if (
                 os.path.commonpath([content_path, path]) != os.getcwd()
                 and os.getcwd() in content_path
             ):
-                return True
-        return False
+                return os.path.relpath(path, content_path)
 
     def is_in_output_path(self, path):
         return (
             os.path.commonpath([self.output_path, os.path.abspath(path)]) != os.getcwd()
         )
+
+    def iter_files(self):
+        for content_directory in self.content_directories:
+            for file in content_directory.files:
+                yield file
 
 
 class ContentDirectory:
