@@ -15,7 +15,7 @@ class FaviconCheck(Check):
             issues.append(
                 Issue(
                     type="favicon-missing",
-                    description="Your site should have an icon at /favicon.ico",
+                    description="Your site should have a Favicon at /favicon.ico.",
                 )
             )
 
