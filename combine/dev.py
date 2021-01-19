@@ -167,7 +167,6 @@ class Server:
         self.httpd = HTTPServer(self.path, ("", self.port))
 
     def serve(self):
-        click.secho(f"Serving at http://127.0.0.1:{self.port}", fg="green")
         self.httpd.serve_forever()
 
 
