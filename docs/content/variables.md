@@ -70,9 +70,9 @@ An example would be setting meta values in the `<head>` of your root template:
 </head>
 ```
 
-### Using the Jinja {% set %} tag
+### Setting variables in HTML
 
-There is both a single-line and multi-line way to use [`{% set %}`](https://jinja.palletsprojects.com/en/2.11.x/templates/#assignments).
+There is both a single-line and multi-line way to use Jinja [`{% set %}`](https://jinja.palletsprojects.com/en/2.11.x/templates/#assignments) tag.
 
 ```html+jinja
 {% extends "base.template.html" %}
@@ -88,7 +88,7 @@ My page title
 {%- endset %}
 ```
 
-### Markdown with Frontmatter
+### Setting variables in Markdown
 
 In [Markdown pages](/markdown/), you can set variables using YAML frontmatter.
 
