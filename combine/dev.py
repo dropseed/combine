@@ -14,6 +14,9 @@ from watchdog.events import (
     FileCreatedEvent,
     DirModifiedEvent,
     FileDeletedEvent,
+    FileMovedEvent,
+    DirDeletedEvent,
+    DirMovedEvent,
 )
 
 from .exceptions import BuildError
@@ -50,14 +53,28 @@ class EventHandler(FileSystemEventHandler):
         self.combine = combine
         super().__init__(*args, **kwargs)
 
+    def should_ignore_path(self, event_path):
+        if self.combine.is_in_output_path(event_path):
+            return True
+
+        ignore_dirs = (
+            "node_modules",
+            ".cache",
+            ".venv",
+            "env",
+        )
+
+        for p in os.path.abspath(event_path).split(os.sep):
+            if p in ignore_dirs:
+                return True
+
+        return False
+
     def on_any_event(self, event):
         # if a file was moved or something, we only care about the destination
         event_path = event.dest_path if hasattr(event, "dest_path") else event.src_path
 
-        if isinstance(event, FileDeletedEvent):
-            return
-
-        if self.combine.is_in_output_path(event_path):
+        if self.should_ignore_path(event_path):
             return
 
         for step in self.combine.config.steps:
@@ -93,6 +110,20 @@ class EventHandler(FileSystemEventHandler):
                 # Reload first, so we know about any new files
                 self.reload_combine()
 
+            if isinstance(
+                event,
+                (FileDeletedEvent, DirDeletedEvent, DirMovedEvent, FileMovedEvent),
+            ):
+                click.secho(
+                    f"❯ {content_relative_path} {event.event_type} ({timestamp}): ",
+                    nl=False,
+                    bold=True,
+                )
+                click.echo("Rebuilding entire site")
+                self.reload_combine()
+                self.rebuild_site()
+                return
+
             files = self.combine.get_related_files(content_relative_path)
 
             if files and all([type(f) == IgnoredFile for f in files]):
@@ -105,11 +136,11 @@ class EventHandler(FileSystemEventHandler):
             )
 
             if len(files) == 1:
-                print(f"Rebuilding {files[0].content_relative_path}")
+                click.echo(f"Rebuilding {files[0].content_relative_path}")
             elif not files:
-                print("Rebuliding entire site")
+                click.echo("Rebuliding entire site")
             else:
-                print(f"Rebuilding {len(files)} files")
+                click.echo(f"Rebuilding {len(files)} files")
             self.rebuild_site(only_paths=[x.path for x in files])
 
     def reload_combine(self):
