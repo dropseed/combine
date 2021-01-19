@@ -32,16 +32,32 @@ def build(ctx, check, env, var):
         click.secho("Build error (see above)", fg="red")
         exit(1)
 
-    return combine
+    if check:
+        if combine.issues:
+            click.secho(
+                f"{len(combine.issues)} check{'s' if len(combine.issues) > 1 else ''} failed",
+                fg="red",
+            )
+            exit(1)
+        else:
+            click.secho("✓ All checks passed", fg="green")
 
 
 @cli.command()
 @click.option("--port", type=int, default=8000)
 @click.pass_context
 def work(ctx, port):
-    combine = ctx.invoke(
-        build, env="development", var=[f"base_url=http://127.0.0.1:{port}"], check=True
+    config_path = os.path.abspath("combine.yml")
+    combine = Combine(
+        config_path=config_path,
+        env="development",
+        variables={"base_url": f"http://127.0.0.1:{port}"},
     )
+    click.secho("❯ Building site", bold=True)
+    try:
+        combine.build(check=True)
+    except BuildError:
+        click.secho("Build error (see above)", fg="red")
 
     server = Server(combine.output_path, port)
     watcher = Watcher(".", combine=combine)

@@ -117,19 +117,20 @@ class Combine:
             self.check_build(files=files_rendered, site_checks=(not only_paths))
 
     def check_build(self, files=[], site_checks=False):
-        for file in files:
-            file.check_output()
-
-        issues = Issues()
+        self.issues = Issues()
 
         if site_checks:
             for issue in FaviconCheck(site_dir=self.output_path).run():
-                issues.append(issue)
+                self.issues.append(issue)
 
             # broken links?
 
-        if issues:
-            issues.print(f"Issues across your site")
+            if self.issues:
+                self.issues.print(f"Issues across your site")
+
+        for file in files:
+            for issue in file.check_output():
+                self.issues.append(issue)
 
     def run_build_steps(self):
         for step in self.config.steps:

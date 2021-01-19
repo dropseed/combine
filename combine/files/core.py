@@ -33,14 +33,16 @@ class File:
         copyfile(self.path, target_path)
 
     def check_output(self):
-        self.issues = Issues()
+        issues = Issues()
 
         for check in self.get_checks():
             for issue in check.run():
-                self.issues.append(issue)
+                issues.append(issue)
 
-        if self.issues:
-            self.issues.print(f"Issues in {self.content_relative_path}")
+        if issues:
+            issues.print(f"Issues in {self.content_relative_path}")
+
+        return issues
 
     def get_checks(self):
         return []

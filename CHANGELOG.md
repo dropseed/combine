@@ -9,6 +9,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 Nothing right now.
 
+## [2.0.1] - 2021-01-19
+
+Make `combine build --check` exit 1 if there are issues.
+
 ## [2.0.0] - 2021-01-19
 
 - Start implementation of "checks"
@@ -29,6 +33,7 @@ Require importlib-metadata and typing_extensions directly if Python < 3.8.
 Combine has been in use on production sites for a while now, so we might as well act like it!
 
 [Unreleased]: https://github.com/dropseed/combine/compare/1.0.1...HEAD
+[2.0.1]: https://github.com/dropseed/combine/releases/tag/2.0.1
 [2.0.0]: https://github.com/dropseed/combine/releases/tag/2.0.0
 [1.0.1]: https://github.com/dropseed/combine/releases/tag/1.0.1
 [1.0.0]: https://github.com/dropseed/combine/releases/tag/1.0.0
