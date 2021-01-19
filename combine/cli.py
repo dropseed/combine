@@ -24,7 +24,7 @@ def build(ctx, env, var):
     config_path = os.path.abspath("combine.yml")
     combine = Combine(config_path=config_path, env=env, variables=variables)
 
-    click.secho("Building site", fg="cyan")
+    click.secho("❯ Building site", bold=True)
     try:
         combine.build()
     except BuildError:
@@ -59,7 +59,7 @@ def work(ctx, port):
         % port
     )
 
-    click.secho(header, fg="green")
+    click.secho(header, fg="green", bold=True)
 
     watcher.watch(server.serve)
 
