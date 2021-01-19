@@ -1,6 +1,6 @@
 # Redirects
 
-Currently the best way to do proper redirects with Combine is to define them within your [hosting provider](/deploy/).
+**The best way to do proper redirects with Combine is to define them within your [hosting provider](/deploy/).**
 
 Some hosts don't provide a redirect feature though.
 So if you really need redirects and are ok with it not being a real 301/302,
