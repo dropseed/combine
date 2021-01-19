@@ -4,8 +4,9 @@ import click
 
 
 class Issue:
-    def __init__(self, type, context={}):
+    def __init__(self, type, description, context={}):
         self.type = type
+        self.description = description
         self.context = context
 
     def as_data(self):
@@ -35,7 +36,12 @@ class Issues:
         click.secho("\n" + header, fg="yellow")
         for index, issue in enumerate(self._issues):
             # TODO could just be yaml format?
-            click.secho(f"\n  {index+1}. {issue.type}\n", fg="yellow", bold=True)
+            click.secho(
+                f"\n  {index+1}. {issue.description}", fg="yellow", bold=True,
+            )
+            click.secho(
+                f"     https://combine.dropseed.io/checks/#{issue.type}\n", fg="yellow"
+            )
             for k, v in issue.context.items():
                 click.secho(f"     {k}: {pformat(v)}", fg="yellow")
         click.echo()

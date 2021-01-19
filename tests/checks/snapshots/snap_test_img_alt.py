@@ -12,6 +12,6 @@ snapshots['test_img_alt_check 1'] = [
         'context': {
             'element': '<img/>'
         },
-        'type': 'img-alt-missing'
+        'type': 'image-alt-missing'
     }
 ]

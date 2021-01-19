@@ -26,6 +26,7 @@ class DuplicateIDCheck(Check):
                 issues.append(
                     Issue(
                         type="duplicate-id",
+                        description="The same `id` should not be used on a page more than once.",
                         context={"id": id, "elements": [str(x) for x in elements]},
                     )
                 )

@@ -33,7 +33,11 @@ class MixedContentCheck(Check):
 
                 if value.startswith("http:"):
                     issues.append(
-                        Issue(type="https-mixed-content", context={"element": str(el)},)
+                        Issue(
+                            type="https-mixed-content",
+                            description="Any linked resources (CSS, img, iframes) should be linked via HTTPS.",
+                            context={"element": str(el)},
+                        )
                     )
 
         return issues

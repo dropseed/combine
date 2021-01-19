@@ -13,7 +13,12 @@ class ImgAltCheck(Check):
             alt = img.get("alt")
             if alt is None:
                 issues.append(
-                    Issue(type="img-alt-missing", context={"element": str(img)},)
+                    Issue(
+                        type="image-alt-missing",
+                        description="All <img> tags should have alt text describing the image, or be set to an empty string (`"
+                        "`)",
+                        context={"element": str(img)},
+                    )
                 )
 
         return issues

@@ -12,6 +12,11 @@ class FaviconCheck(Check):
         issues = Issues()
 
         if not os.path.exists(os.path.join(self.site_dir, "favicon.ico")):
-            issues.append(Issue(type="favicon-missing"))
+            issues.append(
+                Issue(
+                    type="favicon-missing",
+                    description="Your site should have an icon at /favicon.ico",
+                )
+            )
 
         return issues
