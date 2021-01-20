@@ -42,7 +42,7 @@ Every `id` on a page should be unique.
 ## Favicon missing
 
 Using `/favicon.ico` is the easiest, most widely support option for having a Favicon.
-You can include other variations and their matching `<head>` tags,
+You can include other variations and their corresponding `<head>` tags,
 but if you only do one thing,
 simply put `favicon.ico` at the root of your site.
 
