@@ -91,16 +91,16 @@ class Combine:
                     continue
 
                 try:
-                    file.render_to_output(
-                        self.output_path, jinja_environment=self.jinja_environment
+                    file.render(
+                        output_path=self.output_path,
+                        jinja_environment=self.jinja_environment,
                     )
                     files_rendered.append(file)
                 except Exception as e:
                     build_errors[file.path] = e
-                    ErrorFile(
-                        file.path, file.content_directory, error=e
-                    ).render_to_output(
-                        self.output_path, jinja_environment=self.jinja_environment
+                    ErrorFile(file.path, file.content_directory, error=e).render(
+                        output_path=self.output_path,
+                        jinja_environment=self.jinja_environment,
                     )
 
                 paths_rendered.append(file.output_relative_path)

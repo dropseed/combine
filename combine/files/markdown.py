@@ -8,17 +8,17 @@ from .utils import create_parent_directory
 
 
 class MarkdownFile(HTMLFile):
-    def get_path_for_output(self):
+    def _get_path_for_output(self):
         if self.name_without_extension.endswith(".keep"):
             # remove .keep.md from the end and replace with .html
-            return super().get_path_for_output()[:-8] + ".html"
+            return super()._get_path_for_output()[:-8] + ".html"
 
         if self.name_without_extension == "index":
-            return super().get_path_for_output()[:-3] + ".html"
+            return super()._get_path_for_output()[:-3] + ".html"
 
         return os.path.join(*self.root_parts, "index.html")
 
-    def render_to_output(self, output_path, *args, **kwargs):
+    def _render_to_output(self, output_path, jinja_environment):
         post = frontmatter.load(self.path)
 
         variables = post.metadata
@@ -29,7 +29,7 @@ class MarkdownFile(HTMLFile):
 
         # an optional way to override
         template_name = variables.get("template", "markdown.template.html")
-        template = kwargs["jinja_environment"].get_template(template_name)
+        template = jinja_environment.get_template(template_name)
 
         target_path = os.path.join(output_path, self.output_relative_path)
         create_parent_directory(target_path)
@@ -37,7 +37,8 @@ class MarkdownFile(HTMLFile):
         with open(target_path, "w+") as f:
             f.write(template.render(**variables))
 
-        self.output_path = target_path
         self.references = [template_name] + get_references_in_path(
-            template.filename, kwargs["jinja_environment"]
+            template.filename, jinja_environment
         )
+
+        return target_path

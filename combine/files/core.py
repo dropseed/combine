@@ -2,6 +2,7 @@ import os
 from shutil import copyfile
 
 from ..checks.issues import Issues
+from ..checks.file_size import FileSizeCheck
 from .utils import create_parent_directory
 
 
@@ -18,12 +19,15 @@ class File:
         self.root_parts = os.path.split(self.root)
         self.name_without_extension = self.root_parts[-1]
 
-        self.output_relative_path = self.get_path_for_output()
+        self.output_relative_path = self._get_path_for_output()
 
-    def get_path_for_output(self):
+    def _get_path_for_output(self):
         return self.content_relative_path
 
-    def render_to_output(self, output_path, *args, **kwargs):
+    def render(self, output_path, jinja_environment):
+        self.output_path = self._render_to_output(output_path, jinja_environment)
+
+    def _render_to_output(self, output_path, jinja_environment):
         target_path = os.path.join(output_path, self.output_relative_path)
         create_parent_directory(target_path)
 
@@ -31,6 +35,8 @@ class File:
             os.remove(target_path)
 
         copyfile(self.path, target_path)
+
+        return target_path
 
     def check_output(self):
         issues = Issues()
@@ -45,4 +51,10 @@ class File:
         return issues
 
     def get_checks(self):
+        if self.output_path:
+            # Not all files have an output
+            return [
+                FileSizeCheck(path=self.output_path),
+            ]
+
         return []

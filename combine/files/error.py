@@ -10,11 +10,11 @@ class ErrorFile(HTMLFile):
         self.error = kwargs.pop("error")
         super().__init__(*args, **kwargs)
 
-    def render_to_output(self, output_path, *args, **kwargs):
+    def _render_to_output(self, output_path, jinja_environment):
         target_path = os.path.join(output_path, self.output_relative_path)
         create_parent_directory(target_path)
 
-        template = kwargs["jinja_environment"].get_template("error.template.html")
+        template = jinja_environment.get_template("error.template.html")
 
         with open(target_path, "w+") as f:
             if hasattr(self.error, "source"):
@@ -34,3 +34,5 @@ class ErrorFile(HTMLFile):
                     excinfo=traceback.format_exc(),
                 )
             )
+
+        return target_path

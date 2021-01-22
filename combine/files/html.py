@@ -21,27 +21,28 @@ from ..checks.open_graph import (
 
 
 class HTMLFile(File):
-    def get_path_for_output(self):
+    def _get_path_for_output(self):
         if self.name_without_extension.endswith(".keep"):
             # remove .keep.html from the end and replace with .html
-            return super().get_path_for_output()[:-10] + ".html"
+            return super()._get_path_for_output()[:-10] + ".html"
 
         if self.name_without_extension == "index":
-            return super().get_path_for_output()
+            return super()._get_path_for_output()
 
         return os.path.join(*self.root_parts, "index.html")
 
-    def render_to_output(self, output_path, *args, **kwargs):
+    def _render_to_output(self, output_path, jinja_environment):
         target_path = os.path.join(output_path, self.output_relative_path)
         create_parent_directory(target_path)
 
-        template = kwargs["jinja_environment"].get_template(self.content_relative_path)
+        template = jinja_environment.get_template(self.content_relative_path)
 
         with open(target_path, "w+") as f:
             f.write(template.render(url=self._get_url()))
 
-        self.output_path = target_path
-        self.references = get_references_in_path(self.path, kwargs["jinja_environment"])
+        self.references = get_references_in_path(self.path, jinja_environment)
+
+        return target_path
 
     def _get_url(self):
         url = "/" + self.output_relative_path
