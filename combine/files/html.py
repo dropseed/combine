@@ -10,6 +10,14 @@ from ..checks.mixed_content import MixedContentCheck
 from ..checks.img_alt import ImgAltCheck
 from ..checks.meta import MetaDescriptionCheck
 from ..checks.title import TitleCheck
+from ..checks.open_graph import (
+    OpenGraphTitleCheck,
+    OpenGraphDescriptionCheck,
+    OpenGraphTypeCheck,
+    OpenGraphURLCheck,
+    OpenGraphImageCheck,
+    OpenGraphSiteNameCheck,
+)
 
 
 class HTMLFile(File):
@@ -51,4 +59,10 @@ class HTMLFile(File):
                 ImgAltCheck(html_soup=html_soup),
                 MetaDescriptionCheck(html_soup=html_soup),
                 TitleCheck(html_soup=html_soup),
+                OpenGraphTitleCheck(html_soup=html_soup),
+                OpenGraphDescriptionCheck(html_soup=html_soup),
+                OpenGraphTypeCheck(html_soup=html_soup),
+                OpenGraphURLCheck(html_soup=html_soup),
+                OpenGraphImageCheck(html_soup=html_soup),
+                OpenGraphSiteNameCheck(html_soup=html_soup),
             ]
