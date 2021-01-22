@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "combine"
-version = "2.0.1"
+version = "2.1.0"
 description = "A straightforward static site builder."
 authors = ["Dropseed <python@dropseed.io>"]
 license = "MIT"
