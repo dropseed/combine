@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 Nothing right now.
 
-## [2.0.1] - 2021-01-22
+## [2.1.0] - 2021-01-22
 
 Add open graph, page title, meta description, image size, and internal broken link checks.
 
