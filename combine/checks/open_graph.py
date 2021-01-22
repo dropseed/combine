@@ -69,7 +69,10 @@ class OpenGraphURLCheck(BaseOpenGraphCheck):
             #         )
             #     )
 
-            if not url.startswith("https://"):
+            # TODO figure out better solution for local -- want to catch those if building production
+            if not url.startswith("https://") and not url.startswith(
+                "http://127.0.0.1"
+            ):
                 issues.append(
                     Issue(
                         type="open-graph-url-not-canonical-https",
@@ -102,7 +105,10 @@ class OpenGraphImageCheck(BaseOpenGraphCheck):
             #         )
             #     )
 
-            if not url.startswith("https://"):
+            # TODO figure out better solution for local -- want to catch those if building production
+            if not url.startswith("https://") and not url.startswith(
+                "http://127.0.0.1"
+            ):
                 issues.append(
                     Issue(
                         type="open-graph-image-not-canonical-https",

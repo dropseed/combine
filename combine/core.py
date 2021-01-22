@@ -123,8 +123,6 @@ class Combine:
             for issue in FaviconCheck(site_dir=self.output_path).run():
                 self.issues.append(issue)
 
-            # broken links?
-
             if self.issues:
                 self.issues.print(f"Issues across your site")
 
