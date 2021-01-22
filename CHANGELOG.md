@@ -9,6 +9,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 Nothing right now.
 
+## [2.0.1] - 2021-01-22
+
+Add open graph, page title, meta description, image size, and internal broken link checks.
+
 ## [2.0.1] - 2021-01-19
 
 Make `combine build --check` exit 1 if there are issues.
@@ -32,7 +36,8 @@ Require importlib-metadata and typing_extensions directly if Python < 3.8.
 
 Combine has been in use on production sites for a while now, so we might as well act like it!
 
-[Unreleased]: https://github.com/dropseed/combine/compare/1.0.1...HEAD
+[Unreleased]: https://github.com/dropseed/combine/compare/2.1.0...HEAD
+[2.1.0]: https://github.com/dropseed/combine/releases/tag/2.1.0
 [2.0.1]: https://github.com/dropseed/combine/releases/tag/2.0.1
 [2.0.0]: https://github.com/dropseed/combine/releases/tag/2.0.0
 [1.0.1]: https://github.com/dropseed/combine/releases/tag/1.0.1
