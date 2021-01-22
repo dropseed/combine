@@ -4,6 +4,11 @@ We maintain a set of carefully considered checks that we believe *every* success
 Sure, they can be considered "best practices".
 But we deliberately choose things that are both valuable *and* achievable.
 
+If you resolve all of the Combine checks, you will probably get good scores on other tools like [Google Lighthouse](https://developers.google.com/web/tools/lighthouse) and [Ahrefs Site Audit](https://ahrefs.com/site-audit).
+A big advantage of Combine checks is they run *while* you work,
+so you can fix issues as they are created.
+
+
 **Long story short, don't ignore combine checks.**
 
 Our checks cover three core principles:
