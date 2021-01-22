@@ -10,6 +10,7 @@ from ..checks.mixed_content import MixedContentCheck
 from ..checks.img_alt import ImgAltCheck
 from ..checks.meta import MetaDescriptionCheck
 from ..checks.title import TitleCheck
+from ..checks.links import InternalLinkBrokenCheck
 from ..checks.open_graph import (
     OpenGraphTitleCheck,
     OpenGraphDescriptionCheck,
@@ -66,4 +67,10 @@ class HTMLFile(File):
                 OpenGraphURLCheck(html_soup=html_soup),
                 OpenGraphImageCheck(html_soup=html_soup),
                 OpenGraphSiteNameCheck(html_soup=html_soup),
+                InternalLinkBrokenCheck(
+                    html_soup=html_soup,
+                    file_path=self.output_path,
+                    # reverse engineer the output dir for now
+                    output_dir=self.output_path[: -len(self.output_relative_path)],
+                ),
             ]
