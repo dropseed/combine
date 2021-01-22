@@ -9,6 +9,7 @@ from ..checks.duplicate_id import DuplicateIDCheck
 from ..checks.mixed_content import MixedContentCheck
 from ..checks.img_alt import ImgAltCheck
 from ..checks.meta import MetaDescriptionCheck
+from ..checks.title import TitleCheck
 
 
 class HTMLFile(File):
@@ -49,4 +50,5 @@ class HTMLFile(File):
                 MixedContentCheck(html_soup=html_soup),
                 ImgAltCheck(html_soup=html_soup),
                 MetaDescriptionCheck(html_soup=html_soup),
+                TitleCheck(html_soup=html_soup),
             ]

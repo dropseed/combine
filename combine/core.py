@@ -129,6 +129,7 @@ class Combine:
                 self.issues.print(f"Issues across your site")
 
         for file in files:
+            # TODO could pass check settings here, just don't know what they should look like
             for issue in file.check_output():
                 self.issues.append(issue)
 
