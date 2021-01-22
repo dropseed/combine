@@ -1,3 +1,8 @@
+---
+title: Getting started
+description: Create a new Combine static site and your first pages.
+---
+
 # Getting started
 
 ## Installing Combine

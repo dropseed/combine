@@ -1,3 +1,8 @@
+---
+title: 404 files
+description: Create 404 templates that your hosting provider can find.
+---
+
 # 404 files
 
 Most hosting providers have an option to specify an error or 404 template.

@@ -1,3 +1,8 @@
+---
+title: Jinja
+description: Use all of the built-in Jinja functionality to render HTML pages.
+---
+
 # Jinja basics
 
 > "Jinja is a modern and designer-friendly templating language for Python, modelled after Django’s templates."

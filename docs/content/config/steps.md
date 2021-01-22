@@ -1,3 +1,8 @@
+---
+title: combine.yml steps
+description: Define build steps for compiling assets for your static site.
+---
+
 # Steps
 
 [Use steps to provide additional commands to be run during your build.](/build/)

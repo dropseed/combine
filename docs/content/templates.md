@@ -1,3 +1,8 @@
+---
+title: Templates
+description: Extend templates to share layouts and UI across pages in your static site.
+---
+
 # Templates
 
 Every site starts with a `base.template.html` and a `content` block.

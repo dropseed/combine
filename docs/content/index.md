@@ -1,3 +1,8 @@
+---
+title: Building websites like the good old days
+description: Use Jinja and basic HTML and Markdown to build a simple, predictable static site.
+---
+
 # Overview
 
 **Build a straightforward marketing or documentation website with the power of [Jinja](http://jinja.pocoo.org/).

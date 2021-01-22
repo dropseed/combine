@@ -1,3 +1,8 @@
+---
+title: combine.yml output_path
+description: Choose which directory your static site is output to.
+---
+
 # Output path
 
 The `output_path` can change where your site is created.

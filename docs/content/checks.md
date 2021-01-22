@@ -1,3 +1,8 @@
+---
+title: Checks
+description: Fast, automated checks to build a usable, discoverable, and shareable static site.
+---
+
 # Checks
 
 We maintain a set of carefully considered checks that we believe *every* successful public website should pass.

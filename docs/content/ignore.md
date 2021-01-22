@@ -1,3 +1,8 @@
+---
+title: Ignored files
+description: Prevent templates and other sources files from ending up on your live site.
+---
+
 # Ignored files
 
 Because Combine is used to generate a static site,

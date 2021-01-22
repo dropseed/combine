@@ -1,3 +1,8 @@
+---
+title: Variables
+description: Set variables across your site using hardcoded values or environment variables.
+---
+
 # Variables
 
 Variables can be set on specific pages, or across the entire site.
@@ -122,7 +127,7 @@ Set to `markdown.template.html` by default and can be overriden with frontmatter
 ### `base_url`
 
 Automatically set to `http://127.0.0.1:{port}` in development,
-and is required by the [`absolute_url` filter](/urls/).
+and is required by the [`absolute_url` filter](/absolute-urls/).
 
 ### `url`
 

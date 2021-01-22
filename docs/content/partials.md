@@ -1,3 +1,8 @@
+---
+title: Partials
+description: Include reusable pieces of content across your templates.
+---
+
 # Partials
 
 A useful convention for Combine sites is to create "partials".

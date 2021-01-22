@@ -1,3 +1,8 @@
+---
+title: Themes
+description: Use themes and git submodules to share templates across Combine sites.
+---
+
 # Themes
 
 To re-use layouts and styling across multiple projects,

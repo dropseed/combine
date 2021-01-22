@@ -1,3 +1,8 @@
+---
+title: Deployment
+description: Deploy your Combine static site to a variety of hosting providers.
+---
+
 # Deployment
 
 Ultimately a Combine site is like any other static site.

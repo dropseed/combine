@@ -1,3 +1,8 @@
+---
+title: combine.yml variables
+description: Set variables across your site using hardcoded values or environment variables.
+---
+
 # Variables
 
 Variables defined in `combine.yml` will be applied across your site,

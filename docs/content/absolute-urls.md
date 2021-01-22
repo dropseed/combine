@@ -1,3 +1,8 @@
+---
+title: Absolute URLS
+description: Create absolute URLs for production, staging, preview, and development environments.
+---
+
 # Absolute URLs
 
 In some cases, like open graph tags, you are *required* to use an absolute URL.

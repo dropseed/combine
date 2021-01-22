@@ -1,3 +1,8 @@
+---
+title: Redirects
+description: Set redirects through hosting providers or static pages.
+---
+
 # Redirects
 
 **The best way to do proper redirects with Combine is to define them within your [hosting provider](/deploy/).**

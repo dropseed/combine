@@ -1,3 +1,8 @@
+---
+title: Markdown
+description: Render Markdown directly in your HTML, or build entire pages in Markdown.
+---
+
 # Markdown
 
 Combine offers two ways to use Markdown.

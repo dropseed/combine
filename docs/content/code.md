@@ -1,3 +1,8 @@
+---
+title: Code highlighting
+description: Highlight code in HTML or Markdown pages using Pygments.
+---
+
 # Code highlighting
 
 Technical documentation (like this site) oftens requires highlighting code.

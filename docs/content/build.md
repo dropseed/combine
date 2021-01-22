@@ -1,3 +1,8 @@
+---
+title: Build steps
+description: Define build steps for compiling assets for your static site.
+---
+
 # Build steps
 
 Modern sites often come with build or compile steps for CSS and JavaScript.

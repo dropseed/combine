@@ -1,3 +1,8 @@
+---
+title: combine.yml content_paths
+description: Incorporate multiple content directories (or themes) into your static site.
+---
+
 # Content paths
 
 Combine merges multiple `content_paths` together before rendering your final site.
@@ -11,7 +16,7 @@ content_paths:
 - "<combine path>/base_content"
 ```
 
-If a [`theme`](/theme/) is present,
+If a [`theme`](/themes/) is present,
 that will be included too:
 
 ```yaml

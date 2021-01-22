@@ -1,3 +1,8 @@
+---
+title: Internal links
+description: Link to pages using the predictable output from Combine.
+---
+
 # Internal links
 
 The easiest way to link to pages and assets is to use relative paths.
