@@ -8,13 +8,13 @@ from .utils import create_parent_directory
 
 
 class MarkdownFile(HTMLFile):
-    def _get_path_for_output(self):
+    def _get_output_relative_path(self):
         if self.name_without_extension.endswith(".keep"):
             # remove .keep.md from the end and replace with .html
-            return super()._get_path_for_output()[:-8] + ".html"
+            return super()._get_output_relative_path()[:-8] + ".html"
 
         if self.name_without_extension == "index":
-            return super()._get_path_for_output()[:-3] + ".html"
+            return super()._get_output_relative_path()[:-3] + ".html"
 
         return os.path.join(*self.root_parts, "index.html")
 

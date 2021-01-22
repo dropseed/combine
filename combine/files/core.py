@@ -19,9 +19,9 @@ class File:
         self.root_parts = os.path.split(self.root)
         self.name_without_extension = self.root_parts[-1]
 
-        self.output_relative_path = self._get_path_for_output()
+        self.output_relative_path = self._get_output_relative_path()
 
-    def _get_path_for_output(self):
+    def _get_output_relative_path(self):
         return self.content_relative_path
 
     def render(self, output_path, jinja_environment):

@@ -21,13 +21,13 @@ from ..checks.open_graph import (
 
 
 class HTMLFile(File):
-    def _get_path_for_output(self):
+    def _get_output_relative_path(self):
         if self.name_without_extension.endswith(".keep"):
             # remove .keep.html from the end and replace with .html
-            return super()._get_path_for_output()[:-10] + ".html"
+            return super()._get_output_relative_path()[:-10] + ".html"
 
         if self.name_without_extension == "index":
-            return super()._get_path_for_output()
+            return super()._get_output_relative_path()
 
         return os.path.join(*self.root_parts, "index.html")
 

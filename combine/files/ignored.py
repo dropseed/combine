@@ -2,7 +2,7 @@ from .core import File
 
 
 class IgnoredFile(File):
-    def _get_path_for_output(self):
+    def _get_output_relative_path(self):
         return None
 
     def _render_to_output(self, *args, **kwargs):
