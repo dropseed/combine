@@ -30,6 +30,29 @@ Everybody wants to be showing up in Google searches. Doing the basics here goes 
 
 When links to your site are shared on Facebook or Twitter, do they look ok? We'll point out where you're missing the *most important* Open Graph tags.
 
+## Internal link broken
+
+Combine automatically detects broken links to internal pages.
+You could have redirects for these in your hosting provider,
+but there is no reason not to update the link to make it correct.
+
+## Title missing
+
+The `<title>` tag should be present on every page.
+
+## Title empty
+
+The `<title>` tag is present, but has no text.
+This is typically a templating mistake.
+
+## Meta description empty
+
+The meta description tag is empty, which is typically a templating mistake.
+
+## Meta description length
+
+Meta descriptions should generally be between 50 and 320 characters long.
+
 ## Image alt missing
 
 The "alt" text describes an image for both accessibility and SEO purposes:
@@ -60,3 +83,41 @@ simply put `favicon.ico` at the root of your site.
 
 Combine assumes you will deploy your site with HTTPS.
 Linking to stylesheets, scripts, images, etc. through *http://* can cause browsers to display an insecure, "mixed content" warning.
+
+## File size too large
+
+We have some baseline checks to prevent you from accidentally using assets that are way bigger than they need to be
+(often by mistake).
+This usually involves images that can and should be downsized or compressed.
+
+## Open graph title missing
+
+TODO
+
+## Open graph description missing
+
+TODO
+
+## Open graph type missing
+
+TODO
+
+## Open graph url missing
+
+TODO
+
+## Open graph image missing
+
+TODO
+
+## Open graph site_name missing
+
+TODO
+
+## Open graph URL not canonical HTTPS
+
+TODO
+
+## Open graph image not canonical HTTPS
+
+TODO
