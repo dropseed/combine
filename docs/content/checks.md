@@ -66,6 +66,33 @@ This is typically a templating mistake.
 
 The meta description tag is empty, which is typically a templating mistake.
 
+Using a variable makes this easy to write for each page:
+
+```html+jinja
+<!-- base.template.html -->
+<head>
+  {% if description is defined %}<meta name="description" content="{{ description }}">{% endif %}
+</head>
+```
+
+In HTML:
+
+```html+jinja
+{% extends "base.template.html" %}
+
+{% set description = "Use Jinja and basic HTML and Markdown to build a simple, predictable static site." %}
+```
+
+And Markdown:
+
+```markdown
+---
+description: Use Jinja and basic HTML and Markdown to build a simple, predictable static site.
+---
+
+Page content here...
+```
+
 ## Meta description length
 
 Meta descriptions should generally be between 50 and 320 characters long.
@@ -91,7 +118,7 @@ Every `id` on a page should be unique.
 
 ## Favicon missing
 
-Using `/favicon.ico` is the easiest, most widely support option for having a Favicon.
+Using `/favicon.ico` is the easiest, most widely supported option for having a Favicon.
 You can include other variations and their corresponding `<head>` tags,
 but if you only do one thing,
 simply put `favicon.ico` at the root of your site.
@@ -161,7 +188,7 @@ the [open graph type](https://ogp.me/#types) can be set to "website" for all of 
 
 The open graph URL should be the canonical, absolute URL to the current page.
 
-In Combine, the [`absolute_url` filter can help (don't forget to set the `base_url` variable though)](/absolute-urls/):
+In Combine, the automatic [url variable](/variables/#url) and [`absolute_url` filter can help (don't forget to set the `base_url` variable though)](/absolute-urls/):
 
 ```html+jinja
 <!-- base.template.html -->
