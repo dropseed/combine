@@ -11,12 +11,12 @@ MAX_FILE_SIZES = {
 }
 
 
-def sizeof_fmt(num, suffix="B"):
-    for unit in ["", "Ki", "Mi", "Gi", "Ti", "Pi", "Ei", "Zi"]:
-        if abs(num) < 1024.0:
-            return "%3.1f%s%s" % (num, unit, suffix)
-        num /= 1024.0
-    return "%.1f%s%s" % (num, "Yi", suffix)
+def sizeof_fmt(num):
+    for unit in [" bytes", "KB", "MB", "GB"]:
+        if abs(num) < 1000.0:
+            return "%3.1f%s" % (num, unit)
+        num /= 1000.0
+    return "%.1f%s" % (num, "Yi")
 
 
 class FileSizeCheck(Check):
@@ -36,7 +36,10 @@ class FileSizeCheck(Check):
                     Issue(
                         type=f"file-size-too-large",
                         description=f"Files of type {ext} shouldn't be bigger than {sizeof_fmt(max_size)}",
-                        context={"output_path": os.path.relpath(self.path)},
+                        context={
+                            "output_path": os.path.relpath(self.path),
+                            "file_size": sizeof_fmt(size),
+                        },
                     )
                 )
 

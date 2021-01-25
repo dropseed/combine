@@ -7,7 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-Nothing right now.
+- Change file size math and add current size to output
 
 ## [2.1.0] - 2021-01-22
 
