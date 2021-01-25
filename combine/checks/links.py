@@ -40,6 +40,10 @@ class InternalLinkBrokenCheck(Check):
                     # Remove whitespace on both ends
                     value = value.strip()
 
+                if value and "?" in value:
+                    # Remove query params too (style.css?v=1.0)
+                    value = value.split("?")[0]
+
                 if not value:
                     # Skip empty ones for now, not our responsibility
                     continue

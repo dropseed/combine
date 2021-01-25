@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Change file size math and add current size to output
 - Strip whitespace when checking broken internal links
+- Remove query string parameters when checking broken internal links
 
 ## [2.1.0] - 2021-01-22
 
