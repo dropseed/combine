@@ -15,6 +15,7 @@ class MixedContentCheck(Check):
             "img": {"attr": "src"},
             "link": {"attr": "href", "ignore": {"rel": "profile"}},
             "iframe": {"attr": "src"},
+            # TODO missing script? but src needs to be optional (could be inline)
         }
 
         for type, cfg in to_check.items():
