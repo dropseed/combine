@@ -43,6 +43,7 @@ The `<title>` tag should be present on every page.
 One way to do this is by using a "title" variable in the `<head>` section of your base template:
 
 ```html+jinja
+<!-- base.template.html -->
 <head>
   <title>{% if title is defined %}{{ title }} - {% endif %}YourBusinessName</title>
 </head>
@@ -108,32 +109,108 @@ This usually involves images that can and should be downsized or compressed.
 
 ## Open graph title missing
 
-TODO
+The open graph title can usually be the same as your page title,
+but without any company/branding suffixes (which can instead be put in the open graph `site_name`).
+
+If you use a templating pattern like is [mentioned above](#title-missing),
+then you can use the same title variable for your `<title>` and "og:title".
+
+```html+jinja
+<!-- base.template.html -->
+<head>
+  {% if title is defined %}<meta property="og:title" content="{{ title }}" />{% endif %}
+</head>
+```
 
 ## Open graph description missing
 
-TODO
+This should be a couple sentences describing your page,
+which often shows up in places like Facebook when people link to your site.
+
+Again, a templating solution can be handy here:
+
+```html+jinja
+<!-- base.template.html -->
+<head>
+  {% if description is defined %}<meta property="og:description" content="{{ description }}" />{% endif %}
+
+  <!-- Optional: use the same variable for your general meta description -->
+  {% if description is defined %}<meta name="description" content="{{ description }}">{% endif %}
+</head>
+```
+
+```html+jinja
+{% extends "base.template.html" %}
+
+{% set description = "Use Jinja and basic HTML and Markdown to build a simple, predictable static site." %}
+```
 
 ## Open graph type missing
 
-TODO
+Unless you are writing articles or some other special kind of content,
+the [open graph type](https://ogp.me/#types) can be set to "website" for all of your pages.
 
-## Open graph url missing
+```html
+<!-- base.template.html -->
+<head>
+  <meta property="og:type" content="website" />
+</head>
+```
 
-TODO
+## Open graph URL missing
+
+The open graph URL should be the canonical, absolute URL to the current page.
+
+In Combine, the [`absolute_url` filter can help (don't forget to set the `base_url` variable though)](/absolute-urls/):
+
+```html+jinja
+<!-- base.template.html -->
+<head>
+  <meta property="og:url" content="{{ url|absolute_url }}" />
+</head>
+```
 
 ## Open graph image missing
 
-TODO
+The open graph image gets used in all kinds of social networks on modern chat/document apps.
+If you only do one thing, just set a default image for all pages on your site.
+
+One solution is to set a default (note the use of the `absolute_url` filter to make it absolute),
+and to use an optional variable for customizing per-page:
+
+```html+jinja
+<!-- base.template.html -->
+<head>
+  {% if image_url is defined -%}
+  <meta property="og:image" content="{{ image_url|absolute_url }}" />
+  {%- else -%}
+  <meta property="og:image" content="{{ '/assets/img/open-graph.png'|absolute_url }}" />
+  {%- endif %}
+</head>
+```
+
+```html+jinja
+{% extends "base.template.html" %}
+
+{% set image_url = "/img/picture.png" %}
+```
 
 ## Open graph site_name missing
 
-TODO
+This can be the same on every page, and should reflect the name of your site.
+Most of the time, this can just be the name of your company.
+
+```html
+<!-- base.template.html -->
+<head>
+  <meta property="og:site_name" content="YourBusinessName" />
+</head>
+```
 
 ## Open graph URL not canonical HTTPS
 
-TODO
+[As mentioned above](#open-graph-url-missing), the URL needs to be absolute, canonical, and HTTPS.
 
 ## Open graph image not canonical HTTPS
 
-TODO
+[As mentioned above](#open-graph-image-missing), the image needs to be absolute, canonical, and HTTPS.
