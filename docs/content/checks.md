@@ -49,6 +49,7 @@ One way to do this is by using a "title" variable in the `<head>` section of you
 ```
 
 Then set the title variable on each page:
+
 ```html+jinja
 {% extends "base.template.html" %}
 
