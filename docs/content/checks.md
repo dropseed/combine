@@ -40,6 +40,22 @@ but there is no reason not to update the link to make it correct.
 
 The `<title>` tag should be present on every page.
 
+One way to do this is by using a "title" variable in the `<head>` section of your base template:
+
+```html+jinja
+<head>
+  <title>{% if title is defined %}{{ title }} - {% endif %}YourBusinessName</title>
+</head>
+```
+
+Then set the title variable on each page:
+
+```html+jinja
+{% extends "base.template.html" %}
+
+{% set title = "About Us" %}
+```
+
 ## Title empty
 
 The `<title>` tag is present, but has no text.
