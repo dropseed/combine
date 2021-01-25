@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+Nothing yet.
+
+## [2.1.1] - 2021-01-25
+
 - Change file size math and add current size to output
 - Strip whitespace when checking broken internal links
 - Remove query string parameters when checking broken internal links
@@ -38,7 +42,8 @@ Require importlib-metadata and typing_extensions directly if Python < 3.8.
 
 Combine has been in use on production sites for a while now, so we might as well act like it!
 
-[Unreleased]: https://github.com/dropseed/combine/compare/2.1.0...HEAD
+[Unreleased]: https://github.com/dropseed/combine/compare/2.1.1...HEAD
+[2.1.1]: https://github.com/dropseed/combine/releases/tag/2.1.1
 [2.1.0]: https://github.com/dropseed/combine/releases/tag/2.1.0
 [2.0.1]: https://github.com/dropseed/combine/releases/tag/2.0.1
 [2.0.0]: https://github.com/dropseed/combine/releases/tag/2.0.0
