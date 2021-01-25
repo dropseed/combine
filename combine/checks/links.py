@@ -35,6 +35,11 @@ class InternalLinkBrokenCheck(Check):
         for nodeType, nodeAttribute in types.items():
             for node in self.html_soup.findAll(nodeType):
                 value = node.get(nodeAttribute)
+
+                if value:
+                    # Remove whitespace on both ends
+                    value = value.strip()
+
                 if not value:
                     # Skip empty ones for now, not our responsibility
                     continue
