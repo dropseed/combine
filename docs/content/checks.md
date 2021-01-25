@@ -40,6 +40,12 @@ but there is no reason not to update the link to make it correct.
 
 The `<title>` tag should be present on every page.
 
+Try adding this to the `<head>` section of a template:
+`<title>{% if title is defined %}{{ title }}{% endif %}</title>`
+
+Then set the title variable on each page:
+`{% set title = "Page Title" %}`
+
 ## Title empty
 
 The `<title>` tag is present, but has no text.
