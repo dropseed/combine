@@ -220,6 +220,11 @@ and to use an optional variable for customizing per-page:
 {% set image_url = "/img/picture.png" %}
 ```
 
+Dimensions and design can get confusing depending on which article you read,
+but a simple example is to use a 1280px x 640px image like this template from GitHub:
+
+![GitHub Open Graph template](/assets/img/repository-open-graph-template.png)
+
 ## Open Graph site_name missing
 
 This can be the same on every page, and should reflect the name of your site.
