@@ -124,4 +124,12 @@ Would render this in your final HTML:
 <code>{% code %}</code>
 ```
 
+For variables that include HTML, use the `|safe` filter:
+
+```
+<div>
+  {{ variable_with_html|safe }}
+</div>
+```
+
 [More about escaping →](https://jinja.palletsprojects.com/en/2.11.x/templates/#escaping)
