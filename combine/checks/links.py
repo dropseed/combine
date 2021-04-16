@@ -26,6 +26,7 @@ class InternalLinkBrokenCheck(Check):
             "http:",
             "https:",
             "tel:",
+            "sms:",
             "mailto:",
             "ftp:",
             "file:",
