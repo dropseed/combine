@@ -9,6 +9,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 Nothing yet.
 
+## [2.1.2] - 2021-04-26
+
+- Ignore sms:// in link checking
+- Update python-frontmatter to ^1.0.1
+
 ## [2.1.1] - 2021-01-25
 
 - Change file size math and add current size to output
@@ -42,7 +47,8 @@ Require importlib-metadata and typing_extensions directly if Python < 3.8.
 
 Combine has been in use on production sites for a while now, so we might as well act like it!
 
-[Unreleased]: https://github.com/dropseed/combine/compare/2.1.1...HEAD
+[Unreleased]: https://github.com/dropseed/combine/compare/2.1.2...HEAD
+[2.1.2]: https://github.com/dropseed/combine/releases/tag/2.1.2
 [2.1.1]: https://github.com/dropseed/combine/releases/tag/2.1.1
 [2.1.0]: https://github.com/dropseed/combine/releases/tag/2.1.0
 [2.0.1]: https://github.com/dropseed/combine/releases/tag/2.0.1
