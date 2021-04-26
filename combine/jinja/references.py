@@ -18,7 +18,8 @@ def get_references_in_path(path, jinja_env):
             references.add(ref)
             references |= set(
                 get_references_in_path(
-                    get_path_for_reference(ref, jinja_env), jinja_env,
+                    get_path_for_reference(ref, jinja_env),
+                    jinja_env,
                 )
             )
 

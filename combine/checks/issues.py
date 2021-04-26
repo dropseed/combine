@@ -37,7 +37,9 @@ class Issues:
         for index, issue in enumerate(self._issues):
             # TODO could just be yaml format?
             click.secho(
-                f"\n  {index+1}. {issue.description}", fg="yellow", bold=True,
+                f"\n  {index+1}. {issue.description}",
+                fg="yellow",
+                bold=True,
             )
             click.secho(
                 f"     https://combine.dropseed.io/checks/#{issue.type}\n", fg="yellow"
