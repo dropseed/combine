@@ -16,7 +16,7 @@ combine = "combine.cli:cli"
 [tool.poetry.dependencies]
 python = "^3.6"
 jinja2 = "^2.11.2"
-click = "^7.1.2"
+click = "^8.0.0"
 watchdog = "==0.10.3"
 pyyaml = "^5.3.1"
 beautifulsoup4 = "^4.9.1"
