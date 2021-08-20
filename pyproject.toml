@@ -2,11 +2,11 @@
 name = "combine"
 version = "2.1.2"
 description = "A straightforward static site builder."
-authors = ["Dropseed <python@dropseed.io>"]
+authors = ["Dropseed <python@dropseed.dev>"]
 license = "MIT"
 readme = "README.md"
-homepage = "https://combine.dropseed.io"
-documentation = "https://combine.dropseed.io"
+homepage = "https://combine.dropseed.dev"
+documentation = "https://combine.dropseed.dev"
 repository = "https://github.com/dropseed/combine"
 keywords = ["static", "site", "generator", "jinja"]
 

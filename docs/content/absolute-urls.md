@@ -20,7 +20,7 @@ Here's an example:
 ```yaml
 variables:
   base_url:
-    default: "https://combine.dropseed.io"
+    default: "https://combine.dropseed.dev"
     from_env: URL  # netlify
 ```
 

@@ -27,7 +27,7 @@ You can leverage environment variables keep settings out of your repo or get bui
 ```yaml
 variables:
   base_url:
-    default: "https://combine.dropseed.io"
+    default: "https://combine.dropseed.dev"
     from_env: URL  # a Netlify variable
 ```
 

@@ -28,7 +28,7 @@ And you can provide a `default` if there are situations where the env variable w
 ```yaml
 variables:
   base_url:
-    default: "https://combine.dropseed.io"
+    default: "https://combine.dropseed.dev"
     from_env: URL  # a Netlify variable
 ```
 

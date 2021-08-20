@@ -68,7 +68,7 @@ def work(ctx, port):
 ┃      ┏━━━━━┓                                               ┃
 ┃      ┗┓   ┏┻━━━┓    Site is live: http://127.0.0.1:%s    ┃
 ┃    ┏━━┫   ┣━━┓ ┃                                           ┃
-┃    ┃ ┏┻━━━┻┓ ┃      Docs: https://combine.dropseed.io      ┃
+┃    ┃ ┏┻━━━┻┓ ┃      Docs: https://combine.dropseed.dev     ┃
 ┃ ┏━━┻━┻━━━━━┻━┻━━┓                                          ┃
 ┃ ┣━━━━━━━━━━━━━━━┫   Watching for file changes...           ┃
 ┃ ┗━━━━◡◡━━━◡◡━━━━┛                                          ┃

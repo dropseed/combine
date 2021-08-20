@@ -42,7 +42,7 @@ class Issues:
                 bold=True,
             )
             click.secho(
-                f"     https://combine.dropseed.io/checks/#{issue.type}\n", fg="yellow"
+                f"     https://combine.dropseed.dev/checks/#{issue.type}\n", fg="yellow"
             )
             for k, v in issue.context.items():
                 click.secho(f"     {k}: {pformat(v)}", fg="yellow")
