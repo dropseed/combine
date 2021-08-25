@@ -25,7 +25,7 @@ markdown = "^3.2.2"
 python-frontmatter = "^1.0.0"
 importlib-metadata = {version = "^3.3.0", python = "<3.8"}
 typing-extensions = {version = "^3.7.4", python = "<3.8"}
-cls-client = "^0.1.1"
+cls-client = "<1.0.0"
 
 [tool.poetry.dev-dependencies]
 ipdb = "^0.13.3"
