@@ -4,7 +4,7 @@ steps:
     # watch: ["./content/**/*.html"]
   - run: "./theme/node_modules/.bin/parcel build theme/content/assets/_main.js --out-dir output/assets --out-file main.js"
     watch: ["./theme/content/assets/_main.js"]
-  - run: "./theme/node_modules/.bin/tailwind build ./content/assets/_main.css -o ./output/assets/main.css"
+  - run: "./theme/node_modules/.bin/tailwind build -i ./content/assets/_main.css -o ./output/assets/main.css"
     watch:
       - "./tailwind.config.js"
       - "./content/assets/_main.css"
