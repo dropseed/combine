@@ -1,12 +1,20 @@
 import os
-import json
 
 import click
 import pygments
+import cls_client
 
 from .core import Combine
 from .dev import Watcher, Server
 from .exceptions import BuildError
+
+
+cls_client.set_project_key("cls_pk_QFp5bJFR1RXauHdvRUDpDngE")
+cls_client.set_project_slug("combine")
+cls_client.set_noninteractive_tracking(
+    enabled=True,
+    is_noninteractive="CI" in os.environ,
+)
 
 
 @click.group()
@@ -20,6 +28,7 @@ def cli(ctx):
 @click.option("--env", default="production")
 @click.option("--var", multiple=True, default=[])
 @click.pass_context
+@cls_client.track_command(include_kwargs=["check", "env"], include_env=["NETLIFY"])
 def build(ctx, check, env, var):
     variables = dict(x.split("=") for x in var)
     config_path = os.path.abspath("combine.yml")
@@ -46,6 +55,7 @@ def build(ctx, check, env, var):
 @cli.command()
 @click.option("--port", type=int, default=8000)
 @click.pass_context
+@cls_client.track_command()
 def work(ctx, port):
     config_path = os.path.abspath("combine.yml")
     combine = Combine(
@@ -96,6 +106,7 @@ def utils(ctx):
     type=click.Choice(list(pygments.styles.get_all_styles())),
 )
 @click.pass_context
+@cls_client.track_command(include_kwargs=["style"])
 def highlight_css(ctx, style):
     """Outputs the CSS which can be customized for highlighted code"""
     for line in (
