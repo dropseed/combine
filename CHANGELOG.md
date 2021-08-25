@@ -11,6 +11,7 @@ Nothing yet.
 
 ## [2.1.3] - 2021-08-24
 
+- Change urls to https://combine.dropseed.dev
 - Add basic telemetry/analytics to understand usage
 
 ## [2.1.2] - 2021-04-26
