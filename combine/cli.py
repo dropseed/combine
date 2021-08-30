@@ -11,10 +11,7 @@ from .exceptions import BuildError
 
 cls_client.set_project_key("cls_pk_QFp5bJFR1RXauHdvRUDpDngE")
 cls_client.set_project_slug("combine")
-cls_client.set_noninteractive_tracking(
-    enabled=True,
-    is_noninteractive="CI" in os.environ,
-)
+cls_client.set_noninteractive_tracking_enabled(True)
 
 
 @click.group()
@@ -28,7 +25,10 @@ def cli(ctx):
 @click.option("--env", default="production")
 @click.option("--var", multiple=True, default=[])
 @click.pass_context
-@cls_client.track_command(include_kwargs=["check", "env"], include_env=["NETLIFY"])
+@cls_client.track_command(
+    include_kwargs=["check", "env"],
+    include_env=["NETLIFY", "CIRCLECI", "TRAVIS", "GITLAB_CI", "GITHUB_ACTIONS", "CI"],
+)
 def build(ctx, check, env, var):
     variables = dict(x.split("=") for x in var)
     config_path = os.path.abspath("combine.yml")
