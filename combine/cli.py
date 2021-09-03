@@ -16,15 +16,11 @@ cls_client.set_version(__version__)
 cls_client.set_noninteractive_tracking_enabled(True)
 
 
-@click.group(invoke_without_command=True)
-@click.option("--version", "-v", is_flag=True, help="Show version and exit.")
+@click.group()
+@click.version_option(__version__)
 @click.pass_context
-def cli(ctx, version):
-    if not ctx.invoked_subcommand:
-        if version:
-            click.echo(__version__)
-        else:
-            click.echo(ctx.get_help())
+def cli(ctx):
+    pass
 
 
 @cli.command()
