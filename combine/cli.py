@@ -7,17 +7,24 @@ import cls_client
 from .core import Combine
 from .dev import Watcher, Server
 from .exceptions import BuildError
+from . import __version__
 
 
 cls_client.set_project_key("cls_pk_QFp5bJFR1RXauHdvRUDpDngE")
 cls_client.set_project_slug("combine")
+cls_client.set_version(__version__)
 cls_client.set_noninteractive_tracking_enabled(True)
 
 
-@click.group()
+@click.group(invoke_without_command=True)
+@click.option("--version", "-v", is_flag=True, help="Show version and exit.")
 @click.pass_context
-def cli(ctx):
-    pass
+def cli(ctx, version):
+    if not ctx.invoked_subcommand:
+        if version:
+            click.echo(__version__)
+        else:
+            click.echo(ctx.get_help())
 
 
 @cli.command()
