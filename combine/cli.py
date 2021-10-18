@@ -58,8 +58,9 @@ def build(ctx, check, env, var):
 @cli.command()
 @click.option("--port", type=int, default=8000)
 @click.pass_context
-@cls_client.track_command()
 def work(ctx, port):
+    cls_client.track_event(slug="work", type="command", metadata={}, dispatch=True)
+
     config_path = os.path.abspath("combine.yml")
     combine = Combine(
         config_path=config_path,
