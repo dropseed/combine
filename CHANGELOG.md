@@ -9,6 +9,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 Nothing yet.
 
+## [2.2.1] - 2021-10-18
+
+- Fix CLS (telemtry/analytics) prompt on `Ctrl+C` during `combine work`
+- Deduplicate filesystem events in `combine work` that are the same and in quick succession
+
 ## [2.2.0] - 2021-10-15
 
 - Update watchdog dependency
@@ -56,7 +61,8 @@ Require importlib-metadata and typing_extensions directly if Python < 3.8.
 
 Combine has been in use on production sites for a while now, so we might as well act like it!
 
-[Unreleased]: https://github.com/dropseed/combine/compare/2.2.0...HEAD
+[Unreleased]: https://github.com/dropseed/combine/compare/2.2.1...HEAD
+[2.2.1]: https://github.com/dropseed/combine/releases/tag/2.2.1
 [2.2.0]: https://github.com/dropseed/combine/releases/tag/2.2.0
 [2.1.3]: https://github.com/dropseed/combine/releases/tag/2.1.3
 [2.1.2]: https://github.com/dropseed/combine/releases/tag/2.1.2
