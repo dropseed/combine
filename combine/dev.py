@@ -51,6 +51,11 @@ class Watcher:
 class EventHandler(FileSystemEventHandler):
     def __init__(self, combine, *args, **kwargs):
         self.combine = combine
+
+        # To dedupe modified events
+        self.last_valid_event = None
+        self.last_event_time = None
+
         super().__init__(*args, **kwargs)
 
     def should_ignore_path(self, event_path):
@@ -70,7 +75,24 @@ class EventHandler(FileSystemEventHandler):
 
         return False
 
+    def is_duplicate_event(self, event):
+        return (
+            self.last_valid_event
+            and event == self.last_valid_event
+            and datetime.datetime.now() - self.last_event_time
+            < datetime.timedelta(seconds=0.1)
+        )
+
+    def valid_event(self, event):
+        """When an event is processed, call this to make sure we can
+        deduplicate file events that sometimes trigger twice"""
+        self.last_valid_event = event
+        self.last_event_time = datetime.datetime.now()
+
     def on_any_event(self, event):
+        if self.is_duplicate_event(event):
+            return
+
         # if a file was moved or something, we only care about the destination
         event_path = event.dest_path if hasattr(event, "dest_path") else event.src_path
 
@@ -99,6 +121,7 @@ class EventHandler(FileSystemEventHandler):
             )
             self.reload_combine()
             self.rebuild_site()
+            self.valid_event(event)
             return
 
         content_relative_path = self.combine.content_relative_path(
@@ -106,6 +129,7 @@ class EventHandler(FileSystemEventHandler):
         )
 
         if content_relative_path:
+
             if isinstance(event, (FileCreatedEvent, DirModifiedEvent)):
                 # Reload first, so we know about any new files
                 self.reload_combine()
@@ -122,6 +146,7 @@ class EventHandler(FileSystemEventHandler):
                 click.echo("Rebuilding entire site")
                 self.reload_combine()
                 self.rebuild_site()
+                self.valid_event(event)
                 return
 
             files = self.combine.get_related_files(content_relative_path)
@@ -142,6 +167,7 @@ class EventHandler(FileSystemEventHandler):
             else:
                 click.echo(f"Rebuilding {len(files)} files")
             self.rebuild_site(only_paths=[x.path for x in files])
+            self.valid_event(event)
 
     def reload_combine(self):
         try:
