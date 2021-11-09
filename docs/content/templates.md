@@ -6,7 +6,7 @@ description: Extend templates to share layouts and UI across pages in your stati
 # Templates
 
 Templates are used to share layouts, headers, and footers across your site.
-A template defines "blocks" which can be overwritten in the files that "extend" it.
+A template defines "blocks" which can be overwritten by the pages that "extend" it.
 
 To keep templates out of your final build (ex. "example.com/base.template/index.html")
 you should always [use the naming convention `<name>.template.html`](/ignore/).
