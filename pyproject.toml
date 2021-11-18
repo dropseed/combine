@@ -25,7 +25,7 @@ markdown = "^3.2.2"
 python-frontmatter = "^1.0.0"
 typing-extensions = {version = "^3.7.4", python = "<3.8"}
 cls-client = "^1.2.0"
-barrel = {url = "https://github.com/dropseed/barrel/archive/4b7249f.zip"}
+barrel = {url = "https://github.com/dropseed/barrel/archive/7de070a.zip"}
 
 [tool.poetry.dev-dependencies]
 ipdb = "^0.13.3"

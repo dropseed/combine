@@ -54,7 +54,7 @@ python-versions = "^3.6.2"
 
 [package.source]
 type = "url"
-url = "https://github.com/dropseed/barrel/archive/4b7249f.zip"
+url = "https://github.com/dropseed/barrel/archive/7de070a.zip"
 [[package]]
 name = "beautifulsoup4"
 version = "4.10.0"
@@ -619,7 +619,7 @@ testing = ["pytest (>=4.6)", "pytest-checkdocs (>=2.4)", "pytest-flake8", "pytes
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.6.2"
-content-hash = "65beee57645f2494f620bceafc51319785c4b833f75df18c89bf41e72b650625"
+content-hash = "1c9c711d444376a341da984e331b72e8adf65305906fe743996923b9e6d6622b"
 
 [metadata.files]
 appdirs = [
