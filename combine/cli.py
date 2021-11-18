@@ -33,6 +33,7 @@ def cli(ctx):
     include_env=["NETLIFY", "CIRCLECI", "TRAVIS", "GITLAB_CI", "GITHUB_ACTIONS", "CI"],
 )
 def build(ctx, check, env, var):
+    """Build the site (typically during deployment)"""
     variables = dict(x.split("=") for x in var)
     config_path = os.path.abspath("combine.yml")
     combine = Combine(config_path=config_path, env=env, variables=variables)
@@ -59,6 +60,7 @@ def build(ctx, check, env, var):
 @click.option("--port", type=int, default=8000)
 @click.pass_context
 def work(ctx, port):
+    """Start a local server to build the site while you work"""
     cls_client.track_event(slug="work", type="command", metadata={}, dispatch=True)
 
     config_path = os.path.abspath("combine.yml")
@@ -99,6 +101,7 @@ def work(ctx, port):
 @cli.group()
 @click.pass_context
 def utils(ctx):
+    """Utility commands"""
     pass
 
 
