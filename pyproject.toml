@@ -21,10 +21,11 @@ watchdog = "^2.1.6"
 pyyaml = "^5.3.1"
 beautifulsoup4 = "^4.9.1"
 Pygments = "^2.6.1"
-markdown = "^3.2.2"
+markdown = "^3.3.6"
 python-frontmatter = "^1.0.0"
 typing-extensions = {version = "^3.7.4", python = "<3.8"}
 cls-client = "^1.2.0"
+barrel = {url = "https://github.com/dropseed/barrel/archive/4b7249f.zip"}
 
 [tool.poetry.dev-dependencies]
 ipdb = "^0.13.3"
