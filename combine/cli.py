@@ -3,6 +3,7 @@ import os
 import click
 import pygments
 import cls_client
+import barrel
 
 from .core import Combine
 from .dev import Watcher, Server
@@ -120,6 +121,12 @@ def highlight_css(ctx, style):
         pygments.formatters.HtmlFormatter(style=style).get_style_defs().splitlines()
     ):
         click.echo(f".highlight {line}")
+
+
+@cli.command()
+def update():
+    """Update your version of combine"""
+    barrel.update("combine")
 
 
 if __name__ == "__main__":
