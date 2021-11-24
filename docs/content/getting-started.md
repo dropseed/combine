@@ -8,9 +8,8 @@ description: Create a new Combine static site and your first pages.
 ## Installing Combine
 
 Combine is written in Python.
-You can install it with `pip install combine`,
-but we would recommend using something like [Pipenv](https://docs.pipenv.org/) or [Poetry](https://python-poetry.org/).
-We prefer Poetry, so we'll use that as an example for now.
+The easiest way to install and use it is with [barrel](https://barrel.dev).
+If you're familiar with Python, you can also install it using pip/pipenv/poetry.
 
 ```console
 $ mkdir mysite
