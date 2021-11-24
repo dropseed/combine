@@ -17,8 +17,8 @@ $ mkdir mysite
 $ cd mysite
 $ git init
 $ echo output > .gitignore
-$ poetry init --name mysite --python ^3.6 --dependency combine
-$ poetry install
+$ echo .venv > .gitignore
+$ curl -sSL https://barrel.dev/install.py | python3 - combine
 ```
 
 ## Creating a site
