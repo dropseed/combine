@@ -66,7 +66,7 @@ but the basics will get you a long way.
 **4. Run `combine build` to put everything together.**
 
 ```console
-$ poetry run combine build
+$ combine build
 $ cat output/index.html
 <!DOCTYPE html>
 <html lang="en">
@@ -89,5 +89,5 @@ When you're editing your site,
 you'll want to use `combine work` to create a development server and automatically rebuild when you edit files.
 
 ```console
-$ poetry run combine work
+$ combine work
 ```
