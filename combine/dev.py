@@ -70,6 +70,11 @@ class EventHandler(FileSystemEventHandler):
             if p in ignore_dirs:
                 return True
 
+        ignore_extensions = (".crdownload",)
+
+        if os.path.splitext(event_path)[1] in ignore_extensions:
+            return True
+
         return False
 
     def is_duplicate_event(self, event):
