@@ -15,8 +15,7 @@ If you're familiar with Python, you can also install it using pip/pipenv/poetry.
 $ mkdir mysite
 $ cd mysite
 $ git init
-$ echo output > .gitignore
-$ echo .venv > .gitignore
+$ echo "/output\n/.venv" > .gitignore
 $ curl -sSL https://barrel.dev/install.py | python3 - combine
 ```
 
