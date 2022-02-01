@@ -1,5 +1,26 @@
+from urllib.parse import urlparse
+
 from .base import Check
 from .issues import Issues, Issue
+
+
+def url_is_valid_absolute(url):
+    parsed = urlparse(url)
+
+    if parsed.netloc == "127.0.0.1":
+        # TODO ideally this would only be allowed in local development
+        # https not required
+        return True
+
+    if not parsed.netloc:
+        # domain missing, probably broken url like "https:///"
+        return False
+
+    if parsed.scheme != "https":
+        # must be https
+        return False
+
+    return True
 
 
 class BaseOpenGraphCheck(Check):
@@ -69,10 +90,7 @@ class OpenGraphURLCheck(BaseOpenGraphCheck):
             #         )
             #     )
 
-            # TODO figure out better solution for local -- want to catch those if building production
-            if not url.startswith("https://") and not url.startswith(
-                "http://127.0.0.1"
-            ):
+            if not url_is_valid_absolute(url):
                 issues.append(
                     Issue(
                         type="open-graph-url-not-canonical-https",
@@ -105,10 +123,7 @@ class OpenGraphImageCheck(BaseOpenGraphCheck):
             #         )
             #     )
 
-            # TODO figure out better solution for local -- want to catch those if building production
-            if not url.startswith("https://") and not url.startswith(
-                "http://127.0.0.1"
-            ):
+            if not url_is_valid_absolute(url):
                 issues.append(
                     Issue(
                         type="open-graph-image-not-canonical-https",

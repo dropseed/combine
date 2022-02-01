@@ -1,10 +1,13 @@
+import logging
 import os
 
 import click
 import pygments
 import cls_client
+import barrel
 
 from .core import Combine
+from .logger import logger
 from .dev import Watcher, Server
 from .exceptions import BuildError
 from . import __version__
@@ -27,12 +30,17 @@ def cli(ctx):
 @click.option("--check", is_flag=True, default=False)
 @click.option("--env", default="production")
 @click.option("--var", multiple=True, default=[])
+@click.option("--debug", is_flag=True, default=False)
 @click.pass_context
 @cls_client.track_command(
     include_kwargs=["check", "env"],
     include_env=["NETLIFY", "CIRCLECI", "TRAVIS", "GITLAB_CI", "GITHUB_ACTIONS", "CI"],
 )
-def build(ctx, check, env, var):
+def build(ctx, check, env, var, debug):
+    """Build the site (typically during deployment)"""
+    if debug:
+        logger.setLevel(logging.DEBUG)
+
     variables = dict(x.split("=") for x in var)
     config_path = os.path.abspath("combine.yml")
     combine = Combine(config_path=config_path, env=env, variables=variables)
@@ -57,8 +65,13 @@ def build(ctx, check, env, var):
 
 @cli.command()
 @click.option("--port", type=int, default=8000)
+@click.option("--debug", is_flag=True, default=False)
 @click.pass_context
-def work(ctx, port):
+def work(ctx, port, debug):
+    """Start a local server to build the site while you work"""
+    if debug:
+        logger.setLevel(logging.DEBUG)
+
     cls_client.track_event(slug="work", type="command", metadata={}, dispatch=True)
 
     config_path = os.path.abspath("combine.yml")
@@ -99,6 +112,7 @@ def work(ctx, port):
 @cli.group()
 @click.pass_context
 def utils(ctx):
+    """Utility commands"""
     pass
 
 
@@ -117,6 +131,12 @@ def highlight_css(ctx, style):
         pygments.formatters.HtmlFormatter(style=style).get_style_defs().splitlines()
     ):
         click.echo(f".highlight {line}")
+
+
+@cli.command()
+def update():
+    """Update your version of combine"""
+    barrel.update("combine")
 
 
 if __name__ == "__main__":

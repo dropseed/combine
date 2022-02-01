@@ -33,6 +33,14 @@ This can be a useful pattern embedding user- or machine-generated files are also
 {% endmarkdown %}
 ```
 
+You can also render variables to markdown using the `|markdown` filter.
+
+```html+jinja
+<h2>The markdown filter</h2>
+
+{{ variable|markdown }}
+```
+
 ## Entire pages in Markdown
 
 For simple pages (like documentation) you can choose to write an entire file in Markdown.

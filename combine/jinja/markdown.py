@@ -1,4 +1,4 @@
-from jinja2 import nodes
+from jinja2 import nodes, contextfilter
 from jinja2.ext import Extension
 from jinja2 import Markup
 
@@ -25,13 +25,23 @@ class MarkdownExtension(Extension):
         # jinja will have escaped by default, so we want to unescape
         # for now and leave that to markdown rendering
         markdown_content = Markup(markdown_content).unescape()
-        html_content = markdown.markdown(
-            markdown_content,
-            extensions=[
-                "markdown.extensions.fenced_code",
-                CodeHiliteExtension(css_class="highlight"),
-                "markdown.extensions.tables",
-                "markdown.extensions.toc",
-            ],
-        )
-        return html_content
+        return markdown_to_html(markdown_content)
+
+
+@contextfilter
+def markdown_filter(ctx, value):
+    html_content = markdown_to_html(value)
+    return Markup(html_content)
+
+
+def markdown_to_html(markdown_content):
+    html_content = markdown.markdown(
+        markdown_content,
+        extensions=[
+            "markdown.extensions.fenced_code",
+            CodeHiliteExtension(css_class="highlight"),
+            "markdown.extensions.tables",
+            "markdown.extensions.toc",
+        ],
+    )
+    return html_content

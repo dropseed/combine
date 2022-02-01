@@ -49,6 +49,21 @@ def test_open_graph_url_check(snapshot):
     snapshot.assert_match(issues.as_data())
 
 
+def test_open_graph_url_check_invalid(snapshot):
+    content = """<!doctype html>
+<html>
+    <head>
+        <meta property="og:url" content="https:///" />
+    </head>
+    <body>
+    </body>
+</html>"""
+    check = OpenGraphURLCheck(BeautifulSoup(content, "html.parser"))
+    issues = check.run()
+    assert len(issues) > 0
+    snapshot.assert_match(issues.as_data())
+
+
 def test_open_graph_image_check(snapshot):
     content = """<!doctype html>
 <html>

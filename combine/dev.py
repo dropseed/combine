@@ -1,5 +1,4 @@
 import datetime
-import logging
 import os
 import time
 from http.server import HTTPServer as BaseHTTPServer, SimpleHTTPRequestHandler
@@ -21,9 +20,7 @@ from watchdog.events import (
 
 from .exceptions import BuildError
 from .files.ignored import IgnoredFile
-
-
-logger = logging.getLogger(__file__)
+from .logger import logger
 
 
 class Watcher:
@@ -73,6 +70,11 @@ class EventHandler(FileSystemEventHandler):
             if p in ignore_dirs:
                 return True
 
+        ignore_extensions = (".crdownload",)
+
+        if os.path.splitext(event_path)[1] in ignore_extensions:
+            return True
+
         return False
 
     def is_duplicate_event(self, event):
@@ -90,20 +92,35 @@ class EventHandler(FileSystemEventHandler):
         self.last_event_time = datetime.datetime.now()
 
     def on_any_event(self, event):
-        if self.is_duplicate_event(event):
-            return
+        logger.debug("Event: %s", event)
 
         # if a file was moved or something, we only care about the destination
         event_path = event.dest_path if hasattr(event, "dest_path") else event.src_path
 
         if self.should_ignore_path(event_path):
+            logger.debug("Ignoring path: %s", event_path)
+            return
+
+        if self.is_duplicate_event(event):
+            logger.debug("Duplicate event: %s", event)
             return
 
         for step in self.combine.config.steps:
             command = step["run"]
             for pattern in step.get("watch", []):
-                # TODO remove ./ automatically?
-                if fnmatch(event_path, pattern):
+                match = False
+
+                if pattern.startswith("/"):
+                    # Absolute path pattern
+                    match = fnmatch(os.path.abspath(event_path), pattern)
+                elif pattern.startswith("./"):
+                    # Specified relative path pattern
+                    match = fnmatch(os.path.relpath(event_path), pattern[2:])
+                else:
+                    # Implied relative path pattern
+                    match = fnmatch(os.path.relpath(event_path), pattern)
+
+                if match:
                     click.secho(f"❯ Running step for matching {pattern}", bold=True)
                     result = subprocess.run(shlex.split(command))
                     if result.returncode != 0:

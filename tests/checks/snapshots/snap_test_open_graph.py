@@ -72,3 +72,12 @@ snapshots['test_open_graph_url_check 1'] = [
         'type': 'open-graph-url-not-canonical-https'
     }
 ]
+
+snapshots['test_open_graph_url_check_invalid 1'] = [
+    {
+        'context': {
+            'content': 'https:///'
+        },
+        'type': 'open-graph-url-not-canonical-https'
+    }
+]
