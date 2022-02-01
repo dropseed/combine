@@ -17,12 +17,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Better file watch pattern matching for relative paths
 - `--debug` option for `combine build` and `combine work`
 
-## [2.3.1] - 2021-11-29
+## 2.3.1 - 2021-11-29
 
 - Use "barrel" in setup guide instead of poetry
 - Update barrel dependency
 
-## [2.3.0] - 2021-11-18
+## 2.3.0 - 2021-11-18
 
 - Add help to cli commands
 - Remove explicit importlib-metadata dependency
