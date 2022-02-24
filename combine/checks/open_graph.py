@@ -7,7 +7,7 @@ from .issues import Issues, Issue
 def url_is_valid_absolute(url):
     parsed = urlparse(url)
 
-    if parsed.netloc == "127.0.0.1":
+    if parsed.netloc.startswith("127.0.0.1"):
         # TODO ideally this would only be allowed in local development
         # https not required
         return True
