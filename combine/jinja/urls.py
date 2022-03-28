@@ -1,9 +1,9 @@
 from urllib.parse import urlparse
-from jinja2 import contextfilter
+from jinja2 import pass_context
 from .exceptions import MissingVariableError
 
 
-@contextfilter
+@pass_context
 def absolute_url(ctx, value):
     try:
         base_url = ctx["base_url"]

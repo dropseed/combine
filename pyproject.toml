@@ -14,7 +14,7 @@ keywords = ["static", "site", "generator", "jinja"]
 combine = "combine.cli:cli"
 
 [tool.poetry.dependencies]
-python = "^3.6.2"
+python = "^3.7.0"
 jinja2 = ">2.11.2"
 click = ">7.1.2"
 watchdog = "^2.1.6"

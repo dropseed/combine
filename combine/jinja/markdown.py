@@ -1,6 +1,6 @@
-from jinja2 import nodes, contextfilter
+from jinja2 import nodes, pass_context
 from jinja2.ext import Extension
-from jinja2 import Markup
+from markupsafe import Markup
 
 import markdown
 from markdown.extensions.codehilite import CodeHiliteExtension
@@ -28,7 +28,7 @@ class MarkdownExtension(Extension):
         return markdown_to_html(markdown_content)
 
 
-@contextfilter
+@pass_context
 def markdown_filter(ctx, value):
     html_content = markdown_to_html(value)
     return Markup(html_content)

@@ -1,6 +1,6 @@
 from jinja2 import nodes
 from jinja2.ext import Extension
-from jinja2 import Markup
+from markupsafe import Markup
 
 
 class IncludeRawExtension(Extension):
