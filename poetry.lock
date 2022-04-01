@@ -38,7 +38,7 @@ python-versions = "*"
 
 [[package]]
 name = "barrel"
-version = "0.2.0"
+version = "0.3.0"
 description = ""
 category = "main"
 optional = false
@@ -573,7 +573,7 @@ testing = ["pytest (>=6)", "pytest-checkdocs (>=2.4)", "pytest-flake8", "pytest-
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.7.0"
-content-hash = "b837abc89c69b2b173e2f09eef774fdad3aac352ff73be15a107b32d659f54fc"
+content-hash = "fd82bcc15ab06bbdca4969c353fca53910fb1949d8a1bfd75f4c279b62554594"
 
 [metadata.files]
 appnope = [
@@ -593,8 +593,8 @@ backcall = [
     {file = "backcall-0.2.0.tar.gz", hash = "sha256:5cbdbf27be5e7cfadb448baf0aa95508f91f2bbc6c6437cd9cd06e2a4c215e1e"},
 ]
 barrel = [
-    {file = "barrel-0.2.0-py3-none-any.whl", hash = "sha256:fd7af9c484f7ebf883fe5ac93eee6235c9967fd39bb6bb8d66d4ba12329a6577"},
-    {file = "barrel-0.2.0.tar.gz", hash = "sha256:5447c138f120ff5cdc1b80f40e2e5c4f3236337774d6a0618f71cbb441f30f20"},
+    {file = "barrel-0.3.0-py3-none-any.whl", hash = "sha256:12b9aafe5b76b807b8e56cf7ee53792ea6f09186a29b357a78d2114b33c1e935"},
+    {file = "barrel-0.3.0.tar.gz", hash = "sha256:b3c5cd79ebebc8e35d2dbf0a3ad4f5a01297100f0c87c0d44de6b87b344fd61f"},
 ]
 beautifulsoup4 = [
     {file = "beautifulsoup4-4.10.0-py3-none-any.whl", hash = "sha256:9a315ce70049920ea4572a4055bc4bd700c940521d36fc858205ad4fcde149bf"},
