@@ -7,20 +7,29 @@ description: Define build steps for compiling assets for your static site.
 
 [Use steps to provide additional commands to be run during your build.](/build/)
 
-The `run` command and `watch` patterns are executed from wherever you run `combine <build|work>`.
-Typically this will be the root of your repo.
+The `run` command will be executed whenever a full site build is processed:
 
 ```yaml
 steps:
-  - run: "./node_modules/.bin/tailwind build ./content/assets/_main.css -o ./output/assets/main.css"
+- run: "./node_modules/.bin/pitchfork index output -c .content"
+```
+
+To also run the command when specific files are edited locally,
+you can specify a list of patterns under `watch`:
+
+```yaml
+steps:
+  - run: "./node_modules/.bin/tailwind -i ./content/assets/_main.css -o ./output/assets/main.css"
     watch:
       - "./tailwind.config.js"
       - "./content/assets/_main.css"
 ```
 
-The `watch` field is not required.
+For tools that include their own watch process,
+you can have Combine run that command automatically during `combine work` by specifing a command string instead of a list of patterns:
 
 ```yaml
 steps:
-- run: "./node_modules/.bin/pitchfork index output -c .content"
+  - run: "./node_modules/.bin/tailwind -i ./content/assets/_main.css -o ./output/assets/main.css"
+    watch: "./node_modules/.bin/tailwind -i ./content/assets/_main.css -o ./output/assets/main.css --watch"
 ```
