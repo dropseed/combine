@@ -1,10 +1,13 @@
 import logging
 import os
+import sys
 
 import click
 import pygments
 import cls_client
 import barrel
+from honcho.manager import Manager as HonchoManager
+from honcho.printer import Printer as HonchoPrinter
 
 from .core import Combine
 from .logger import logger
@@ -45,11 +48,11 @@ def build(ctx, check, env, var, debug):
     config_path = os.path.abspath("combine.yml")
     combine = Combine(config_path=config_path, env=env, variables=variables)
 
-    click.secho("❯ Building site", bold=True)
+    click.secho("Building site", bold=True, color=True)
     try:
         combine.build(check=check)
     except BuildError:
-        click.secho("Build error (see above)", fg="red")
+        click.secho("Build error (see above)", fg="red", color=True)
         exit(1)
 
     if check:
@@ -57,10 +60,11 @@ def build(ctx, check, env, var, debug):
             click.secho(
                 f"{len(combine.issues)} check{'s' if len(combine.issues) > 1 else ''} failed",
                 fg="red",
+                color=True,
             )
             exit(1)
         else:
-            click.secho("✓ All checks passed", fg="green")
+            click.secho("✓ All checks passed", fg="green", color=True)
 
 
 @cli.command()
@@ -80,14 +84,12 @@ def work(ctx, port, debug):
         env="development",
         variables={"base_url": f"http://127.0.0.1:{port}"},
     )
-    click.secho("❯ Building site", bold=True)
+    click.secho("Building site", bold=True, color=True)
     try:
         combine.build(check=True)
     except BuildError:
-        click.secho("Build error (see above)", fg="red")
-
-    server = Server(combine.output_path, port)
-    watcher = Watcher(".", combine=combine)
+        click.secho("Build error (see above)", fg="red", color=True)
+        exit(1)
 
     header = (
         """
@@ -104,9 +106,37 @@ def work(ctx, port, debug):
         % port
     )
 
-    click.secho(header, fg="green", bold=True)
+    click.secho(header, fg="green", bold=True, color=True)
 
-    watcher.watch(server.serve)
+    debug_flag = "--debug" if debug else ""
+
+    bin_path = os.path.dirname(sys.executable)
+    combine_path = os.path.join(bin_path, "combine")
+    honcho_env = {**os.environ, "PYTHONUNBUFFERED": "1"}
+
+    manager = HonchoManager(HonchoPrinter())
+    manager._system_print = lambda x: None
+    manager.add_process(
+        "server",
+        f"{combine_path} utils server --port {port} {debug_flag}",
+        env=honcho_env,
+    )
+    manager.add_process(
+        "combine",
+        f"{combine_path} utils watch --port {port} {debug_flag}",
+        env=honcho_env,
+    )
+
+    # Add additional custom watch processes
+    for i, step in enumerate(combine.config.steps):
+        if step.has_watch_process:
+            name = step.get_name() or f"step-{i}"
+            manager.add_process(
+                name,
+                step.watch,
+            )
+
+    manager.loop()
 
 
 @cli.group()
@@ -114,6 +144,42 @@ def work(ctx, port, debug):
 def utils(ctx):
     """Utility commands"""
     pass
+
+
+@utils.command()
+@click.option("--port", type=int, default=8000)
+@click.option("--debug", is_flag=True, default=False)
+@click.pass_context
+def server(ctx, port, debug):
+    if debug:
+        logger.setLevel(logging.DEBUG)
+
+    config_path = os.path.abspath("combine.yml")
+    combine = Combine(
+        config_path=config_path,
+        env="development",
+        variables={"base_url": f"http://127.0.0.1:{port}"},
+    )
+
+    Server(combine.output_path, port).serve()
+
+
+@utils.command()
+@click.option("--port", type=int, default=8000)
+@click.option("--debug", is_flag=True, default=False)
+@click.pass_context
+def watch(ctx, port, debug):
+    if debug:
+        logger.setLevel(logging.DEBUG)
+
+    config_path = os.path.abspath("combine.yml")
+    combine = Combine(
+        config_path=config_path,
+        env="development",
+        variables={"base_url": f"http://127.0.0.1:{port}"},
+    )
+
+    Watcher(".", combine=combine).watch()
 
 
 @utils.command()

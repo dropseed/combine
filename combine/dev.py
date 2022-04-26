@@ -2,9 +2,6 @@ import datetime
 import os
 import time
 from http.server import HTTPServer as BaseHTTPServer, SimpleHTTPRequestHandler
-from fnmatch import fnmatch
-import subprocess
-import shlex
 
 import click
 from watchdog.observers import Observer
@@ -106,35 +103,26 @@ class EventHandler(FileSystemEventHandler):
             return
 
         for step in self.combine.config.steps:
-            command = step["run"]
-            for pattern in step.get("watch", []):
-                match = False
-
-                if pattern.startswith("/"):
-                    # Absolute path pattern
-                    match = fnmatch(os.path.abspath(event_path), pattern)
-                elif pattern.startswith("./"):
-                    # Specified relative path pattern
-                    match = fnmatch(os.path.relpath(event_path), pattern[2:])
-                else:
-                    # Implied relative path pattern
-                    match = fnmatch(os.path.relpath(event_path), pattern)
-
-                if match:
-                    click.secho(f"❯ Running step for matching {pattern}", bold=True)
-                    result = subprocess.run(shlex.split(command))
-                    if result.returncode != 0:
-                        click.secho(
-                            "There was an error running a user command.", fg="red"
-                        )
-                    break
-
-        timestamp = datetime.datetime.now().strftime("%-I:%M%p").lower()
+            matched_pattern = step.path_matches_watch(event_path)
+            if matched_pattern:
+                click.secho(
+                    f"Running step for matching {matched_pattern}",
+                    bold=True,
+                    color=True,
+                )
+                result = step.run_process(check=False)
+                if result.returncode != 0:
+                    click.secho(
+                        "There was an error running a user command.",
+                        fg="red",
+                        color=True,
+                    )
 
         if os.path.abspath(event_path) == os.path.abspath(self.combine.config_path):
             click.secho(
-                f"❯ {self.combine.config_path} {event.event_type} ({timestamp}): reloading combine and rebuilding site",
+                f"{self.combine.config_path} {event.event_type}: reloading combine and rebuilding site",
                 bold=True,
+                color=True,
             )
             self.reload_combine()
             self.rebuild_site()
@@ -156,9 +144,10 @@ class EventHandler(FileSystemEventHandler):
                 (FileDeletedEvent, DirDeletedEvent, DirMovedEvent, FileMovedEvent),
             ):
                 click.secho(
-                    f"❯ {content_relative_path} {event.event_type} ({timestamp}): ",
+                    f"{content_relative_path} {event.event_type}: ",
                     nl=False,
                     bold=True,
+                    color=True,
                 )
                 click.echo("Rebuilding entire site")
                 self.reload_combine()
@@ -172,9 +161,10 @@ class EventHandler(FileSystemEventHandler):
                 return
 
             click.secho(
-                f"❯ {content_relative_path} {event.event_type} ({timestamp}): ",
+                f"{content_relative_path} {event.event_type}: ",
                 nl=False,
                 bold=True,
+                color=True,
             )
 
             if len(files) == 1:
@@ -191,16 +181,16 @@ class EventHandler(FileSystemEventHandler):
             self.combine.reload()
         except Exception as e:
             logger.error("Error reloading", exc_info=e)
-            click.secho("There was an error! See output above.", fg="red")
+            click.secho("There was an error! See output above.", fg="red", color=True)
 
     def rebuild_site(self, only_paths=None):
         try:
             self.combine.build(only_paths)
         except BuildError:
-            click.secho("Build error (see above)", fg="red")
+            click.secho("Build error (see above)", fg="red", color=True)
         except Exception as e:
             logger.error("Error building", exc_info=e)
-            click.secho("There was an error! See output above.", fg="red")
+            click.secho("There was an error! See output above.", fg="red", color=True)
 
 
 class Server:
