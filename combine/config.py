@@ -1,5 +1,8 @@
 import os
 import datetime
+import subprocess
+import shlex
+from fnmatch import fnmatch
 
 import yaml
 
@@ -55,4 +58,74 @@ class Config:
 
     @property
     def steps(self):
-        return self.data.get("steps", [])
+        for step in self.data.get("steps", []):
+            yield BuildStep(
+                run=step.get("run", None),
+                watch=step.get("watch", None),
+            )
+
+    def run_build_steps(self):
+        for step in self.steps:
+            if step.has_run_process:
+                step.run_process()
+
+
+class BuildStep:
+    def __init__(self, run=None, watch=None):
+        if watch and not isinstance(watch, (list, str)):
+            raise ValueError(
+                "watch must be a string (command) or list of strings (paths to watch)"
+            )
+
+        self.run = run
+        self.watch = watch
+
+    def get_name(self):
+        """
+        Get a step name automatically by parsing the first
+        executable name in the watch or run command
+        """
+        if self.has_watch_process:
+            return self.watch.split()[0].split("/")[-1]
+
+        if self.has_run_process:
+            return self.run.split()[0].split("/")[-1]
+
+        return ""
+
+    @property
+    def has_watch_process(self):
+        return isinstance(self.watch, str)
+
+    @property
+    def has_watch_patterns(self):
+        return isinstance(self.watch, list)
+
+    @property
+    def has_run_process(self):
+        return bool(self.run)
+
+    def run_process(self, check=True):
+        return subprocess.run(shlex.split(self.run), check=check)
+
+    def path_matches_watch(self, path):
+        if not self.has_watch_patterns:
+            return False
+
+        for pattern in self.watch:
+            match = False
+
+            if pattern.startswith("/"):
+                # Absolute path pattern
+                match = fnmatch(os.path.abspath(path), pattern)
+            elif pattern.startswith("./"):
+                # Specified relative path pattern
+                match = fnmatch(os.path.relpath(path), pattern[2:])
+            else:
+                # Implied relative path pattern
+                match = fnmatch(os.path.relpath(path), pattern)
+
+            if match:
+                return pattern
+
+        return False

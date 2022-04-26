@@ -106,7 +106,7 @@ class Combine:
                 paths_rendered.append(file.output_relative_path)
 
         if not only_paths:
-            self.run_build_steps()
+            self.config.run_build_steps()
 
         if build_errors:
             for file_path, error in build_errors.items():
@@ -130,10 +130,6 @@ class Combine:
             # TODO could pass check settings here, just don't know what they should look like
             for issue in file.check_output():
                 self.issues.append(issue)
-
-    def run_build_steps(self):
-        for step in self.config.steps:
-            subprocess.run(shlex.split(step["run"]), check=True)
 
     def get_related_files(self, content_relative_path):
         files = []

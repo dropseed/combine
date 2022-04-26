@@ -33,19 +33,22 @@ class Issues:
         self._issues.append(issue)
 
     def print(self, header):
-        click.secho("\n" + header, fg="yellow")
+        click.secho("\n" + header, fg="yellow", color=True)
         for index, issue in enumerate(self._issues):
             # TODO could just be yaml format?
             click.secho(
                 f"\n  {index+1}. {issue.description}",
                 fg="yellow",
                 bold=True,
+                color=True,
             )
             click.secho(
-                f"     https://combine.dropseed.dev/checks/#{issue.type}\n", fg="yellow"
+                f"     https://combine.dropseed.dev/checks/#{issue.type}\n",
+                fg="yellow",
+                color=True,
             )
             for k, v in issue.context.items():
-                click.secho(f"     {k}: {pformat(v)}", fg="yellow")
+                click.secho(f"     {k}: {pformat(v)}", fg="yellow", color=True)
         click.echo()
 
     def as_data(self):
