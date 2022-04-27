@@ -8,6 +8,6 @@ command = """\
     cd docs/theme && \
     ./scripts/install && \
     cd ../ && \
-    ls -l && ls -l .. && \
+    ls -lah && ls -lah .. && \
     ../.venv/bin/combine build \
     """
