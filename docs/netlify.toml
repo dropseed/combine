@@ -8,5 +8,5 @@ command = """\
     cd docs/theme && \
     ./scripts/install && \
     cd ../ && \
-    poetry run combine build \
+    ../.venv/bin/combine build \
     """
