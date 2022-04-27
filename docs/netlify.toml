@@ -12,3 +12,6 @@ command = """\
     ls -lah && ls -lah .. && \
     ../.venv/bin/combine build \
     """
+
+[build.environment]
+POETRY_VIRTUALENVS_IN_PROJECT = "true"
