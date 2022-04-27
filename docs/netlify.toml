@@ -4,7 +4,7 @@ command = """\
     pip3 install -q poetry && \
     npm install -g yarn && \
     cd .. && \
-    poetry install --no-dev && \
+    POETRY_VIRTUALENVS_IN_PROJECT=true poetry install --no-dev && \
     cd docs/theme && \
     ./scripts/install && \
     cd ../ && \
