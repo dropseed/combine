@@ -1,7 +1,7 @@
 [build]
 publish = "output"
 command = """\
-    pip3 install -e .. && \
+    pip3 install .. && \
     npm install -g yarn && \
     cd .. && \
     cd docs/theme && \
