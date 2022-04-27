@@ -1,17 +1,11 @@
 [build]
 publish = "output"
 command = """\
-    pip3 install -q poetry && \
+    pip3 install -e .. && \
     npm install -g yarn && \
     cd .. && \
-    POETRY_VIRTUALENVS_IN_PROJECT=true poetry install --no-dev && \
-    ls -alh && \
     cd docs/theme && \
     ./scripts/install && \
     cd ../ && \
-    ls -lah && ls -lah .. && \
-    ../.venv/bin/combine build \
+    combine build \
     """
-
-[build.environment]
-POETRY_VIRTUALENVS_IN_PROJECT = "true"
