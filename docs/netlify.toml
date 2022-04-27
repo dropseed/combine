@@ -1,12 +1,11 @@
 [build]
 publish = "output"
 command = """\
-    pip3 install -q poetry && \
+    pip3 install .. && \
     npm install -g yarn && \
     cd .. && \
-    poetry install --no-dev && \
     cd docs/theme && \
     ./scripts/install && \
     cd ../ && \
-    ../.venv/bin/combine build \
+    combine build \
     """
