@@ -5,6 +5,7 @@ command = """\
     npm install -g yarn && \
     cd .. && \
     POETRY_VIRTUALENVS_IN_PROJECT=true poetry install --no-dev && \
+    ls -alh && \
     cd docs/theme && \
     ./scripts/install && \
     cd ../ && \
