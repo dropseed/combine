@@ -3,6 +3,7 @@ import datetime
 import subprocess
 import shlex
 from fnmatch import fnmatch
+import json
 
 import yaml
 
@@ -41,12 +42,29 @@ class Config:
         variables = self.default_variables
 
         for name, data in self.data.get("variables", {}).items():
+            # To use a dict as a variable, you'd have to nest it under "default"...
             if isinstance(data, dict):
                 if "default" in data:
                     variables[name] = data["default"]
 
                 if "from_env" in data and data["from_env"] in os.environ:
                     variables[name] = os.environ[data["from_env"]]
+
+                if "from_file" in data:
+                    filename = data["from_file"]
+                    _, ext = os.path.splitext(filename)
+
+                    if not os.path.exists(filename):
+                        # Treat it like from_env for now -- if it doesn't exist, that's ok
+                        # becuase it will error in use if there isn't a default
+                        continue
+                    elif ext in (".yml", ".yaml"):
+                        variables[name] = yaml.safe_load(open(filename, "r"))
+                    elif ext == ".json":
+                        variables[name] = json.load(open(filename, "r"))
+                    else:
+                        # Treat as raw text
+                        variables[name] = open(filename, "r").read()
             else:
                 variables[name] = data
 
