@@ -22,7 +22,7 @@ you would create `contact-us.redirect` with this content:
 
 Under the hood, this is rendered using a template that will effectively get a user to where they need to go:
 
-```html
+```html+jinja
 <!-- redirect.template.html -->
 <!DOCTYPE html>
 <html>

@@ -19,7 +19,7 @@ Most sites follow a simple pattern.
 
 Create a `base.template.html`:
 
-```html
+```html+jinja
 <!-- base.template.html -->
 <!DOCTYPE html>
 <html lang="en">
@@ -36,7 +36,7 @@ Create a `base.template.html`:
 
 And use it (ex. `pricing.html`):
 
-```html
+```html+jinja
 <!-- pricing.html -->
 {% extends "base.template.html" %}
 

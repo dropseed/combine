@@ -36,7 +36,7 @@ How you use it can evolve, but you should have one block named "content".
 
 **2. Grab a starter you like or copy this into `content/base.template.html`:**
 
-```html
+```html+jinja
 <!-- base.template.html -->
 <!DOCTYPE html>
 <html lang="en">
@@ -57,7 +57,7 @@ but the basics will get you a long way.
 
 **3. Copy this into `content/index.html` to create your homepage:**
 
-```html
+```html+jinja
 <!-- index.html -->
 {% extends "base.template.html" %}
 

@@ -20,7 +20,7 @@ Any file can be "extended",
 but Combine will automatically keep anything ending in `.template.html` *out* your final build
 (you don't want `base.template.html` to be deployed to the live site).
 
-```html
+```html+jinja
 <!-- base.template.html -->
 <!DOCTYPE html>
 <html lang="en">
@@ -37,7 +37,7 @@ but Combine will automatically keep anything ending in `.template.html` *out* yo
 
 Use the defined `block`s to insert your content.
 
-```html
+```html+jinja
 <!-- pricing.html -->
 {% extends "base.template.html" %}
 
@@ -56,21 +56,21 @@ Use the defined `block`s to insert your content.
 
 Insert [variables](https://jinja.palletsprojects.com/en/2.11.x/templates/#variables) using `{{ }}`.
 
-```html
+```html+jinja
 <!-- (HTML) -->
 <meta name="description" content="{{ description }}">
 ```
 
 Use [filters](https://jinja.palletsprojects.com/en/2.11.x/templates/#filters) to modify a variable during output.
 
-```html
+```html+jinja
 <!-- (HTML) -->
 <meta name="description" content="{{ description|striptags }}">
 ```
 
 Iterate over objects using [for-loops](https://jinja.palletsprojects.com/en/2.11.x/templates/#for).
 
-```html
+```html+jinja
 <!-- (HTML) -->
 {% for item in ["one", "two", "three"] %}
 <li>{{ item }}</li>
@@ -79,7 +79,7 @@ Iterate over objects using [for-loops](https://jinja.palletsprojects.com/en/2.11
 
 [If statements](https://jinja.palletsprojects.com/en/2.11.x/templates/#if) use `if`, `elif`, and `endif`.
 
-```html
+```html+jinja
 <!-- (HTML) -->
 {% if custom_variable_name %}
 <h1>Use {{ custom_variable_name }}</h1>
@@ -91,7 +91,7 @@ so if some pages have a variable that others don't,
 you might need to more specifically check if it `is defined`.
 
 
-```html
+```html+jinja
 <!-- (HTML) -->
 {% if custom_variable_name is defined %}
 <h1>Use {{ custom_variable_name }}</h1>
@@ -104,7 +104,7 @@ Use `{# #}` to leave comments in Jinja.
 Unlike HTML comments (`<!-- -->`),
 Jinja comments will *not* show up on the live site.
 
-```html
+```html+jinja
 <!-- (HTML) -->
 {# This is a comment #}
 <div>
@@ -122,7 +122,7 @@ This works across multiple lines as well as on a single line.
 
 For example:
 
-```html
+```html+jinja
 <!-- (HTML) -->
 <code>{% raw %}{% code %}{% endraw %}</code>
 ```

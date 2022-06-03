@@ -13,7 +13,7 @@ The other is to write *entire* pages in pure Markdown.
 
 On an HTML page, use Combine's `{% markdown %}` tag to switch modes.
 
-```html
+```html+jinja
 <!-- (HTML) -->
 <h1>Some HTML!</h1>
 
@@ -26,7 +26,7 @@ When paired with `{% include %}`,
 you can import Markdown content from another file.
 This can be a useful pattern embedding user- or machine-generated files are also readable on sites like GitHub.
 
-```html
+```html+jinja
 <!-- (HTML) -->
 <h2>You can also include a markdown file</h2>
 
@@ -37,7 +37,7 @@ This can be a useful pattern embedding user- or machine-generated files are also
 
 You can also render variables to markdown using the `|markdown` filter.
 
-```html
+```html+jinja
 <!-- (HTML) -->
 <h2>The markdown filter</h2>
 
@@ -58,7 +58,7 @@ Everything in here will be rendered using `markdown.template.html`!
 
 You can customize the default Markdown template by creating your own `content/markdown.template.html` file. This is the default:
 
-```html
+```html+jinja
 <!-- markdown.template.html -->
 {% extends "base.template.html" %}
 

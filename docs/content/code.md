@@ -14,7 +14,7 @@ Combine uses [Pygments](https://pygments.org/docs/) to do the highlighting and y
 
 Combine comes with a `{% code %}` tag that works just liked the fenced code blocks in Markdown.
 
-```html
+```html+jinja
 <!-- (HTML) -->
 {% code "python" %}
 def test():
@@ -25,7 +25,7 @@ def test():
 If your code sample uses Jinja-like syntax,
 then use the `{% raw %}` tag to avoid conflicts.
 
-```html
+```html+jinja
 <!-- (HTML) -->
 {% code "html" %}{% raw %}
 {% code "python" %}

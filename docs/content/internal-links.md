@@ -11,7 +11,7 @@ and should be very predictable based on the names of your directories and files.
 
 For example:
 
-```html
+```html+jinja
 <!-- (HTML) -->
 <!-- To link to <repo>/content/pricing/enterprise.html -->
 <a href="/pricing/enterprise/">Pricing</a>

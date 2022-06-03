@@ -51,7 +51,7 @@ variables:
 Combine will throw an error if you use an "undefined" variable
 (which can help catch deployment misconfigurations if you forget to set the env variables).
 
-```html
+```html+jinja
 <!-- (HTML) -->
 <script>
     ...{{ google_tag_manager_id }}
@@ -62,7 +62,7 @@ In some scenarios,
 a missing environment variable is ok and you can write a special if statement to check that case.
 Be careful when you do this though — you lose your safety net if the env variable is accidentally removed.
 
-```html
+```html+jinja
 <!-- base.template.html -->
 {% if google_tag_manager_id is defined %}
 <script>
@@ -89,7 +89,7 @@ This is often used to pass the values back to the template they are extending.
 
 An example would be setting meta values in the `<head>` of your root template:
 
-```html
+```html+jinja
 <!-- base.template.html -->
 <head>
   {% if title is defined %}<meta property="og:title" content="{{ title }}" />{% endif %}
@@ -100,7 +100,7 @@ An example would be setting meta values in the `<head>` of your root template:
 
 The Jinja [`{% set %}`](https://jinja.palletsprojects.com/en/2.11.x/templates/#assignments) tag can be used in a single line:
 
-```html
+```html+jinja
 <!-- my-page.html -->
 {% extends "base.template.html" %}
 
@@ -109,7 +109,7 @@ The Jinja [`{% set %}`](https://jinja.palletsprojects.com/en/2.11.x/templates/#a
 
 Or multi-line:
 
-```html
+```html+jinja
 <!-- my-page.html -->
 {% extends "base.template.html" %}
 

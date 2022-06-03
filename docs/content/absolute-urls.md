@@ -41,14 +41,14 @@ in every environment.
 
 This works with hard-coded strings:
 
-```html
+```html+jinja
 <!-- (HTML) -->
 <meta property="og:image" content="{{ '/static/img/open-graph.png'|absolute_url }}" />
 ```
 
 As well as variables:
 
-```html
+```html+jinja
 <!-- (HTML) -->
 <meta property="og:image" content="{{ image_url|absolute_url }}" />
 ```
@@ -56,7 +56,7 @@ As well as variables:
 Combine also automatically sets the `url` variable for the current page that is being built.
 So in templates, you can use that to automatically create an absolute URL to the current page:
 
-```html
+```html+jinja
 <!-- (HTML) -->
 <meta property="og:url" content="{{ url|absolute_url }}" />
 ```
