@@ -16,11 +16,16 @@ The best place to put these is in [combine.yml](/config/variables/).
 
 ```yaml
 variables:
-  site_name: My site
-  version: v3.1.1
+  str_example: My site
+  int_example: 1
+  list_example: ["a", "b", "c"]
+  dict_example:
+    # Dict values need to be nested under the "default" key
+    default:
+      key: val
 ```
 
-### Using environment variables in combine.yml
+### Loading environment variables
 
 You can leverage environment variables keep settings out of your repo or get build environment details from your hosting provider.
 
@@ -59,6 +64,16 @@ Be careful when you do this though — you lose your safety net if the env varia
     ...{{ google_tag_manager_id }}
 </script>
 {% endif %}
+```
+
+### Loading files
+
+Variables can be loaded from JSON, YAML, or text files using the `from_file` setting.
+
+```yaml
+variables:
+  issues:
+    from_file: issues.json
 ```
 
 ## Page variables
