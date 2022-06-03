@@ -20,7 +20,8 @@ Any file can be "extended",
 but Combine will automatically keep anything ending in `.template.html` *out* your final build
 (you don't want `base.template.html` to be deployed to the live site).
 
-```html+jinja
+```html
+<!-- base.template.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -36,7 +37,8 @@ but Combine will automatically keep anything ending in `.template.html` *out* yo
 
 Use the defined `block`s to insert your content.
 
-```html+jinja
+```html
+<!-- pricing.html -->
 {% extends "base.template.html" %}
 
 {% block content %}
@@ -54,19 +56,22 @@ Use the defined `block`s to insert your content.
 
 Insert [variables](https://jinja.palletsprojects.com/en/2.11.x/templates/#variables) using `{{ }}`.
 
-```html+jinja
+```html
+<!-- (HTML) -->
 <meta name="description" content="{{ description }}">
 ```
 
 Use [filters](https://jinja.palletsprojects.com/en/2.11.x/templates/#filters) to modify a variable during output.
 
-```html+jinja
+```html
+<!-- (HTML) -->
 <meta name="description" content="{{ description|striptags }}">
 ```
 
 Iterate over objects using [for-loops](https://jinja.palletsprojects.com/en/2.11.x/templates/#for).
 
-```html+jinja
+```html
+<!-- (HTML) -->
 {% for item in ["one", "two", "three"] %}
 <li>{{ item }}</li>
 {% endfor %}
@@ -74,7 +79,8 @@ Iterate over objects using [for-loops](https://jinja.palletsprojects.com/en/2.11
 
 [If statements](https://jinja.palletsprojects.com/en/2.11.x/templates/#if) use `if`, `elif`, and `endif`.
 
-```html+jinja
+```html
+<!-- (HTML) -->
 {% if custom_variable_name %}
 <h1>Use {{ custom_variable_name }}</h1>
 {% endif %}
@@ -85,7 +91,8 @@ so if some pages have a variable that others don't,
 you might need to more specifically check if it `is defined`.
 
 
-```html+jinja
+```html
+<!-- (HTML) -->
 {% if custom_variable_name is defined %}
 <h1>Use {{ custom_variable_name }}</h1>
 {% endif %}
@@ -97,7 +104,8 @@ Use `{# #}` to leave comments in Jinja.
 Unlike HTML comments (`<!-- -->`),
 Jinja comments will *not* show up on the live site.
 
-```html+jinja
+```html
+<!-- (HTML) -->
 {# This is a comment #}
 <div>
     <h1>Heading</h1>
@@ -114,19 +122,22 @@ This works across multiple lines as well as on a single line.
 
 For example:
 
-```html+jinja
+```html
+<!-- (HTML) -->
 <code>{% raw %}{% code %}{% endraw %}</code>
 ```
 
 Would render this in your final HTML:
 
 ```
+<!-- (HTML) -->
 <code>{% code %}</code>
 ```
 
 For variables that include HTML, use the `|safe` filter:
 
 ```
+<!-- (HTML) -->
 <div>
   {{ variable_with_html|safe }}
 </div>

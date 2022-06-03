@@ -18,6 +18,7 @@ In your `combine.yml`, define the `base_url` variable so that it's available acr
 Here's an example:
 
 ```yaml
+# combine.yml
 variables:
   base_url:
     default: "https://combine.dropseed.dev"
@@ -40,19 +41,22 @@ in every environment.
 
 This works with hard-coded strings:
 
-```html+jinja
+```html
+<!-- (HTML) -->
 <meta property="og:image" content="{{ '/static/img/open-graph.png'|absolute_url }}" />
 ```
 
 As well as variables:
 
-```html+jinja
+```html
+<!-- (HTML) -->
 <meta property="og:image" content="{{ image_url|absolute_url }}" />
 ```
 
 Combine also automatically sets the `url` variable for the current page that is being built.
 So in templates, you can use that to automatically create an absolute URL to the current page:
 
-```html+jinja
+```html
+<!-- (HTML) -->
 <meta property="og:url" content="{{ url|absolute_url }}" />
 ```

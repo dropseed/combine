@@ -11,6 +11,7 @@ and can be overridden with page-level variables.
 The simplest way to define a variable is to hard-code a string:
 
 ```yaml
+# combine.yml
 variables:
   site_name: My site
 ```
@@ -18,6 +19,7 @@ variables:
 Variables can be set automatically by reading from environment variables:
 
 ```yaml
+# combine.yml
 variables:
   google_tag_manager_id:
     from_env: GOOGLE_TAG_MANAGER_ID
@@ -26,6 +28,7 @@ variables:
 And you can provide a `default` if there are situations where the env variable won't be present:
 
 ```yaml
+# combine.yml
 variables:
   base_url:
     default: "https://combine.dropseed.dev"

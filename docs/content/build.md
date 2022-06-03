@@ -12,6 +12,7 @@ Combine supports these workflows by integrating these commands directly into the
 In development, each build step can define a `watch` process that will run in the background during `combine work`:
 
 ```yaml
+# combine.yml
 steps:
 - run: "./node_modules/.bin/tailwind -i ./content/assets/_main.css -o ./output/assets/main.css"
   watch: "./node_modules/.bin/tailwind -i ./content/assets/_main.css -o ./output/assets/main.css --watch"
@@ -21,6 +22,7 @@ The `run` process will be used when building the production site,
 and it will also be used during `combine work` (after a full site rebuild) if no `watch` process is defined:
 
 ```yaml
+# combine.yml
 steps:
 - run: "./node_modules/.bin/pitchfork index output -c .content"
 ```
@@ -29,6 +31,7 @@ If you want the `run` process to be run after a specific file is modified during
 you can define a list of [patterns](https://docs.python.org/3/library/fnmatch.html) and Combine will also re-run the `run` process when any of those files are modified:
 
 ```yaml
+# combine.yml
 steps:
 - run: "./node_modules/.bin/pitchfork index output -c .content"
   watch:

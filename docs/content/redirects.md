@@ -16,12 +16,14 @@ So, to redirect `/contact-us/` to `/contact/`,
 you would create `contact-us.redirect` with this content:
 
 ```
+<!-- contact-us.redirect -->
 /contact/
 ```
 
 Under the hood, this is rendered using a template that will effectively get a user to where they need to go:
 
-```html+jinja
+```html
+<!-- redirect.template.html -->
 <!DOCTYPE html>
 <html>
 <head>

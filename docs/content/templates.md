@@ -13,7 +13,8 @@ you should always [use the naming convention `<name>.template.html`](/ignore/).
 
 Every site starts with a `base.template.html` and a `content` block.
 
-```html+jinja
+```html
+<!-- base.template.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -31,7 +32,8 @@ Every site starts with a `base.template.html` and a `content` block.
 
 You can put blocks wherever you like, and even nest them.
 
-```html+jinja
+```html
+<!-- base.template.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -63,7 +65,8 @@ You can put blocks wherever you like, and even nest them.
 
 To use a template, just build a page that `extends` it and overrides any of the blocks.
 
-```html+jinja
+```html
+<!-- my-page.html -->
 {% extends "base.template.html" %}
 
 {% block content %}
@@ -79,7 +82,8 @@ To use a template, just build a page that `extends` it and overrides any of the 
 
 You can layer your templates to style entire sections of your site.
 
-```html+jinja
+```html
+<!-- case-study.template.html -->
 {% extends "base.template.html" %}
 
 {% block content_container %}
@@ -89,7 +93,8 @@ You can layer your templates to style entire sections of your site.
 {% endblock %}
 ```
 
-```html+jinja
+```html
+<!-- newco-case-study.html -->
 {% extends "case_study.template.html" %}
 
 {% block case_study %}

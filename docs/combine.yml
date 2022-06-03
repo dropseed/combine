@@ -1,13 +1,9 @@
 steps:
   - run: "./theme/node_modules/.bin/pitchfork index output -c .content"
-    watch: []
-    # watch: ["./content/**/*.html"]
   - run: "./theme/node_modules/.bin/parcel build theme/content/assets/_app.js --out-dir output/assets --out-file app.js"
-    watch: ["./theme/content/assets/_app.js"]
+    watch: "./theme/node_modules/.bin/parcel watch theme/content/assets/_app.js --out-dir output/assets --out-file app.js"
   - run: "./theme/node_modules/.bin/tailwind -i ./content/assets/_tailwind.css -o ./output/assets/tailwind.css"
-    watch:
-      - "./tailwind.config.js"
-      - "./content/assets/_tailwind.css"
+    watch: "./theme/node_modules/.bin/tailwind -i ./content/assets/_tailwind.css -o ./output/assets/tailwind.css --watch"
 
 variables:
   name: Combine

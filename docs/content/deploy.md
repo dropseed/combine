@@ -23,6 +23,7 @@ On Netlify, for example, you can run these commands in their build environment w
 If you use `netlify.toml`, it would look like this:
 
 ```toml
+<!-- netlify.toml -->
 [build]
     publish = "output"
     command = "combine build"
@@ -37,6 +38,7 @@ but eventually content will move and it would be ideal to do a proper 301/302 re
 On Netlify, this can again be set in `netlify.toml`:
 
 ```toml
+<!-- netlify.toml -->
 [build]
     publish = "output"
     command = "combine build"

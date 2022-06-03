@@ -13,7 +13,8 @@ The other is to write *entire* pages in pure Markdown.
 
 On an HTML page, use Combine's `{% markdown %}` tag to switch modes.
 
-```html+jinja
+```html
+<!-- (HTML) -->
 <h1>Some HTML!</h1>
 
 {% markdown %}
@@ -25,7 +26,8 @@ When paired with `{% include %}`,
 you can import Markdown content from another file.
 This can be a useful pattern embedding user- or machine-generated files are also readable on sites like GitHub.
 
-```html+jinja
+```html
+<!-- (HTML) -->
 <h2>You can also include a markdown file</h2>
 
 {% markdown %}
@@ -35,7 +37,8 @@ This can be a useful pattern embedding user- or machine-generated files are also
 
 You can also render variables to markdown using the `|markdown` filter.
 
-```html+jinja
+```html
+<!-- (HTML) -->
 <h2>The markdown filter</h2>
 
 {{ variable|markdown }}
@@ -47,6 +50,7 @@ For simple pages (like documentation) you can choose to write an entire file in 
 The only requirement is that you have a block named `content` in your `base.template.html`.
 
 ```md
+<!-- my-page.md -->
 # A Markdown page
 
 Everything in here will be rendered using `markdown.template.html`!
@@ -54,7 +58,8 @@ Everything in here will be rendered using `markdown.template.html`!
 
 You can customize the default Markdown template by creating your own `content/markdown.template.html` file. This is the default:
 
-```html+jinja
+```html
+<!-- markdown.template.html -->
 {% extends "base.template.html" %}
 
 {% block content %}
@@ -72,6 +77,7 @@ The `template` field has special behavior,
 but anything else will be injected into the page as a [variable](/variables/).
 
 ```md
+<!-- (Markdown) -->
 ---
 title: Group conditions
 description: Custom rules for deciding who needs to review which PRs
@@ -92,6 +98,7 @@ When you're writing in Markdown,
 you can also write straight HTML for more specific styling.
 
 ```md
+<!-- (Markdown) -->
 # Heading
 
 <p class="text-lg">A larger paragraph style.</p>
