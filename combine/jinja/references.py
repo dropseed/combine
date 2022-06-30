@@ -12,7 +12,7 @@ def get_references_in_path(path, jinja_env):
     references = set()
 
     for ref in these_references:
-        if ref in references:
+        if ref in references or not ref:
             continue
         else:
             references.add(ref)
