@@ -21,11 +21,10 @@ from .logger import logger
 
 
 class Watcher:
-    def __init__(self, path, combine):
+    def __init__(self, path, combine, repaint):
         self.path = path
-        self.combine = combine
         self.observer = Observer()
-        self.event_handler = EventHandler(combine)
+        self.event_handler = EventHandler(combine, repaint)
 
     def watch(self, while_running_func=None):
         self.observer.schedule(self.event_handler, self.path, recursive=True)
@@ -43,8 +42,9 @@ class Watcher:
 
 
 class EventHandler(FileSystemEventHandler):
-    def __init__(self, combine, *args, **kwargs):
+    def __init__(self, combine, repaint, *args, **kwargs):
         self.combine = combine
+        self.repaint = repaint
 
         # To dedupe modified events
         self.last_valid_event = None
@@ -179,6 +179,7 @@ class EventHandler(FileSystemEventHandler):
     def reload_combine(self):
         try:
             self.combine.reload()
+            self.repaint.reload()
         except Exception as e:
             logger.error("Error reloading", exc_info=e)
             click.secho("There was an error! See output above.", fg="red", color=True)
@@ -186,6 +187,7 @@ class EventHandler(FileSystemEventHandler):
     def rebuild_site(self, only_paths=None):
         try:
             self.combine.build(only_paths)
+            self.repaint.reload()
         except BuildError:
             click.secho("Build error (see above)", fg="red", color=True)
         except Exception as e:
@@ -194,10 +196,11 @@ class EventHandler(FileSystemEventHandler):
 
 
 class Server:
-    def __init__(self, path, port=8000):
+    def __init__(self, path, repaint, port=8000):
         self.path = path
         self.port = port
-        self.httpd = HTTPServer(self.path, ("", self.port))
+        self.repaint = repaint
+        self.httpd = HTTPServer(self.path, ("", self.port), repaint)
 
     def serve(self):
         self.httpd.serve_forever()
@@ -205,6 +208,32 @@ class Server:
 
 class HTTPHandler(SimpleHTTPRequestHandler):
     """This handler uses server.base_path instead of always using os.getcwd()"""
+
+    def inject_repaint(self):
+        path = self.translate_path(self.path)
+        path_extension = os.path.splitext(path)[1]
+
+        if path_extension not in ("", ".html"):
+            return
+
+        if path_extension == "":
+            # Guess that there is an index.html
+            path = os.path.join(path, "index.html")
+
+        if os.path.exists(path):
+            with open(path, "r") as f:
+                contents = f.read()
+
+            repaint_script = self.server.repaint.script_tag
+            if repaint_script not in contents:
+                contents = contents.replace("</body>", repaint_script + "</body>")
+
+            with open(path, "w") as f:
+                f.write(contents)
+
+    def do_GET(self) -> None:
+        self.inject_repaint()
+        return super().do_GET()
 
     def translate_path(self, path):
         path = SimpleHTTPRequestHandler.translate_path(self, path)
@@ -220,6 +249,9 @@ class HTTPHandler(SimpleHTTPRequestHandler):
 class HTTPServer(BaseHTTPServer):
     """The main server, you pass in base_path which is the path you want to serve requests from"""
 
-    def __init__(self, base_path, server_address, RequestHandlerClass=HTTPHandler):
+    def __init__(
+        self, base_path, server_address, repaint, RequestHandlerClass=HTTPHandler
+    ):
         self.base_path = base_path
+        self.repaint = repaint
         BaseHTTPServer.__init__(self, server_address, RequestHandlerClass)

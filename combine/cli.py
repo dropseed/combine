@@ -8,6 +8,7 @@ import cls_client
 import barrel
 from honcho.manager import Manager as HonchoManager
 from honcho.printer import Printer as HonchoPrinter
+from repaint import Repaint
 
 from .core import Combine
 from .logger import logger
@@ -112,7 +113,10 @@ def work(ctx, port, debug):
 
     bin_path = os.path.dirname(sys.executable)
     combine_path = os.path.join(bin_path, "combine")
-    honcho_env = {**os.environ, "PYTHONUNBUFFERED": "1"}
+    honcho_env = {
+        **os.environ,
+        "PYTHONUNBUFFERED": "1",
+    }
 
     manager = HonchoManager(HonchoPrinter())
     manager._system_print = lambda x: None
@@ -124,6 +128,11 @@ def work(ctx, port, debug):
     manager.add_process(
         "combine",
         f"{combine_path} utils watch --port {port} {debug_flag}",
+        env=honcho_env,
+    )
+    manager.add_process(
+        "repaint",
+        f"{os.path.join(bin_path, 'repaint')} serve {'--quiet' if not debug else ''}",
         env=honcho_env,
     )
 
@@ -161,7 +170,7 @@ def server(ctx, port, debug):
         variables={"base_url": f"http://127.0.0.1:{port}"},
     )
 
-    Server(combine.output_path, port).serve()
+    Server(combine.output_path, Repaint(), port).serve()
 
 
 @utils.command()
@@ -179,7 +188,7 @@ def watch(ctx, port, debug):
         variables={"base_url": f"http://127.0.0.1:{port}"},
     )
 
-    Watcher(".", combine=combine).watch()
+    Watcher(".", combine=combine, repaint=Repaint()).watch()
 
 
 @utils.command()
