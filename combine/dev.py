@@ -61,6 +61,7 @@ class EventHandler(FileSystemEventHandler):
             ".cache",
             ".venv",
             "env",
+            ".git",
         )
 
         for p in os.path.abspath(event_path).split(os.sep):
