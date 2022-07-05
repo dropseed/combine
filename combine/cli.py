@@ -9,6 +9,8 @@ import barrel
 from honcho.manager import Manager as HonchoManager
 from honcho.printer import Printer as HonchoPrinter
 
+from .config import Config
+
 from .core import Combine
 from .logger import logger
 from .dev import Watcher, Server
@@ -78,35 +80,7 @@ def work(ctx, port, debug):
 
     cls_client.track_event(slug="work", type="command", metadata={}, dispatch=True)
 
-    config_path = os.path.abspath("combine.yml")
-    combine = Combine(
-        config_path=config_path,
-        env="development",
-        variables={"base_url": f"http://127.0.0.1:{port}"},
-    )
-    click.secho("Building site", bold=True, color=True)
-    try:
-        combine.build(check=True)
-    except BuildError:
-        click.secho("Build error (see above)", fg="red", color=True)
-        exit(1)
-
-    header = (
-        """
-┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
-┃      ┏━━━━━┓                                               ┃
-┃      ┗┓   ┏┻━━━┓    Site is live: http://127.0.0.1:%s    ┃
-┃    ┏━━┫   ┣━━┓ ┃                                           ┃
-┃    ┃ ┏┻━━━┻┓ ┃      Docs: https://combine.dropseed.dev     ┃
-┃ ┏━━┻━┻━━━━━┻━┻━━┓                                          ┃
-┃ ┣━━━━━━━━━━━━━━━┫   Watching for file changes...           ┃
-┃ ┗━━━━◡◡━━━◡◡━━━━┛                                          ┃
-┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
-"""
-        % port
-    )
-
-    click.secho(header, fg="green", bold=True, color=True)
+    config = Config(os.path.abspath("combine.yml"))
 
     debug_flag = "--debug" if debug else ""
 
@@ -128,7 +102,7 @@ def work(ctx, port, debug):
     )
 
     # Add additional custom watch processes
-    for i, step in enumerate(combine.config.steps):
+    for i, step in enumerate(config.steps):
         if step.has_watch_process:
             name = step.get_name() or f"step-{i}"
             manager.add_process(
@@ -154,14 +128,9 @@ def server(ctx, port, debug):
     if debug:
         logger.setLevel(logging.DEBUG)
 
-    config_path = os.path.abspath("combine.yml")
-    combine = Combine(
-        config_path=config_path,
-        env="development",
-        variables={"base_url": f"http://127.0.0.1:{port}"},
-    )
+    config = Config(os.path.abspath("combine.yml"))
 
-    Server(combine.output_path, port).serve()
+    Server(config.output_path, port).serve()
 
 
 @utils.command()
@@ -178,6 +147,25 @@ def watch(ctx, port, debug):
         env="development",
         variables={"base_url": f"http://127.0.0.1:{port}"},
     )
+    click.secho("Building site", bold=True, color=True)
+    combine.build()
+
+    header = (
+        """
+┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+┃      ┏━━━━━┓                                               ┃
+┃      ┗┓   ┏┻━━━┓    Site is live: http://127.0.0.1:%s    ┃
+┃    ┏━━┫   ┣━━┓ ┃                                           ┃
+┃    ┃ ┏┻━━━┻┓ ┃      Docs: https://combine.dropseed.dev     ┃
+┃ ┏━━┻━┻━━━━━┻━┻━━┓                                          ┃
+┃ ┣━━━━━━━━━━━━━━━┫   Watching for file changes...           ┃
+┃ ┗━━━━◡◡━━━◡◡━━━━┛                                          ┃
+┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
+"""
+        % port
+    )
+
+    click.secho(header, fg="green", bold=True, color=True)
 
     Watcher(".", combine=combine).watch()
 
