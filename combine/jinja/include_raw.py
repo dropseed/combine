@@ -8,9 +8,8 @@ class IncludeRawExtension(Extension):
 
     def parse(self, parser):
         lineno = parser.stream.expect("name:include_raw").lineno
-        node = nodes.Include(lineno=lineno)
-        node.template = parser.parse_expression()
-        result = self.call_method("_render", [node.template], lineno=lineno)
+        template = parser.parse_expression()
+        result = self.call_method("_render", [template], lineno=lineno)
         return nodes.Output([result], lineno=lineno)
 
     def _render(self, filename):
