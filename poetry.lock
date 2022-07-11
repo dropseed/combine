@@ -478,7 +478,7 @@ websockets = "^10.3"
 type = "git"
 url = "https://github.com/dropseed/repaint"
 reference = "master"
-resolved_reference = "0e3e61100f3a0473c06881792a4919188bb27e6a"
+resolved_reference = "bbe311c224fd729f0277625bd886127feb55a48f"
 
 [[package]]
 name = "six"

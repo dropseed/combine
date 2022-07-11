@@ -53,9 +53,6 @@ class EventHandler(FileSystemEventHandler):
         super().__init__(*args, **kwargs)
 
     def should_ignore_path(self, event_path):
-        if self.combine.is_in_output_path(event_path):
-            return True
-
         ignore_dirs = (
             "node_modules",
             ".cache",
@@ -101,6 +98,18 @@ class EventHandler(FileSystemEventHandler):
 
         if self.is_duplicate_event(event):
             logger.debug("Duplicate event: %s", event)
+            return
+
+        if self.combine.is_in_output_path(event_path):
+            _, ext = os.path.splitext(event_path)
+            if ext in (".css", ".img", ".js"):
+                output_relative_path = os.path.relpath(
+                    event_path, self.combine.output_path
+                )
+                logger.debug("Repainting output path: %s", output_relative_path)
+                self.repaint.reload_assets([output_relative_path])
+            else:
+                logger.debug("Ignoring output path: %s", event_path)
             return
 
         for step in self.combine.config.steps:
