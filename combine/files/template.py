@@ -7,4 +7,4 @@ class TemplateFile(IgnoredFile):
         self.references = get_references_in_path(self.path, jinja_environment)
 
     def _render_to_output(self, output_path, jinja_environment):
-        self.load(jinja_environment)
+        pass

@@ -49,6 +49,4 @@ class MarkdownFile(HTMLFile):
         with open(target_path, "w+") as f:
             f.write(template.render(**variables))
 
-        self.load(jinja_environment)
-
         return target_path

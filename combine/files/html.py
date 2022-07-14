@@ -44,8 +44,6 @@ class HTMLFile(File):
         with open(target_path, "w+") as f:
             f.write(template.render(url=self._get_url()))
 
-        self.load(jinja_environment)
-
         return target_path
 
     def _get_url(self):

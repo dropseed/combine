@@ -105,6 +105,7 @@ class Combine:
                     continue
 
                 try:
+                    file.load(self.jinja_environment)
                     file.render(
                         output_path=self.output_path,
                         jinja_environment=self.jinja_environment,
