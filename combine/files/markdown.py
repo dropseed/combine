@@ -18,27 +18,35 @@ class MarkdownFile(HTMLFile):
 
         return os.path.join(*self.root_parts, "index.html")
 
-    def _render_to_output(self, output_path, jinja_environment):
+    def load(self, jinja_environment):
+        template = self._get_jinja_template(jinja_environment, self._get_variables())
+        self.references = [
+            os.path.basename(template.filename)
+        ] + get_references_in_path(template.filename, jinja_environment)
+
+    def _get_variables(self):
         post = frontmatter.load(self.path)
 
         variables = post.metadata
         variables["url"] = self._get_url()
         variables["content"] = post.content
 
-        # TODO can post.content be jinja rendered to use variables?
+        return variables
 
-        # an optional way to override
+    def _get_jinja_template(self, jinja_environment, variables):
         template_name = variables.get("template", "markdown.template.html")
-        template = jinja_environment.get_template(template_name)
+        return jinja_environment.get_template(template_name)
+
+    def _render_to_output(self, output_path, jinja_environment):
+        variables = self._get_variables()
+
+        # TODO can post.content be jinja rendered to use variables?
+        template = self._get_jinja_template(jinja_environment, variables)
 
         target_path = os.path.join(output_path, self.output_relative_path)
         create_parent_directory(target_path)
 
         with open(target_path, "w+") as f:
             f.write(template.render(**variables))
-
-        self.references = [template_name] + get_references_in_path(
-            template.filename, jinja_environment
-        )
 
         return target_path

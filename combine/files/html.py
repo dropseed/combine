@@ -32,6 +32,9 @@ class HTMLFile(File):
 
         return os.path.join(*self.root_parts, "index.html")
 
+    def load(self, jinja_environment):
+        self.references = get_references_in_path(self.path, jinja_environment)
+
     def _render_to_output(self, output_path, jinja_environment):
         target_path = os.path.join(output_path, self.output_relative_path)
         create_parent_directory(target_path)
@@ -40,8 +43,6 @@ class HTMLFile(File):
 
         with open(target_path, "w+") as f:
             f.write(template.render(url=self._get_url()))
-
-        self.references = get_references_in_path(self.path, jinja_environment)
 
         return target_path
 

@@ -24,6 +24,10 @@ class File:
     def _get_output_relative_path(self):
         return self.content_relative_path
 
+    def load(self, jinja_environment):
+        """Load properties that can vary depending on content of the file"""
+        self.references = []
+
     def render(self, output_path, jinja_environment):
         self.output_path = self._render_to_output(output_path, jinja_environment)
 

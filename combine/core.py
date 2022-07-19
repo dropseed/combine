@@ -27,32 +27,46 @@ class Combine:
 
     def load(self):
         self.config = Config(self.config_path)
-        self.output_path = self.config.output_path
-        self.content_paths = self.config.content_paths
 
-        self.content_directories = [ContentDirectory(x) for x in self.content_paths]
+        self.jinja_environment = self.get_jinja_environment(
+            content_paths=self.config.content_paths,
+            variables=self.get_jinja_variables(self.config.variables),
+        )
 
-        choice_loaders = [
-            jinja2.FileSystemLoader(x.path) for x in self.content_directories
-        ]
+        self.content_directories = []
+        for path in self.config.content_paths:
+            cd = ContentDirectory(path)
+            cd.load(self.jinja_environment)
+            self.content_directories.append(cd)
 
-        self.jinja_environment = jinja2.Environment(
+    @property
+    def output_path(self):
+        return self.config.output_path
+
+    def get_jinja_environment(self, content_paths, variables):
+        choice_loaders = [jinja2.FileSystemLoader(x) for x in content_paths]
+
+        jinja_environment = jinja2.Environment(
             loader=jinja2.ChoiceLoader(choice_loaders),
             autoescape=jinja2.select_autoescape(["html", "xml"]),
             undefined=jinja2.StrictUndefined,  # make sure variables exist
             extensions=default_extensions,
         )
-        self.jinja_environment.globals.update(self.get_jinja_variables())
-        self.jinja_environment.filters.update(default_filters)
+        jinja_environment.globals.update(variables)
+        jinja_environment.filters.update(default_filters)
 
-    def get_jinja_variables(self):
+        return jinja_environment
+
+    def get_jinja_variables(self, config_variables):
         """
         1. combine.yml variables
         2. Combine object variables (CLI, Python, etc.) that should override
         3. Built-in variables
         """
-        variables = self.config.variables
-        variables.update(self.variables)
+        variables = {
+            **config_variables,
+            **self.variables,
+        }
 
         if "env" in variables:
             raise ReservedVariableError("env")
@@ -91,6 +105,7 @@ class Combine:
                     continue
 
                 try:
+                    file.load(self.jinja_environment)
                     file.render(
                         output_path=self.output_path,
                         jinja_environment=self.jinja_environment,
@@ -143,7 +158,7 @@ class Combine:
         return files
 
     def content_relative_path(self, path):
-        for content_path in self.content_paths:
+        for content_path in self.config.content_paths:
             if (
                 os.path.commonpath([content_path, path]) != os.getcwd()
                 and os.getcwd() in content_path
@@ -165,15 +180,16 @@ class ContentDirectory:
     def __init__(self, path):
         assert os.path.exists(path), f"Path does not exist: {path}"
         self.path = path
-        self.load_files()
 
-    def load_files(self):
+    def load(self, jinja_environment):
         self.files = []
 
         for root, dirs, files in os.walk(self.path, followlinks=True):
             for file in files:
                 file_path = os.path.join(root, file)
-                self.files.append(file_class_for_path(file_path)(file_path, self))
+                file_obj = file_class_for_path(file_path)(file_path, self)
+                file_obj.load(jinja_environment)
+                self.files.append(file_obj)
 
     def file_classes(self):
         return set([x.__class__ for x in self.files])
