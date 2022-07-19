@@ -466,19 +466,12 @@ version = "0.1.0"
 description = ""
 category = "main"
 optional = false
-python-versions = "^3.7"
-develop = false
+python-versions = ">=3.7,<4.0"
 
 [package.dependencies]
-cached-property = "^1.5.2"
+cached-property = ">=1.5.2,<2.0.0"
 click = ">=8.0.0"
-websockets = "^10.3"
-
-[package.source]
-type = "git"
-url = "https://github.com/dropseed/repaint"
-reference = "master"
-resolved_reference = "bbe311c224fd729f0277625bd886127feb55a48f"
+websockets = ">=10.3,<11.0"
 
 [[package]]
 name = "six"
@@ -623,7 +616,7 @@ testing = ["pytest (>=6)", "pytest-checkdocs (>=2.4)", "pytest-flake8", "pytest-
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.7.0"
-content-hash = "882bf962ca1ee3ec538f0c95f5e4cfbc34a020b5454fe70008ffa63255f637f6"
+content-hash = "d57d80ee50cbd1054124774b6e40dfcbaa15b6e6fc14e3adaa8100f4e240d139"
 
 [metadata.files]
 appnope = [

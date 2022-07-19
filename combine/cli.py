@@ -73,8 +73,9 @@ def build(ctx, check, env, var, debug):
 @cli.command()
 @click.option("--port", type=int, default=8000)
 @click.option("--debug", is_flag=True, default=False)
+@click.option("--repaint", is_flag=True, default=False)
 @click.pass_context
-def work(ctx, port, debug):
+def work(ctx, port, debug, repaint):
     """Start a local server to build the site while you work"""
     if debug:
         logger.setLevel(logging.DEBUG)
@@ -84,6 +85,7 @@ def work(ctx, port, debug):
     config = Config(os.path.abspath("combine.yml"))
 
     debug_flag = "--debug" if debug else ""
+    repaint_flag = "--repaint" if repaint else ""
 
     bin_path = os.path.dirname(sys.executable)
     combine_path = os.path.join(bin_path, "combine")
@@ -96,19 +98,21 @@ def work(ctx, port, debug):
     manager._system_print = lambda x: None
     manager.add_process(
         "server",
-        f"{combine_path} utils server --port {port} {debug_flag}",
+        f"{combine_path} utils server --port {port} {debug_flag} {repaint_flag}",
         env=honcho_env,
     )
     manager.add_process(
         "combine",
-        f"{combine_path} utils watch --port {port} {debug_flag}",
+        f"{combine_path} utils watch --port {port} {debug_flag} {repaint_flag}",
         env=honcho_env,
     )
-    manager.add_process(
-        "repaint",
-        f"{os.path.join(bin_path, 'repaint')} serve {'--quiet' if not debug else ''}",
-        env=honcho_env,
-    )
+
+    if repaint:
+        manager.add_process(
+            "repaint",
+            f"{os.path.join(bin_path, 'repaint')} serve {'--quiet' if not debug else ''}",
+            env=honcho_env,
+        )
 
     # Add additional custom watch processes
     for i, step in enumerate(config.steps):
@@ -132,21 +136,23 @@ def utils(ctx):
 @utils.command()
 @click.option("--port", type=int, default=8000)
 @click.option("--debug", is_flag=True, default=False)
+@click.option("--repaint", is_flag=True, default=False)
 @click.pass_context
-def server(ctx, port, debug):
+def server(ctx, port, debug, repaint):
     if debug:
         logger.setLevel(logging.DEBUG)
 
     config = Config(os.path.abspath("combine.yml"))
 
-    Server(config.output_path, Repaint(), port).serve()
+    Server(config.output_path, Repaint() if repaint else None, port).serve()
 
 
 @utils.command()
 @click.option("--port", type=int, default=8000)
 @click.option("--debug", is_flag=True, default=False)
+@click.option("--repaint", is_flag=True, default=False)
 @click.pass_context
-def watch(ctx, port, debug):
+def watch(ctx, port, debug, repaint):
     if debug:
         logger.setLevel(logging.DEBUG)
 
@@ -176,7 +182,7 @@ def watch(ctx, port, debug):
 
     click.secho(header, fg="green", bold=True, color=True)
 
-    Watcher(".", combine=combine, repaint=Repaint()).watch()
+    Watcher(".", combine=combine, repaint=Repaint() if repaint else None).watch()
 
 
 @utils.command()

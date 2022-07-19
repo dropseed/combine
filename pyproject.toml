@@ -27,7 +27,7 @@ cls-client = "^1.2.0"
 PyYAML = "^6.0"
 barrel = "^0.3.0"
 honcho = "^1.1.0"
-repaint = {git = "https://github.com/dropseed/repaint"}
+repaint = "^0.1.0"
 
 [tool.poetry.dev-dependencies]
 ipdb = "^0.13.3"

@@ -21,7 +21,7 @@ from .logger import logger
 
 
 class Watcher:
-    def __init__(self, path, combine, repaint):
+    def __init__(self, path, combine, repaint=None):
         self.path = path
         self.observer = Observer()
         self.event_handler = EventHandler(combine, repaint)
@@ -102,7 +102,7 @@ class EventHandler(FileSystemEventHandler):
 
         if self.combine.is_in_output_path(event_path):
             _, ext = os.path.splitext(event_path)
-            if ext in (".css", ".img", ".js"):
+            if ext in (".css", ".img", ".js") and self.repaint:
                 output_relative_path = os.path.relpath(
                     event_path, self.combine.output_path
                 )
@@ -189,7 +189,8 @@ class EventHandler(FileSystemEventHandler):
     def reload_combine(self):
         try:
             self.combine.reload()
-            self.repaint.reload()
+            if self.repaint:
+                self.repaint.reload()
         except Exception as e:
             logger.error("Error reloading", exc_info=e)
             click.secho("There was an error! See output above.", fg="red", color=True)
@@ -197,7 +198,8 @@ class EventHandler(FileSystemEventHandler):
     def rebuild_site(self, only_paths=None):
         try:
             self.combine.build(only_paths)
-            self.repaint.reload()
+            if self.repaint:
+                self.repaint.reload()
         except BuildError:
             click.secho("Build error (see above)", fg="red", color=True)
         except Exception as e:
@@ -206,7 +208,7 @@ class EventHandler(FileSystemEventHandler):
 
 
 class Server:
-    def __init__(self, path, repaint, port=8000):
+    def __init__(self, path, repaint=None, port=8000):
         self.path = path
         self.port = port
         self.repaint = repaint
@@ -242,7 +244,8 @@ class HTTPHandler(SimpleHTTPRequestHandler):
                 f.write(contents)
 
     def do_GET(self) -> None:
-        self.inject_repaint()
+        if self.server.repaint:
+            self.inject_repaint()
         return super().do_GET()
 
     def translate_path(self, path):
