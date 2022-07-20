@@ -1,8 +1,7 @@
 import os
 import shutil
-import subprocess
-import shlex
 import logging
+from typing import List, Optional, Iterator, Set, Type
 
 import jinja2
 
@@ -13,19 +12,20 @@ from .jinja.exceptions import ReservedVariableError
 from .exceptions import BuildError
 from .checks.favicon import FaviconCheck
 from .checks.issues import Issues
+from .files import File
 
 
 logger = logging.getLogger(__file__)
 
 
 class Combine:
-    def __init__(self, config_path, env=None, variables={}):
+    def __init__(self, config_path: str, env: str = None, variables: dict = {}) -> None:
         self.config_path = config_path
         self.env = env
         self.variables = variables
         self.load()
 
-    def load(self):
+    def load(self) -> None:
         self.config = Config(self.config_path)
 
         self.jinja_environment = self.get_jinja_environment(
@@ -40,10 +40,12 @@ class Combine:
             self.content_directories.append(cd)
 
     @property
-    def output_path(self):
+    def output_path(self) -> str:
         return self.config.output_path
 
-    def get_jinja_environment(self, content_paths, variables):
+    def get_jinja_environment(
+        self, content_paths: List[str], variables: dict
+    ) -> jinja2.Environment:
         choice_loaders = [jinja2.FileSystemLoader(x) for x in content_paths]
 
         jinja_environment = jinja2.Environment(
@@ -57,7 +59,7 @@ class Combine:
 
         return jinja_environment
 
-    def get_jinja_variables(self, config_variables):
+    def get_jinja_variables(self, config_variables: dict) -> dict:
         """
         1. combine.yml variables
         2. Combine object variables (CLI, Python, etc.) that should override
@@ -75,15 +77,15 @@ class Combine:
 
         return variables
 
-    def reload(self):
+    def reload(self) -> None:
         """Reload the config and entire jinja environment"""
         self.load()
 
-    def clean(self):
+    def clean(self) -> None:
         if os.path.exists(self.output_path):
             shutil.rmtree(self.output_path)
 
-    def build(self, only_paths=None, check=True):
+    def build(self, only_paths: List[str] = [], check: bool = True) -> None:
         build_errors = {}
 
         if not only_paths:
@@ -131,7 +133,7 @@ class Combine:
         if check:
             self.check_build(files=files_rendered, site_checks=(not only_paths))
 
-    def check_build(self, files=[], site_checks=False):
+    def check_build(self, files: List[File] = [], site_checks: bool = False) -> None:
         self.issues = Issues()
 
         if site_checks:
@@ -146,7 +148,7 @@ class Combine:
             for issue in file.check_output():
                 self.issues.append(issue)
 
-    def get_related_files(self, content_relative_path):
+    def get_related_files(self, content_relative_path: str) -> List[File]:
         files = []
         for file in self.iter_files():
             if (
@@ -157,7 +159,7 @@ class Combine:
                 files.append(file)
         return files
 
-    def content_relative_path(self, path):
+    def content_relative_path(self, path: str) -> Optional[str]:
         for content_path in self.config.content_paths:
             if (
                 os.path.commonpath([content_path, path]) != os.getcwd()
@@ -165,23 +167,25 @@ class Combine:
             ):
                 return os.path.relpath(path, content_path)
 
-    def is_in_output_path(self, path):
+        return None
+
+    def is_in_output_path(self, path: str) -> bool:
         return (
             os.path.commonpath([self.output_path, os.path.abspath(path)]) != os.getcwd()
         )
 
-    def iter_files(self):
+    def iter_files(self) -> Iterator[File]:
         for content_directory in self.content_directories:
             for file in content_directory.files:
                 yield file
 
 
 class ContentDirectory:
-    def __init__(self, path):
+    def __init__(self, path: str) -> None:
         assert os.path.exists(path), f"Path does not exist: {path}"
         self.path = path
 
-    def load(self, jinja_environment):
+    def load(self, jinja_environment: jinja2.Environment) -> None:
         self.files = []
 
         for root, dirs, files in os.walk(self.path, followlinks=True):
@@ -191,5 +195,5 @@ class ContentDirectory:
                 file_obj.load(jinja_environment)
                 self.files.append(file_obj)
 
-    def file_classes(self):
+    def file_classes(self) -> Set[Type[File]]:
         return set([x.__class__ for x in self.files])

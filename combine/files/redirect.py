@@ -1,3 +1,4 @@
+import jinja2
 import os
 
 from .html import HTMLFile
@@ -5,7 +6,9 @@ from .utils import create_parent_directory
 
 
 class RedirectFile(HTMLFile):
-    def _render_to_output(self, output_path, jinja_environment):
+    def _render_to_output(
+        self, output_path: str, jinja_environment: jinja2.Environment
+    ) -> str:
         target_path = os.path.join(output_path, self.output_relative_path)
         create_parent_directory(target_path)
 

@@ -1,4 +1,6 @@
+from typing import Callable
 from jinja2 import nodes
+from jinja2.parser import Parser
 from jinja2.ext import Extension
 
 from pygments import highlight
@@ -9,18 +11,15 @@ from pygments.formatters import HtmlFormatter
 class CodeHighlightExtension(Extension):
     tags = set(["code"])
 
-    def __init__(self, environment):
-        super().__init__(environment)
-
-    def parse(self, parser):
+    def parse(self, parser: Parser) -> nodes.Node:
         lineno = next(parser.stream).lineno
         args = [parser.parse_expression()]
-        body = parser.parse_statements(["name:endcode"], drop_needle=True)
+        body = parser.parse_statements(("name:endcode",), drop_needle=True)
         return nodes.CallBlock(
             self.call_method("_code_support", args), [], [], body
         ).set_lineno(lineno)
 
-    def _code_support(self, language, caller):
+    def _code_support(self, language: str, caller: Callable) -> str:
         """Helper callback."""
         code = caller()
 

@@ -1,3 +1,4 @@
+from typing import List, Iterator, Union
 import os
 import datetime
 import subprocess
@@ -9,22 +10,19 @@ import yaml
 
 
 class Config:
-    def __init__(self, path):
+    def __init__(self, path: str) -> None:
         self.path = path
         self.data = {}
 
         if os.path.exists(self.path):
             self.data = yaml.safe_load(open(self.path, "r"))
-            if self.data is None:
-                # allow an empty file to start with
-                self.data = {}
 
     @property
-    def output_path(self):
+    def output_path(self) -> str:
         return os.path.abspath(self.data.get("output_path", "output"))
 
     @property
-    def content_paths(self):
+    def content_paths(self) -> List[str]:
         if "content_paths" in self.data:
             paths = self.data["content_paths"]
         else:
@@ -38,7 +36,7 @@ class Config:
         return [os.path.abspath(x) for x in paths]
 
     @property
-    def variables(self):
+    def variables(self) -> dict:
         variables = self.default_variables
 
         for name, data in self.data.get("variables", {}).items():
@@ -71,25 +69,25 @@ class Config:
         return variables
 
     @property
-    def default_variables(self):
+    def default_variables(self) -> dict:
         return {"now": datetime.datetime.now}  # as a function
 
     @property
-    def steps(self):
+    def steps(self) -> Iterator["BuildStep"]:
         for step in self.data.get("steps", []):
             yield BuildStep(
                 run=step.get("run", None),
                 watch=step.get("watch", None),
             )
 
-    def run_build_steps(self):
+    def run_build_steps(self) -> None:
         for step in self.steps:
             if step.has_run_process:
                 step.run_process()
 
 
 class BuildStep:
-    def __init__(self, run=None, watch=None):
+    def __init__(self, run: str = None, watch: Union[List[str], str] = None) -> None:
         if watch and not isinstance(watch, (list, str)):
             raise ValueError(
                 "watch must be a string (command) or list of strings (paths to watch)"
@@ -98,39 +96,42 @@ class BuildStep:
         self.run = run
         self.watch = watch
 
-    def get_name(self):
+    def get_name(self) -> str:
         """
         Get a step name automatically by parsing the first
         executable name in the watch or run command
         """
         if self.has_watch_process:
-            return self.watch.split()[0].split("/")[-1]
+            return self.watch.split()[0].split("/")[-1]  # type: ignore
 
         if self.has_run_process:
-            return self.run.split()[0].split("/")[-1]
+            return self.run.split()[0].split("/")[-1]  # type: ignore
 
         return ""
 
     @property
-    def has_watch_process(self):
+    def has_watch_process(self) -> bool:
         return isinstance(self.watch, str)
 
     @property
-    def has_watch_patterns(self):
+    def has_watch_patterns(self) -> bool:
         return isinstance(self.watch, list)
 
     @property
-    def has_run_process(self):
+    def has_run_process(self) -> bool:
         return bool(self.run)
 
-    def run_process(self, check=True):
+    def run_process(self, check: bool = True) -> subprocess.CompletedProcess:
+        if not self.run:
+            raise ValueError("No run command specified")
+
         return subprocess.run(shlex.split(self.run), check=check)
 
-    def path_matches_watch(self, path):
+    def watch_pattern_match(self, path: str) -> str:
         if not self.has_watch_patterns:
-            return False
+            return ""
 
-        for pattern in self.watch:
+        for pattern in self.watch:  # type: ignore
             match = False
 
             if pattern.startswith("/"):
@@ -146,4 +147,4 @@ class BuildStep:
             if match:
                 return pattern
 
-        return False
+        return ""

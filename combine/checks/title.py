@@ -1,3 +1,4 @@
+import bs4
 from .base import Check
 from .issues import Issues, Issue
 
@@ -12,10 +13,10 @@ from .issues import Issues, Issue
 
 
 class TitleCheck(Check):
-    def __init__(self, html_soup):
+    def __init__(self, html_soup: bs4.BeautifulSoup) -> None:
         self.html_soup = html_soup
 
-    def run(self):
+    def run(self) -> Issues:
         issues = Issues()
 
         title = self.html_soup.title

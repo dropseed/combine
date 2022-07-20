@@ -1,16 +1,21 @@
 import os
 import traceback
 
+import jinja2
 from .html import HTMLFile
 from .utils import create_parent_directory
 
+from typing import Any
+
 
 class ErrorFile(HTMLFile):
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args: Any, **kwargs: Any) -> None:
         self.error = kwargs.pop("error")
         super().__init__(*args, **kwargs)
 
-    def _render_to_output(self, output_path, jinja_environment):
+    def _render_to_output(
+        self, output_path: str, jinja_environment: jinja2.Environment
+    ) -> str:
         target_path = os.path.join(output_path, self.output_relative_path)
         create_parent_directory(target_path)
 

@@ -11,7 +11,7 @@ MAX_FILE_SIZES = {
 }
 
 
-def sizeof_fmt(num):
+def sizeof_fmt(num: float) -> str:
     for unit in [" bytes", "KB", "MB", "GB"]:
         if abs(num) < 1000.0:
             return "%3.1f%s" % (num, unit)
@@ -20,10 +20,10 @@ def sizeof_fmt(num):
 
 
 class FileSizeCheck(Check):
-    def __init__(self, path):
+    def __init__(self, path: str) -> None:
         self.path = path
 
-    def run(self):
+    def run(self) -> Issues:
         issues = Issues()
 
         _, ext = os.path.splitext(self.path)

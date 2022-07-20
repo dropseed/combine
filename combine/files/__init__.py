@@ -1,3 +1,4 @@
+from typing import Type
 import os
 
 from .core import File
@@ -9,7 +10,7 @@ from .redirect import RedirectFile
 from .error import ErrorFile
 
 
-def file_class_for_path(path):
+def file_class_for_path(path: str) -> Type[File]:
     base, ext = os.path.splitext(path)
 
     if os.path.basename(path).startswith("_") or os.path.basename(path).startswith("."):

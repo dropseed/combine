@@ -19,14 +19,22 @@ from .exceptions import BuildError
 from .files.ignored import IgnoredFile
 from .logger import logger
 
+from typing import TYPE_CHECKING, Optional, Callable, List, Any, Tuple, Type
+
+if TYPE_CHECKING:
+    from .core import Combine
+    from repaint import Repaint
+
 
 class Watcher:
-    def __init__(self, path, combine, repaint=None):
+    def __init__(
+        self, path: str, combine: "Combine", repaint: Optional["Repaint"] = None
+    ) -> None:
         self.path = path
         self.observer = Observer()
         self.event_handler = EventHandler(combine, repaint)
 
-    def watch(self, while_running_func=None):
+    def watch(self, while_running_func: Callable = None) -> None:
         self.observer.schedule(self.event_handler, self.path, recursive=True)
         self.observer.start()
         try:
@@ -42,17 +50,23 @@ class Watcher:
 
 
 class EventHandler(FileSystemEventHandler):
-    def __init__(self, combine, repaint, *args, **kwargs):
+    def __init__(
+        self,
+        combine: "Combine",
+        repaint: Optional["Repaint"],
+        *args: Any,
+        **kwargs: Any,
+    ) -> None:
         self.combine = combine
         self.repaint = repaint
 
         # To dedupe modified events
-        self.last_valid_event = None
-        self.last_event_time = None
+        self.last_valid_event: Optional[FileSystemEventHandler] = None
+        self.last_event_time: Optional[datetime.datetime] = None
 
         super().__init__(*args, **kwargs)
 
-    def should_ignore_path(self, event_path):
+    def should_ignore_path(self, event_path: str) -> bool:
         ignore_dirs = (
             "node_modules",
             ".cache",
@@ -72,21 +86,22 @@ class EventHandler(FileSystemEventHandler):
 
         return False
 
-    def is_duplicate_event(self, event):
+    def is_duplicate_event(self, event: FileSystemEventHandler) -> bool:
         return (
-            self.last_valid_event
+            self.last_valid_event is not None
+            and self.last_event_time is not None
             and event == self.last_valid_event
-            and datetime.datetime.now() - self.last_event_time
+            and (datetime.datetime.now() - self.last_event_time)
             < datetime.timedelta(seconds=0.1)
         )
 
-    def valid_event(self, event):
+    def valid_event(self, event: FileSystemEventHandler) -> None:
         """When an event is processed, call this to make sure we can
         deduplicate file events that sometimes trigger twice"""
         self.last_valid_event = event
         self.last_event_time = datetime.datetime.now()
 
-    def on_any_event(self, event):
+    def on_any_event(self, event: FileSystemEventHandler) -> None:
         logger.debug("Event: %s", event)
 
         # if a file was moved or something, we only care about the destination
@@ -113,7 +128,7 @@ class EventHandler(FileSystemEventHandler):
             return
 
         for step in self.combine.config.steps:
-            matched_pattern = step.path_matches_watch(event_path)
+            matched_pattern = step.watch_pattern_match(event_path)
             if matched_pattern:
                 click.secho(
                     f"Running step for matching {matched_pattern}",
@@ -186,7 +201,7 @@ class EventHandler(FileSystemEventHandler):
             self.rebuild_site(only_paths=[x.path for x in files])
             self.valid_event(event)
 
-    def reload_combine(self):
+    def reload_combine(self) -> None:
         try:
             self.combine.reload()
             if self.repaint:
@@ -195,7 +210,7 @@ class EventHandler(FileSystemEventHandler):
             logger.error("Error reloading", exc_info=e)
             click.secho("There was an error! See output above.", fg="red", color=True)
 
-    def rebuild_site(self, only_paths=None):
+    def rebuild_site(self, only_paths: List[str] = []) -> None:
         try:
             self.combine.build(only_paths)
             if self.repaint:
@@ -208,20 +223,33 @@ class EventHandler(FileSystemEventHandler):
 
 
 class Server:
-    def __init__(self, path, repaint=None, port=8000):
+    def __init__(
+        self, path: str, repaint: Optional["Repaint"] = None, port: int = 8000
+    ) -> None:
         self.path = path
         self.port = port
         self.repaint = repaint
         self.httpd = HTTPServer(self.path, ("", self.port), repaint)
 
-    def serve(self):
+    def serve(self) -> None:
         self.httpd.serve_forever()
 
 
 class HTTPHandler(SimpleHTTPRequestHandler):
     """This handler uses server.base_path instead of always using os.getcwd()"""
 
-    def inject_repaint(self):
+    @property
+    def repaint(self) -> Optional["Repaint"]:
+        return self.server.repaint  # type: ignore
+
+    @property
+    def base_path(self) -> str:
+        return self.server.base_path  # type: ignore
+
+    def inject_repaint(self) -> None:
+        if not self.repaint:
+            return
+
         path = self.translate_path(self.path)
         path_extension = os.path.splitext(path)[1]
 
@@ -236,7 +264,7 @@ class HTTPHandler(SimpleHTTPRequestHandler):
             with open(path, "r") as f:
                 contents = f.read()
 
-            repaint_script = self.server.repaint.script_tag
+            repaint_script = self.repaint.script_tag
             if repaint_script not in contents:
                 contents = contents.replace("</body>", repaint_script + "</body>")
 
@@ -244,17 +272,16 @@ class HTTPHandler(SimpleHTTPRequestHandler):
                 f.write(contents)
 
     def do_GET(self) -> None:
-        if self.server.repaint:
-            self.inject_repaint()
+        self.inject_repaint()
         return super().do_GET()
 
-    def translate_path(self, path):
-        path = SimpleHTTPRequestHandler.translate_path(self, path)
+    def translate_path(self, path: str) -> str:
+        path = super().translate_path(path)
         relpath = os.path.relpath(path, os.getcwd())
-        fullpath = os.path.join(self.server.base_path, relpath)
+        fullpath = os.path.join(self.base_path, relpath)
         return fullpath
 
-    def log_message(self, format, *args):
+    def log_message(self, format: str, *args: Any) -> None:
         """Disable logging"""
         return
 
@@ -263,8 +290,12 @@ class HTTPServer(BaseHTTPServer):
     """The main server, you pass in base_path which is the path you want to serve requests from"""
 
     def __init__(
-        self, base_path, server_address, repaint, RequestHandlerClass=HTTPHandler
-    ):
+        self,
+        base_path: str,
+        server_address: Tuple[str, int],
+        repaint: Optional["Repaint"],
+        RequestHandlerClass: Type[HTTPHandler] = HTTPHandler,
+    ) -> None:
         self.base_path = base_path
         self.repaint = repaint
-        BaseHTTPServer.__init__(self, server_address, RequestHandlerClass)
+        super().__init__(server_address, RequestHandlerClass)

@@ -1,6 +1,8 @@
 import os
 
 from bs4 import BeautifulSoup
+import jinja2
+from typing import List
 
 from ..jinja.references import get_references_in_path
 from .core import File
@@ -19,10 +21,11 @@ from ..checks.open_graph import (
     OpenGraphImageCheck,
     OpenGraphSiteNameCheck,
 )
+from ..checks.base import Check
 
 
 class HTMLFile(File):
-    def _get_output_relative_path(self):
+    def _get_output_relative_path(self) -> str:
         if self.name_without_extension.endswith(".keep"):
             # remove .keep.html from the end and replace with .html
             return super()._get_output_relative_path()[:-10] + ".html"
@@ -32,10 +35,12 @@ class HTMLFile(File):
 
         return os.path.join(*self.root_parts, "index.html")
 
-    def load(self, jinja_environment):
+    def load(self, jinja_environment: jinja2.Environment) -> None:
         self.references = get_references_in_path(self.path, jinja_environment)
 
-    def _render_to_output(self, output_path, jinja_environment):
+    def _render_to_output(
+        self, output_path: str, jinja_environment: jinja2.Environment
+    ) -> str:
         target_path = os.path.join(output_path, self.output_relative_path)
         create_parent_directory(target_path)
 
@@ -46,13 +51,13 @@ class HTMLFile(File):
 
         return target_path
 
-    def _get_url(self):
+    def _get_url(self) -> str:
         url = "/" + self.output_relative_path
         if url.endswith("/index.html"):
             url = url[:-10]
         return url
 
-    def get_checks(self):
+    def get_checks(self) -> List[Check]:
         with open(self.output_path, "r") as f:
             html_soup = BeautifulSoup(f.read(), "html.parser")
 

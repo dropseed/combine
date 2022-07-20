@@ -1,3 +1,4 @@
+import bs4
 import os
 from urllib.parse import urljoin
 
@@ -6,12 +7,14 @@ from .issues import Issues, Issue
 
 
 class InternalLinkBrokenCheck(Check):
-    def __init__(self, html_soup, file_path, output_dir):
+    def __init__(
+        self, html_soup: bs4.BeautifulSoup, file_path: str, output_dir: str
+    ) -> None:
         self.html_soup = html_soup
         self.file_path = file_path
         self.output_dir = output_dir
 
-    def run(self):
+    def run(self) -> Issues:
         issues = Issues()
 
         types = {

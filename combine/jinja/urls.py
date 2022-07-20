@@ -4,7 +4,7 @@ from .exceptions import MissingVariableError
 
 
 @pass_context
-def absolute_url(ctx, value):
+def absolute_url(ctx: dict, value: str) -> str:
     try:
         base_url = ctx["base_url"]
     except KeyError:

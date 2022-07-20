@@ -1,3 +1,4 @@
+import jinja2
 import os
 
 import frontmatter
@@ -8,7 +9,7 @@ from .utils import create_parent_directory
 
 
 class MarkdownFile(HTMLFile):
-    def _get_output_relative_path(self):
+    def _get_output_relative_path(self) -> str:
         if self.name_without_extension.endswith(".keep"):
             # remove .keep.md from the end and replace with .html
             return super()._get_output_relative_path()[:-8] + ".html"
@@ -18,13 +19,18 @@ class MarkdownFile(HTMLFile):
 
         return os.path.join(*self.root_parts, "index.html")
 
-    def load(self, jinja_environment):
-        template = self._get_jinja_template(jinja_environment, self._get_variables())
-        self.references = [
-            os.path.basename(template.filename)
-        ] + get_references_in_path(template.filename, jinja_environment)
+    def load(self, jinja_environment: jinja2.Environment) -> None:
+        filename = self._get_jinja_template(
+            jinja_environment, self._get_variables()
+        ).filename
+        if filename:
+            self.references = [os.path.basename(filename)] + get_references_in_path(
+                filename, jinja_environment
+            )
+        else:
+            self.references = []
 
-    def _get_variables(self):
+    def _get_variables(self) -> dict:
         post = frontmatter.load(self.path)
 
         variables = post.metadata
@@ -33,11 +39,15 @@ class MarkdownFile(HTMLFile):
 
         return variables
 
-    def _get_jinja_template(self, jinja_environment, variables):
+    def _get_jinja_template(
+        self, jinja_environment: jinja2.Environment, variables: dict
+    ) -> jinja2.Template:
         template_name = variables.get("template", "markdown.template.html")
         return jinja_environment.get_template(template_name)
 
-    def _render_to_output(self, output_path, jinja_environment):
+    def _render_to_output(
+        self, output_path: str, jinja_environment: jinja2.Environment
+    ) -> str:
         variables = self._get_variables()
 
         # TODO can post.content be jinja rendered to use variables?

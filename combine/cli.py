@@ -1,6 +1,7 @@
 import logging
 import os
 import sys
+from typing import List
 
 import click
 import pygments
@@ -26,7 +27,7 @@ cls_client.set_noninteractive_tracking_enabled(True)
 @click.group()
 @click.version_option(__version__)
 @click.pass_context
-def cli(ctx):
+def cli(ctx: click.Context) -> None:
     pass
 
 
@@ -40,7 +41,9 @@ def cli(ctx):
     include_kwargs=["check", "env"],
     include_env=["NETLIFY", "CIRCLECI", "TRAVIS", "GITLAB_CI", "GITHUB_ACTIONS", "CI"],
 )
-def build(ctx, check, env, var, debug):
+def build(
+    ctx: click.Context, check: bool, env: str, var: List[str], debug: bool
+) -> None:
     """Build the site (typically during deployment)"""
     if debug:
         logger.setLevel(logging.DEBUG)
@@ -73,7 +76,7 @@ def build(ctx, check, env, var, debug):
 @click.option("--debug", is_flag=True, default=False)
 @click.option("--repaint", is_flag=True, default=False)
 @click.pass_context
-def work(ctx, port, debug, repaint):
+def work(ctx: click.Context, port: int, debug: bool, repaint: bool) -> None:
     """Start a local server to build the site while you work"""
     if debug:
         logger.setLevel(logging.DEBUG)
@@ -154,7 +157,7 @@ def work(ctx, port, debug, repaint):
 
 @cli.group()
 @click.pass_context
-def utils(ctx):
+def utils(ctx: click.Context) -> None:
     """Utility commands"""
     pass
 
@@ -164,7 +167,7 @@ def utils(ctx):
 @click.option("--debug", is_flag=True, default=False)
 @click.option("--repaint", is_flag=True, default=False)
 @click.pass_context
-def server(ctx, port, debug, repaint):
+def server(ctx: click.Context, port: int, debug: bool, repaint: bool) -> None:
     if debug:
         logger.setLevel(logging.DEBUG)
 
@@ -183,7 +186,7 @@ def server(ctx, port, debug, repaint):
 @click.option("--debug", is_flag=True, default=False)
 @click.option("--repaint", is_flag=True, default=False)
 @click.pass_context
-def watch(ctx, port, debug, repaint):
+def watch(ctx: click.Context, port: int, debug: bool, repaint: bool) -> None:
     if debug:
         logger.setLevel(logging.DEBUG)
 
@@ -206,7 +209,7 @@ def watch(ctx, port, debug, repaint):
 )
 @click.pass_context
 @cls_client.track_command(include_kwargs=["style"])
-def highlight_css(ctx, style):
+def highlight_css(ctx: click.Context, style: str) -> None:
     """Outputs the CSS which can be customized for highlighted code"""
     for line in (
         pygments.formatters.HtmlFormatter(style=style).get_style_defs().splitlines()
@@ -215,7 +218,7 @@ def highlight_css(ctx, style):
 
 
 @cli.command()
-def update():
+def update() -> None:
     """Update your version of combine"""
     barrel.update("combine")
 

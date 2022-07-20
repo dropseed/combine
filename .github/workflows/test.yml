@@ -15,4 +15,5 @@ jobs:
         python-version: ${{ matrix.python-version }}
     - run: pip install poetry
     - run: poetry install
+    - run: ./scripts/mypy
     - run: ./scripts/test

@@ -5,10 +5,10 @@ from .issues import Issues, Issue
 
 
 class FaviconCheck(Check):
-    def __init__(self, site_dir):
+    def __init__(self, site_dir: str) -> None:
         self.site_dir = site_dir
 
-    def run(self):
+    def run(self) -> Issues:
         issues = Issues()
 
         if not os.path.exists(os.path.join(self.site_dir, "favicon.ico")):

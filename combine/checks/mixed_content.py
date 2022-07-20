@@ -1,14 +1,14 @@
-from urllib.parse import urljoin
+import bs4
 
 from .base import Check
 from .issues import Issues, Issue
 
 
 class MixedContentCheck(Check):
-    def __init__(self, html_soup):
+    def __init__(self, html_soup: bs4.BeautifulSoup) -> None:
         self.html_soup = html_soup
 
-    def run(self):
+    def run(self) -> Issues:
         issues = Issues()
 
         to_check = {
@@ -18,17 +18,17 @@ class MixedContentCheck(Check):
             # TODO missing script? but src needs to be optional (could be inline)
         }
 
-        for type, cfg in to_check.items():
-            for el in self.html_soup.findAll(type):
+        for tag, cfg in to_check.items():
+            for el in self.html_soup.findAll(tag):
                 if any(
                     [
                         el.get(k, [None])[0] == v
-                        for k, v in cfg.get("ignore", {}).items()
+                        for k, v in cfg.get("ignore", {}).items()  # type: ignore
                     ]
                 ):
                     continue
 
-                attr = cfg["attr"]
+                attr = cfg["attr"]  # type: ignore
 
                 value = el.get(attr)
 

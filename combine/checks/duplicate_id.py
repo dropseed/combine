@@ -1,15 +1,17 @@
+from typing import Dict, List
 from .base import Check
 from .issues import Issues, Issue
+import bs4
 
 
 class DuplicateIDCheck(Check):
-    def __init__(self, html_soup):
+    def __init__(self, html_soup: bs4.BeautifulSoup) -> None:
         self.html_soup = html_soup
 
-    def run(self):
+    def run(self) -> Issues:
         issues = Issues()
 
-        ids_seen = {}
+        ids_seen: Dict[str, List[bs4.element.Tag]] = {}
 
         for el in self.html_soup.findAll():
             id = el.get("id")

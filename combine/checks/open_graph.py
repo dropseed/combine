@@ -1,10 +1,11 @@
+import bs4
 from urllib.parse import urlparse
 
 from .base import Check
 from .issues import Issues, Issue
 
 
-def url_is_valid_absolute(url):
+def url_is_valid_absolute(url: str) -> bool:
     parsed = urlparse(url)
 
     if parsed.netloc.startswith("127.0.0.1"):
@@ -26,10 +27,10 @@ def url_is_valid_absolute(url):
 class BaseOpenGraphCheck(Check):
     og_property = ""
 
-    def __init__(self, html_soup):
+    def __init__(self, html_soup: bs4.BeautifulSoup) -> None:
         self.html_soup = html_soup
 
-    def run(self):
+    def run(self) -> Issues:
         issues = Issues()
 
         meta = self.html_soup.find("meta", {"property": f"og:{self.og_property}"})
@@ -53,7 +54,7 @@ class OpenGraphTitleCheck(BaseOpenGraphCheck):
 class OpenGraphDescriptionCheck(BaseOpenGraphCheck):
     og_property = "description"
 
-    def run(self):
+    def run(self) -> Issues:
         issues = super().run()
         meta = self.html_soup.find("meta", {"name": "description"})
         if meta and meta.get("content", ""):
@@ -70,7 +71,7 @@ class OpenGraphTypeCheck(BaseOpenGraphCheck):
 class OpenGraphURLCheck(BaseOpenGraphCheck):
     og_property = "url"
 
-    def run(self):
+    def run(self) -> Issues:
         issues = super().run()
 
         url = self.meta_tag_content
@@ -105,7 +106,7 @@ class OpenGraphURLCheck(BaseOpenGraphCheck):
 class OpenGraphImageCheck(BaseOpenGraphCheck):
     og_property = "image"
 
-    def run(self):
+    def run(self) -> Issues:
         issues = super().run()
 
         url = self.meta_tag_content

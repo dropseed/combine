@@ -1,4 +1,6 @@
+from typing import Any, Callable
 from jinja2 import nodes, pass_context
+from jinja2.parser import Parser
 from jinja2.ext import Extension
 from markupsafe import Markup
 
@@ -9,17 +11,14 @@ from markdown.extensions.codehilite import CodeHiliteExtension
 class MarkdownExtension(Extension):
     tags = set(["markdown"])
 
-    def __init__(self, environment):
-        super().__init__(environment)
-
-    def parse(self, parser):
+    def parse(self, parser: Parser) -> nodes.Node:
         lineno = next(parser.stream).lineno
-        body = parser.parse_statements(["name:endmarkdown"], drop_needle=True)
+        body = parser.parse_statements(("name:endmarkdown",), drop_needle=True)
         return nodes.CallBlock(self.call_method("_support"), [], [], body).set_lineno(
             lineno
         )
 
-    def _support(self, caller):
+    def _support(self, caller: Callable) -> str:
         """Helper callback."""
         markdown_content = caller()
         # jinja will have escaped by default, so we want to unescape
@@ -29,12 +28,12 @@ class MarkdownExtension(Extension):
 
 
 @pass_context
-def markdown_filter(ctx, value):
+def markdown_filter(ctx: dict, value: str) -> Markup:
     html_content = markdown_to_html(value)
     return Markup(html_content)
 
 
-def markdown_to_html(markdown_content):
+def markdown_to_html(markdown_content: str) -> str:
     html_content = markdown.markdown(
         markdown_content,
         extensions=[

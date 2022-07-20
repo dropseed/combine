@@ -1,0 +1,11 @@
+#!/bin/sh -ex
+.venv/bin/mypy combine \
+    --ignore-missing-imports \
+    --warn-unreachable \
+    --warn-redundant-casts \
+    --warn-unused-ignores \
+    --disallow-untyped-defs \
+    --disallow-incomplete-defs \
+    --no-incremental \
+    --html-report ./.reports/mypy \
+    --txt-report ./.reports/mypy

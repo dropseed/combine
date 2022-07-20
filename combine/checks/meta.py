@@ -1,12 +1,13 @@
+import bs4
 from .base import Check
 from .issues import Issues, Issue
 
 
 class MetaDescriptionCheck(Check):
-    def __init__(self, html_soup):
+    def __init__(self, html_soup: bs4.BeautifulSoup) -> None:
         self.html_soup = html_soup
 
-    def run(self):
+    def run(self) -> Issues:
         issues = Issues()
 
         meta = self.html_soup.find("meta", {"name": "description"})
