@@ -1,5 +1,5 @@
 #!/bin/sh -ex
-.venv/bin/mypy combine \
+poetry run mypy combine \
     --ignore-missing-imports \
     --warn-unreachable \
     --warn-redundant-casts \
