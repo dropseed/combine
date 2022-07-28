@@ -22,6 +22,7 @@ from ..checks.open_graph import (
     OpenGraphSiteNameCheck,
 )
 from ..checks.base import Check
+from ..components import Components
 
 
 class HTMLFile(File):
@@ -39,15 +40,22 @@ class HTMLFile(File):
         self.references = get_references_in_path(self.path, jinja_environment)
 
     def _render_to_output(
-        self, output_path: str, jinja_environment: jinja2.Environment
+        self,
+        output_path: str,
+        jinja_environment: jinja2.Environment,
+        components: Components,
     ) -> str:
         target_path = os.path.join(output_path, self.output_relative_path)
         create_parent_directory(target_path)
 
         template = jinja_environment.get_template(self.content_relative_path)
 
+        rendered = template.render(url=self._get_url())
+
+        rendered = components.inject_components(self, rendered)
+
         with open(target_path, "w+") as f:
-            f.write(template.render(url=self._get_url()))
+            f.write(rendered)
 
         return target_path
 

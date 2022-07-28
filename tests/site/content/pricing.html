@@ -1,3 +1,28 @@
 {% extends "base.template.html" %}
 
-{% block content %}Pricing{% endblock %}
+{% block content %}
+Pricing
+
+<!-- Multiline -->
+<Button class="text-lg">
+    Buy!
+    This!
+</Button>
+
+<!-- Sequential -->
+<Button>Two</Button>
+
+<!-- Nested -->
+<Button>
+    <Tag>tag</Tag>
+</Button>
+
+<!-- Nested reverse order -->
+<Tag>
+    <Button>Nested</Button>
+</Tag>
+
+<!-- Empty -->
+<Button></Button>
+
+{% endblock %}

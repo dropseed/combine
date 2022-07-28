@@ -6,6 +6,7 @@ import frontmatter
 from ..jinja.references import get_references_in_path
 from .html import HTMLFile
 from .utils import create_parent_directory
+from ..components import Components
 
 
 class MarkdownFile(HTMLFile):
@@ -46,7 +47,10 @@ class MarkdownFile(HTMLFile):
         return jinja_environment.get_template(template_name)
 
     def _render_to_output(
-        self, output_path: str, jinja_environment: jinja2.Environment
+        self,
+        output_path: str,
+        jinja_environment: jinja2.Environment,
+        components: Components,
     ) -> str:
         variables = self._get_variables()
 
@@ -56,7 +60,11 @@ class MarkdownFile(HTMLFile):
         target_path = os.path.join(output_path, self.output_relative_path)
         create_parent_directory(target_path)
 
+        rendered = template.render(**variables)
+
+        rendered = components.inject_components(self, rendered)
+
         with open(target_path, "w+") as f:
-            f.write(template.render(**variables))
+            f.write(rendered)
 
         return target_path

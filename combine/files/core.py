@@ -7,6 +7,7 @@ from ..checks.issues import Issues
 from ..checks.file_size import FileSizeCheck
 from .utils import create_parent_directory
 from ..checks.base import Check
+from ..components import Components
 
 if TYPE_CHECKING:
     from combine.core import ContentDirectory
@@ -27,6 +28,9 @@ class File:
 
         self.output_relative_path = self._get_output_relative_path()
 
+    def __hash__(self) -> int:
+        return hash(self.path)
+
     def _get_output_relative_path(self) -> str:
         return self.content_relative_path
 
@@ -34,11 +38,23 @@ class File:
         """Load properties that can vary depending on content of the file"""
         self.references = []
 
-    def render(self, output_path: str, jinja_environment: jinja2.Environment) -> None:
-        self.output_path = self._render_to_output(output_path, jinja_environment)
+    def render(
+        self,
+        output_path: str,
+        jinja_environment: jinja2.Environment,
+        components: Components,
+    ) -> None:
+        self.output_path = self._render_to_output(
+            output_path=output_path,
+            jinja_environment=jinja_environment,
+            components=components,
+        )
 
     def _render_to_output(
-        self, output_path: str, jinja_environment: jinja2.Environment
+        self,
+        output_path: str,
+        jinja_environment: jinja2.Environment,
+        components: Components,
     ) -> str:
         target_path = os.path.join(output_path, self.output_relative_path)
         create_parent_directory(target_path)

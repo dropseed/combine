@@ -1,6 +1,7 @@
 import jinja2
 from ..jinja.references import get_references_in_path
 from .ignored import IgnoredFile
+from ..components import Components
 
 
 class TemplateFile(IgnoredFile):
@@ -8,6 +9,9 @@ class TemplateFile(IgnoredFile):
         self.references = get_references_in_path(self.path, jinja_environment)
 
     def _render_to_output(
-        self, output_path: str, jinja_environment: jinja2.Environment
+        self,
+        output_path: str,
+        jinja_environment: jinja2.Environment,
+        components: Components,
     ) -> str:
         return ""

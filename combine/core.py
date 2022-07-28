@@ -13,6 +13,7 @@ from .exceptions import BuildError
 from .checks.favicon import FaviconCheck
 from .checks.issues import Issues
 from .files import File
+from .components import Components
 
 
 logger = logging.getLogger(__file__)
@@ -31,6 +32,8 @@ class Combine:
         self.jinja_environment = self.get_jinja_environment(
             content_paths=self.config.content_paths,
             variables=self.get_jinja_variables(self.config.variables),
+            autoescape=True,
+            allow_undefined=False,
         )
 
         self.content_directories = []
@@ -39,19 +42,43 @@ class Combine:
             cd.load(self.jinja_environment)
             self.content_directories.append(cd)
 
+        self.components = Components.from_paths(
+            self.config.component_paths,
+            jinja_environment=self.get_jinja_environment(
+                self.config.component_paths,
+                self.get_jinja_variables(self.config.variables),
+                autoescape=False,
+                allow_undefined=True,
+            ),
+        )
+
     @property
     def output_path(self) -> str:
         return self.config.output_path
 
     def get_jinja_environment(
-        self, content_paths: List[str], variables: dict
+        self,
+        content_paths: List[str],
+        variables: dict,
+        autoescape: bool,
+        allow_undefined: bool,
     ) -> jinja2.Environment:
         choice_loaders = [jinja2.FileSystemLoader(x) for x in content_paths]
 
+        if autoescape:
+            jinja_autoescape = jinja2.select_autoescape(["html", "xml"])
+        else:
+            jinja_autoescape = None
+
+        if allow_undefined:
+            jinja_undefined = jinja2.Undefined
+        else:
+            jinja_undefined = jinja2.StrictUndefined
+
         jinja_environment = jinja2.Environment(
             loader=jinja2.ChoiceLoader(choice_loaders),
-            autoescape=jinja2.select_autoescape(["html", "xml"]),
-            undefined=jinja2.StrictUndefined,  # make sure variables exist
+            autoescape=jinja_autoescape,  # type: ignore
+            undefined=jinja_undefined,
             extensions=default_extensions,
         )
         jinja_environment.globals.update(variables)
@@ -111,6 +138,7 @@ class Combine:
                     file.render(
                         output_path=self.output_path,
                         jinja_environment=self.jinja_environment,
+                        components=self.components,
                     )
                     files_rendered.append(file)
                 except Exception as e:
@@ -118,6 +146,7 @@ class Combine:
                     ErrorFile(file.path, file.content_directory, error=e).render(
                         output_path=self.output_path,
                         jinja_environment=self.jinja_environment,
+                        components=self.components,
                     )
 
                 paths_rendered.append(file.output_relative_path)

@@ -36,6 +36,17 @@ class Config:
         return [os.path.abspath(x) for x in paths]
 
     @property
+    def component_paths(self) -> List[str]:
+        if "component_paths" in self.data:
+            paths = self.data["component_paths"]
+        else:
+            paths = ["components"]
+            if os.path.exists(os.path.join("theme", "components")):
+                paths.append(os.path.join("theme", "components"))
+
+        return [os.path.abspath(x) for x in paths]
+
+    @property
     def variables(self) -> dict:
         variables = self.default_variables
 
