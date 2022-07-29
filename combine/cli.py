@@ -74,7 +74,7 @@ def build(
 @cli.command()
 @click.option("--port", type=int, default=8000)
 @click.option("--debug", is_flag=True, default=False)
-@click.option("--repaint", is_flag=True, default=False)
+@click.option("--repaint", is_flag=True, default=True)
 @click.pass_context
 def work(ctx: click.Context, port: int, debug: bool, repaint: bool) -> None:
     """Start a local server to build the site while you work"""
