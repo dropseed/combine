@@ -22,7 +22,7 @@ beautifulsoup4 = "^4.9.1"
 Pygments = "^2.6.1"
 markdown = "^3.2.2"
 python-frontmatter = "^1.0.0"
-typing-extensions = {version = "^3.7.4", python = "<3.8"}
+typing-extensions = "^4.3.0"
 cls-client = "^1.2.0"
 PyYAML = "^6.0"
 barrel = "^0.3.0"
