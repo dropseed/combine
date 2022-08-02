@@ -33,8 +33,13 @@ jobs:
     - name: Install a forked version of pip
       run: pip install git+https://github.com/davegaeddert/pip@prefer-min
 
+    - name: Create constraints for transitive dependencies
+      run: |
+        touch constraints.txt
+        echo 'importlib-metadata>=0.0' >> constraints.txt
+
     - name: Install package with minimal version selection
-      run: python -m pip install . --version-selection=min
+      run: python -m pip install . --version-selection=min --force-reinstall --constraint=constraints.txt
 
     - name: Basic sanity test
       run: combine --help
