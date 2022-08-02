@@ -35,13 +35,12 @@ jobs:
 
     - name: Create constraints for transitive dependencies
       run: |
-        touch constraints.txt
         echo 'importlib-metadata>=0.0' >> constraints.txt
 
     - name: Install package with minimal version selection
       run: python -m pip install . --version-selection=min --force-reinstall --constraint=constraints.txt
 
-    - name: Basic sanity test
+    - name: Make sure the command loads
       run: combine --help
 
     - name: Run tests
