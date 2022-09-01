@@ -40,6 +40,9 @@ types-Markdown = "^3.4.0"
 types-PyYAML = "^6.0.10"
 types-setuptools = "^63.2.0"
 
+[tool.poetry.group.dev.dependencies]
+types-setuptools = "^65.3.0"
+
 [build-system]
 requires = ["poetry>=0.12"]
 build-backend = "poetry.masonry.api"
