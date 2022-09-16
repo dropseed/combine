@@ -5,9 +5,9 @@ from .issues import Issues, Issue
 
 
 MAX_FILE_SIZES = {
-    ".png": 1_000_000,  # 1 MB
-    ".jpg": 1_000_000,  # 1 MB
-    ".jpeg": 1_000_000,  # 1 MB
+    ".png": 10_000_000,  # 10 MB
+    ".jpg": 10_000_000,  # 10 MB
+    ".jpeg": 10_000_000,  # 10 MB
 }
 
 
