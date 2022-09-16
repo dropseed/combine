@@ -36,9 +36,9 @@ snapshottest = "^0.6.0"
 pytest = "^7.0.1"
 mypy = "^0.971"
 lxml = "^4.9.1"
-types-Markdown = "^3.4.0"
-types-PyYAML = "^6.0.10"
-types-setuptools = "^63.2.0"
+types-Markdown = "*"
+types-PyYAML = "*"
+types-setuptools = "*"
 
 [build-system]
 requires = ["poetry>=0.12"]
