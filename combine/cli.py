@@ -5,7 +5,6 @@ from typing import List
 
 import click
 import pygments
-import cls_client
 import barrel
 from honcho.manager import Manager as HonchoManager
 from honcho.printer import Printer as HonchoPrinter
@@ -16,12 +15,6 @@ from .logger import logger
 from .dev import Watcher, Server
 from .exceptions import BuildError
 from . import __version__
-
-
-cls_client.set_project_key("cls_pk_QFp5bJFR1RXauHdvRUDpDngE")
-cls_client.set_project_slug("combine")
-cls_client.set_version(__version__)
-cls_client.set_noninteractive_tracking_enabled(True)
 
 
 @click.group()
@@ -37,10 +30,6 @@ def cli(ctx: click.Context) -> None:
 @click.option("--var", multiple=True, default=[])
 @click.option("--debug", is_flag=True, default=False)
 @click.pass_context
-@cls_client.track_command(
-    include_kwargs=["check", "env"],
-    include_env=["NETLIFY", "CIRCLECI", "TRAVIS", "GITLAB_CI", "GITHUB_ACTIONS", "CI"],
-)
 def build(
     ctx: click.Context, check: bool, env: str, var: List[str], debug: bool
 ) -> None:
@@ -80,8 +69,6 @@ def work(ctx: click.Context, port: int, debug: bool, repaint: bool) -> None:
     """Start a local server to build the site while you work"""
     if debug:
         logger.setLevel(logging.DEBUG)
-
-    cls_client.track_event(slug="work", type="command", metadata={}, dispatch=True)
 
     config_path = os.path.abspath("combine.yml")
     combine = Combine(
@@ -208,7 +195,6 @@ def watch(ctx: click.Context, port: int, debug: bool, repaint: bool) -> None:
     type=click.Choice(list(pygments.styles.get_all_styles())),
 )
 @click.pass_context
-@cls_client.track_command(include_kwargs=["style"])
 def highlight_css(ctx: click.Context, style: str) -> None:
     """Outputs the CSS which can be customized for highlighted code"""
     for line in (
