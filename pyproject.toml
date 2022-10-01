@@ -39,6 +39,9 @@ types-Markdown = "*"
 types-PyYAML = "*"
 types-setuptools = "*"
 
+[tool.poetry.group.dev.dependencies]
+mypy = "^0.981"
+
 [build-system]
 requires = ["poetry>=0.12"]
 build-backend = "poetry.masonry.api"
