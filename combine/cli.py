@@ -131,9 +131,16 @@ def work(ctx: click.Context, port: int, debug: bool, repaint: bool) -> None:
         )
 
     # Add additional custom watch processes
+    process_names = set()
     for i, step in enumerate(combine.config.steps):
         if step.has_watch_process:
             name = step.get_name() or f"step-{i}"
+            if name in process_names:
+                # Can get an error for duplicate process names
+                # (ex. tailwindcss)
+                name = f"{name}-{i}"
+
+            process_names.add(name)
             manager.add_process(
                 name,
                 step.watch,
