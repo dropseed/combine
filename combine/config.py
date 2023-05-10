@@ -5,7 +5,7 @@ import subprocess
 import shlex
 from fnmatch import fnmatch
 import json
-
+from .logger import logger
 import yaml
 
 
@@ -143,6 +143,8 @@ class BuildStep:
             else:
                 # Implied relative path pattern
                 match = fnmatch(os.path.relpath(path), pattern)
+
+            logger.debug(f"Checking {path} against {pattern} -- {match}")
 
             if match:
                 return pattern

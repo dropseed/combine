@@ -191,7 +191,9 @@ def watch(ctx: click.Context, port: int, debug: bool, repaint: bool) -> None:
         variables={"base_url": f"http://127.0.0.1:{port}"},
     )
 
-    Watcher(".", combine=combine, repaint=Repaint() if repaint else None).watch()
+    Watcher(
+        ".", combine=combine, repaint=Repaint() if repaint else None, debug=debug
+    ).watch()
 
 
 @utils.command()

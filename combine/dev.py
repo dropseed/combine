@@ -1,19 +1,11 @@
+import threading
 import datetime
 import os
 import time
 from http.server import HTTPServer as BaseHTTPServer, SimpleHTTPRequestHandler
 
 import click
-from watchdog.observers import Observer
-from watchdog.events import (
-    FileSystemEventHandler,
-    FileCreatedEvent,
-    DirModifiedEvent,
-    FileDeletedEvent,
-    FileMovedEvent,
-    DirDeletedEvent,
-    DirMovedEvent,
-)
+from watchfiles import watch, Change
 
 from .exceptions import BuildError
 from .files.ignored import IgnoredFile
@@ -28,45 +20,33 @@ if TYPE_CHECKING:
 
 class Watcher:
     def __init__(
-        self, path: str, combine: "Combine", repaint: Optional["Repaint"] = None
+        self,
+        path: str,
+        combine: "Combine",
+        repaint: Optional["Repaint"] = None,
+        debug: bool = False,
     ) -> None:
         self.path = path
-        self.observer = Observer()
+        self.debug = debug
         self.event_handler = EventHandler(combine, repaint)
 
-    def watch(self, while_running_func: Callable = None) -> None:
-        self.observer.schedule(self.event_handler, self.path, recursive=True)
-        self.observer.start()
-        try:
-            if while_running_func is not None:
-                while_running_func()
-            else:
-                while True:
-                    time.sleep(1)
-        except (Exception, KeyboardInterrupt) as e:
-            print(e)
-            self.observer.stop()
-        self.observer.join()
+    def watch(self) -> None:
+        for changes in watch(self.path, recursive=True, debug=self.debug):
+            for change, path in changes:
+                self.event_handler.on_any_event(change, path)
 
 
-class EventHandler(FileSystemEventHandler):
+class EventHandler:
     def __init__(
         self,
         combine: "Combine",
         repaint: Optional["Repaint"],
-        *args: Any,
-        **kwargs: Any,
     ) -> None:
         self.combine = combine
         self.repaint = repaint
 
-        # To dedupe modified events
-        self.last_valid_event: Optional[FileSystemEventHandler] = None
-        self.last_event_time: Optional[datetime.datetime] = None
-
-        super().__init__(*args, **kwargs)
-
-    def should_ignore_path(self, event_path: str) -> bool:
+    def should_ignore_path(self, path: str) -> bool:
+        # Most of these are filtered already by watch
         ignore_dirs = (
             "node_modules",
             ".cache",
@@ -75,60 +55,36 @@ class EventHandler(FileSystemEventHandler):
             ".git",
         )
 
-        for p in os.path.abspath(event_path).split(os.sep):
+        for p in os.path.abspath(path).split(os.sep):
             if p in ignore_dirs:
                 return True
 
         ignore_extensions = (".crdownload",)
 
-        if os.path.splitext(event_path)[1] in ignore_extensions:
+        if os.path.splitext(path)[1] in ignore_extensions:
             return True
 
         return False
 
-    def is_duplicate_event(self, event: FileSystemEventHandler) -> bool:
-        return (
-            self.last_valid_event is not None
-            and self.last_event_time is not None
-            and event == self.last_valid_event
-            and (datetime.datetime.now() - self.last_event_time)
-            < datetime.timedelta(seconds=0.1)
-        )
+    def on_any_event(self, change: Change, path: str) -> None:
+        logger.debug("Event: %s %s", change.name, path)
 
-    def valid_event(self, event: FileSystemEventHandler) -> None:
-        """When an event is processed, call this to make sure we can
-        deduplicate file events that sometimes trigger twice"""
-        self.last_valid_event = event
-        self.last_event_time = datetime.datetime.now()
-
-    def on_any_event(self, event: FileSystemEventHandler) -> None:
-        logger.debug("Event: %s", event)
-
-        # if a file was moved or something, we only care about the destination
-        event_path = event.dest_path if hasattr(event, "dest_path") else event.src_path
-
-        if self.should_ignore_path(event_path):
-            logger.debug("Ignoring path: %s", event_path)
+        if self.should_ignore_path(path):
+            logger.debug("Ignoring path: %s", path)
             return
 
-        if self.is_duplicate_event(event):
-            logger.debug("Duplicate event: %s", event)
-            return
-
-        if self.combine.is_in_output_path(event_path):
-            _, ext = os.path.splitext(event_path)
+        if self.combine.is_in_output_path(path):
+            _, ext = os.path.splitext(path)
             if ext in (".css", ".img", ".js") and self.repaint:
-                output_relative_path = os.path.relpath(
-                    event_path, self.combine.output_path
-                )
+                output_relative_path = os.path.relpath(path, self.combine.output_path)
                 logger.debug("Repainting output path: %s", output_relative_path)
                 self.repaint.reload_assets([output_relative_path])
             else:
-                logger.debug("Ignoring output path: %s", event_path)
+                logger.debug("Ignoring output path: %s", path)
             return
 
         for step in self.combine.config.steps:
-            matched_pattern = step.watch_pattern_match(event_path)
+            matched_pattern = step.watch_pattern_match(path)
             if matched_pattern:
                 click.secho(
                     f"Running step for matching {matched_pattern}",
@@ -143,33 +99,29 @@ class EventHandler(FileSystemEventHandler):
                         color=True,
                     )
 
-        if os.path.abspath(event_path) == os.path.abspath(self.combine.config_path):
+        if os.path.abspath(path) == os.path.abspath(self.combine.config_path):
             click.secho(
-                f"{self.combine.config_path} {event.event_type}: reloading combine and rebuilding site",
+                f"{self.combine.config_path} {change.name}: reloading combine and rebuilding site",
                 bold=True,
                 color=True,
             )
             self.reload_combine()
             self.rebuild_site()
-            self.valid_event(event)
             return
 
         content_relative_path = self.combine.content_relative_path(
-            os.path.abspath(event_path)
+            os.path.abspath(path)
         )
 
         if content_relative_path:
 
-            if isinstance(event, (FileCreatedEvent, DirModifiedEvent)):
+            if change in (Change.added, Change.modified):
                 # Reload first, so we know about any new files
                 self.reload_combine()
 
-            if isinstance(
-                event,
-                (FileDeletedEvent, DirDeletedEvent, DirMovedEvent, FileMovedEvent),
-            ):
+            if change == Change.deleted:
                 click.secho(
-                    f"{content_relative_path} {event.event_type}: ",
+                    f"{content_relative_path} {change.name}: ",
                     nl=False,
                     bold=True,
                     color=True,
@@ -177,7 +129,6 @@ class EventHandler(FileSystemEventHandler):
                 click.echo("Rebuilding entire site")
                 self.reload_combine()
                 self.rebuild_site()
-                self.valid_event(event)
                 return
 
             files = self.combine.get_related_files(content_relative_path)
@@ -186,7 +137,7 @@ class EventHandler(FileSystemEventHandler):
                 return
 
             click.secho(
-                f"{content_relative_path} {event.event_type}: ",
+                f"{content_relative_path} {change.name}: ",
                 nl=False,
                 bold=True,
                 color=True,
@@ -199,7 +150,6 @@ class EventHandler(FileSystemEventHandler):
             else:
                 click.echo(f"Rebuilding {len(files)} files")
             self.rebuild_site(only_paths=[x.path for x in files])
-            self.valid_event(event)
 
     def reload_combine(self) -> None:
         try:
