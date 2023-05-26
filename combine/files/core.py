@@ -27,6 +27,9 @@ class File:
 
         self.output_relative_path = self._get_output_relative_path()
 
+    def __repr__(self) -> str:
+        return f"<{self.__class__.__name__} {self.path}>"
+
     def _get_output_relative_path(self) -> str:
         return self.content_relative_path
 
