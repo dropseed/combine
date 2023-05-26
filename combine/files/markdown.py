@@ -24,9 +24,9 @@ class MarkdownFile(HTMLFile):
             jinja_environment, self._get_variables()
         ).filename
         if filename:
-            self.references = [os.path.basename(filename)] + get_references_in_path(
-                filename, jinja_environment
-            )
+            self.references = [
+                os.path.relpath(filename, self.content_directory.path)
+            ] + get_references_in_path(filename, jinja_environment)
         else:
             self.references = []
 
