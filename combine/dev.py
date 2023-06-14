@@ -121,12 +121,12 @@ class Watcher:
 
         return False
 
-    def process_change(self, change: Change, path: str) -> ChangeResult | None:
+    def process_change(self, change: Change, path: str) -> Optional[ChangeResult]:
         logger.debug("Event: %s %s", change.name, path)
 
         if self.should_ignore_path(path):
             logger.debug("Ignoring path: %s", path)
-            return
+            return None
 
         if self.combine.is_in_output_path(path):
             _, ext = os.path.splitext(path)
@@ -136,7 +136,7 @@ class Watcher:
                 self.repaint.reload_assets([output_relative_path])
             else:
                 logger.debug("Ignoring output path: %s", path)
-            return
+            return None
 
         for step in self.combine.config.steps:
             matched_pattern = step.watch_pattern_match(path)
@@ -177,7 +177,7 @@ class Watcher:
             files = self.combine.get_related_files(content_relative_path)
 
             if files and all([type(f) == IgnoredFile for f in files]):
-                return
+                return None
 
             click.secho(
                 f"{content_relative_path} {change.name}: ",
@@ -186,6 +186,8 @@ class Watcher:
             )
 
             return ChangeResult(rebuild=True, rebuild_paths=[x.path for x in files])
+
+        return None
 
 
 class Server:
