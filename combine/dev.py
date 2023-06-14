@@ -18,6 +18,15 @@ if TYPE_CHECKING:
     from repaint import Repaint
 
 
+class ChangeResult:
+    def __init__(
+        self, *, reload: bool = False, rebuild: bool = False, rebuild_paths: list = []
+    ) -> None:
+        self.reload = reload
+        self.rebuild = rebuild
+        self.rebuild_paths = rebuild_paths
+
+
 class Watcher:
     def __init__(
         self,
@@ -28,22 +37,68 @@ class Watcher:
     ) -> None:
         self.path = path
         self.debug = debug
-        self.event_handler = EventHandler(combine, repaint)
+        self.combine = combine
+        self.repaint = repaint
 
     def watch(self) -> None:
         for changes in watch(self.path, recursive=True, debug=self.debug):
-            for change, path in changes:
-                self.event_handler.on_any_event(change, path)
+            change_results = [
+                self.process_change(change, path) for change, path in changes
+            ]
 
+            reload = False
+            rebuild = False
+            rebuild_paths = []
+            rebuild_all_paths = False
 
-class EventHandler:
-    def __init__(
-        self,
-        combine: "Combine",
-        repaint: Optional["Repaint"],
-    ) -> None:
-        self.combine = combine
-        self.repaint = repaint
+            for change_result in change_results:
+                if not change_result:
+                    continue
+
+                if change_result.reload:
+                    reload = True
+
+                if change_result.rebuild:
+                    rebuild = True
+
+                if change_result.rebuild_paths:
+                    rebuild_paths.extend(change_result.rebuild_paths)
+                else:
+                    rebuild_all_paths = True
+
+            if reload:
+                self.reload_combine()
+
+            if rebuild:
+                self.rebuild_site([] if rebuild_all_paths else list(set(rebuild_paths)))
+
+    def reload_combine(self) -> None:
+        click.secho("--> Reloading combine", bold=True, color=True)
+        try:
+            self.combine.reload()
+        except Exception as e:
+            logger.error("Error reloading", exc_info=e)
+            click.secho("There was an error! See output above.", fg="red", color=True)
+
+    def rebuild_site(self, only_paths: List[str] = []) -> None:
+        if len(only_paths) == 1:
+            click.secho(f"--> Rebuilding {only_paths[0]}", bold=True, color=True)
+        elif len(only_paths) > 1:
+            click.secho(
+                f"--> Rebuilding {len(only_paths)} paths", bold=True, color=True
+            )
+        else:
+            click.secho("--> Rebuilding entire site", bold=True, color=True)
+
+        try:
+            self.combine.build(only_paths)
+            if self.repaint:
+                self.repaint.reload()
+        except BuildError:
+            click.secho("Build error (see above)", fg="red", color=True)
+        except Exception as e:
+            logger.error("Error building", exc_info=e)
+            click.secho("There was an error! See output above.", fg="red", color=True)
 
     def should_ignore_path(self, path: str) -> bool:
         # Most of these are filtered already by watch
@@ -66,7 +121,7 @@ class EventHandler:
 
         return False
 
-    def on_any_event(self, change: Change, path: str) -> None:
+    def process_change(self, change: Change, path: str) -> ChangeResult | None:
         logger.debug("Event: %s %s", change.name, path)
 
         if self.should_ignore_path(path):
@@ -75,7 +130,7 @@ class EventHandler:
 
         if self.combine.is_in_output_path(path):
             _, ext = os.path.splitext(path)
-            if ext in (".css", ".img", ".js") and self.repaint:
+            if ext in (".css", ".js") and self.repaint:
                 output_relative_path = os.path.relpath(path, self.combine.output_path)
                 logger.debug("Repainting output path: %s", output_relative_path)
                 self.repaint.reload_assets([output_relative_path])
@@ -100,36 +155,24 @@ class EventHandler:
                     )
 
         if os.path.abspath(path) == os.path.abspath(self.combine.config_path):
-            click.secho(
-                f"{self.combine.config_path} {change.name}: reloading combine and rebuilding site",
-                bold=True,
-                color=True,
-            )
-            self.reload_combine()
-            self.rebuild_site()
-            return
+            return ChangeResult(reload=True, rebuild=True)
 
         content_relative_path = self.combine.content_relative_path(
             os.path.abspath(path)
         )
 
         if content_relative_path:
+            if change == Change.deleted:
+                click.secho(
+                    f"{content_relative_path} {change.name}: ",
+                    bold=True,
+                    color=True,
+                )
+                return ChangeResult(reload=True, rebuild=True)
 
             if change in (Change.added, Change.modified):
                 # Reload first, so we know about any new files
                 self.reload_combine()
-
-            if change == Change.deleted:
-                click.secho(
-                    f"{content_relative_path} {change.name}: ",
-                    nl=False,
-                    bold=True,
-                    color=True,
-                )
-                click.echo("Rebuilding entire site")
-                self.reload_combine()
-                self.rebuild_site()
-                return
 
             files = self.combine.get_related_files(content_relative_path)
 
@@ -138,38 +181,11 @@ class EventHandler:
 
             click.secho(
                 f"{content_relative_path} {change.name}: ",
-                nl=False,
                 bold=True,
                 color=True,
             )
 
-            if len(files) == 1:
-                click.echo(f"Rebuilding {files[0].content_relative_path}")
-            elif not files:
-                click.echo("Rebuliding entire site")
-            else:
-                click.echo(f"Rebuilding {len(files)} files")
-            self.rebuild_site(only_paths=[x.path for x in files])
-
-    def reload_combine(self) -> None:
-        try:
-            self.combine.reload()
-            if self.repaint:
-                self.repaint.reload()
-        except Exception as e:
-            logger.error("Error reloading", exc_info=e)
-            click.secho("There was an error! See output above.", fg="red", color=True)
-
-    def rebuild_site(self, only_paths: List[str] = []) -> None:
-        try:
-            self.combine.build(only_paths)
-            if self.repaint:
-                self.repaint.reload()
-        except BuildError:
-            click.secho("Build error (see above)", fg="red", color=True)
-        except Exception as e:
-            logger.error("Error building", exc_info=e)
-            click.secho("There was an error! See output above.", fg="red", color=True)
+            return ChangeResult(rebuild=True, rebuild_paths=[x.path for x in files])
 
 
 class Server:
