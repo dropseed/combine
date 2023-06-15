@@ -73,7 +73,7 @@ class Watcher:
                 self.rebuild_site([] if rebuild_all_paths else list(set(rebuild_paths)))
 
     def reload_combine(self) -> None:
-        click.secho("--> Reloading combine", bold=True, color=True)
+        click.secho("Reloading combine", bold=True, color=True)
         try:
             self.combine.reload()
         except Exception as e:
