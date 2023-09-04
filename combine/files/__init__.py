@@ -3,6 +3,7 @@ import os
 
 from .core import File
 from .ignored import IgnoredFile
+from .keep import KeepFile
 from .template import TemplateFile
 from .html import HTMLFile
 from .markdown import MarkdownFile
@@ -12,6 +13,9 @@ from .error import ErrorFile
 
 def file_class_for_path(path: str) -> Type[File]:
     base, ext = os.path.splitext(path)
+
+    if ext == ".keep":
+        return KeepFile
 
     if os.path.basename(path).startswith("_") or os.path.basename(path).startswith("."):
         return IgnoredFile
