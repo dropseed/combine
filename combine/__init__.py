@@ -1,8 +1,8 @@
-import pkg_resources
+import importlib.metadata
 
 from .core import Combine
 
 
 __author__ = "Dropseed"
 __email__ = "python@dropseed.dev"
-__version__ = pkg_resources.get_distribution("combine").version
+__version__ = importlib.metadata.version("combine")
